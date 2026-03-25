@@ -1,0 +1,42 @@
+[project]
+name = "satsu"
+description = "Private payments on Bitcoin. Stealth deposits. Shielded transfers. Zero knowledge."
+authors = []
+telemetry = true
+cache_dir = "./.cache"
+
+[contracts.merkle-tree]
+path = "contracts/merkle-tree.clar"
+epoch = "latest"
+
+[contracts.nullifier-registry]
+path = "contracts/nullifier-registry.clar"
+epoch = "latest"
+
+[contracts.stealth-v1]
+path = "contracts/stealth-v1.clar"
+epoch = "latest"
+
+[contracts.pool-trait]
+path = "contracts/traits/pool-trait.clar"
+epoch = "latest"
+
+[contracts.verifier-trait]
+path = "contracts/traits/verifier-trait.clar"
+epoch = "latest"
+
+[contracts.proof-verifier]
+path = "contracts/proof-verifier.clar"
+epoch = "latest"
+
+[contracts.sbtc-token]
+path = "contracts/sbtc-token.clar"
+epoch = "latest"
+
+[contracts.pool-v1]
+path = "contracts/pool-v1.clar"
+epoch = "latest"
+
+[repl.analysis]
+passes = ["check_checker"]
+check_checker = { trusted_sender = false, trusted_caller = false, callee_filter = false }

@@ -1,0 +1,39 @@
+---
+id: 0
+name: Satsu Testnet Deployment
+network: testnet
+stacks-node: "https://api.testnet.hiro.so"
+plan:
+  batches:
+    - id: 0
+      transactions:
+        - contract-publish:
+            contract-name: merkle-tree
+            expected-sender: $DEPLOYER
+            path: contracts/merkle-tree.clar
+        - contract-publish:
+            contract-name: nullifier-registry
+            expected-sender: $DEPLOYER
+            path: contracts/nullifier-registry.clar
+        - contract-publish:
+            contract-name: stealth-v1
+            expected-sender: $DEPLOYER
+            path: contracts/stealth-v1.clar
+    - id: 1
+      transactions:
+        - contract-publish:
+            contract-name: pool-trait
+            expected-sender: $DEPLOYER
+            path: contracts/traits/pool-trait.clar
+        - contract-publish:
+            contract-name: verifier-trait
+            expected-sender: $DEPLOYER
+            path: contracts/traits/verifier-trait.clar
+        - contract-publish:
+            contract-name: proof-verifier
+            expected-sender: $DEPLOYER
+            path: contracts/proof-verifier.clar
+        - contract-publish:
+            contract-name: pool-v1
+            expected-sender: $DEPLOYER
+            path: contracts/pool-v1.clar
