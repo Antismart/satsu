@@ -61,6 +61,22 @@ export { buildWithdrawTx, submitWithdrawal } from './pool/withdraw.js';
 export type { WithdrawParams, WithdrawResult } from './pool/withdraw.js';
 
 // ---------------------------------------------------------------------------
+// Pool — timing delay
+// ---------------------------------------------------------------------------
+
+export {
+  calculateDepositDelay,
+  shouldDeposit,
+  addJitter,
+  DEFAULT_TIMING_CONFIG,
+} from './pool/timing.js';
+export type {
+  TimingConfig,
+  DepositDelayResult,
+  DepositReadinessResult,
+} from './pool/timing.js';
+
+// ---------------------------------------------------------------------------
 // Notes
 // ---------------------------------------------------------------------------
 
@@ -79,6 +95,15 @@ export {
 } from './notes/encryption.js';
 
 export { NoteStore } from './notes/store.js';
+
+export {
+  createBackupBundle,
+  parseBackupBundle,
+  validateBackupIntegrity,
+  computeBackupChecksum,
+  getBackupSdkVersion,
+} from './notes/backup.js';
+export type { BackupMetadata } from './notes/backup.js';
 
 // ---------------------------------------------------------------------------
 // Relayer

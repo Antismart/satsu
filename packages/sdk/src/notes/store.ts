@@ -35,6 +35,14 @@ import {
   SERIALIZED_NOTE_LENGTH,
   type DecryptedNote,
 } from './note.js';
+import {
+  createBackupBundle,
+  parseBackupBundle,
+  validateBackupIntegrity,
+  computeBackupChecksum,
+  getBackupSdkVersion,
+  type BackupMetadata,
+} from './backup.js';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -374,6 +382,180 @@ export class NoteStore {
    */
   has(id: string): boolean {
     return this.notes.has(id);
+  }
+
+  // -------------------------------------------------------------------------
+  // Enhanced backup UX
+  // -------------------------------------------------------------------------
+
+  /** Timestamp of the last successful export or exportWithMetadata call. */
+  private lastBackupAt: number | null = null;
+
+  /**
+   * Export all notes as an encrypted backup blob with rich metadata.
+   *
+   * In addition to the encrypted payload (identical to `export()`), this
+   * returns a `BackupMetadata` object containing version info, note counts,
+   * pool contract identifiers, and a SHA-256 checksum. The entire result
+   * is wrapped in a self-describing backup bundle.
+   *
+   * @param poolContracts - Optional list of pool contract identifiers
+   *   associated with these notes (e.g. ["SP1234.pool-v1"])
+   * @returns An object with the backup bundle bytes and the metadata
+   */
+  async exportWithMetadata(
+    poolContracts: string[] = [],
+  ): Promise<{ backup: Uint8Array; metadata: BackupMetadata }> {
+    const encrypted = await this.export();
+    const checksum = computeBackupChecksum(encrypted);
+
+    // Count unspent notes
+    let unspentCount = 0;
+    for (const stored of this.notes.values()) {
+      if (!stored.spent) {
+        unspentCount++;
+      }
+    }
+
+    const metadata: BackupMetadata = {
+      version: getBackupSdkVersion(),
+      createdAt: Date.now(),
+      noteCount: this.notes.size,
+      unspentCount,
+      poolContracts,
+      checksum,
+    };
+
+    const backup = createBackupBundle(encrypted, metadata);
+    this.lastBackupAt = Date.now();
+
+    return { backup, metadata };
+  }
+
+  /**
+   * Import notes from an encrypted backup bundle with validation.
+   *
+   * Validates the bundle integrity (magic bytes, checksum), decrypts the
+   * payload, and imports notes into a new NoteStore. Returns warnings
+   * for non-fatal issues such as version mismatches.
+   *
+   * @param bundle - Complete backup bundle (from exportWithMetadata)
+   * @param key - 32-byte AES-256 encryption key
+   * @returns A new NoteStore, the parsed metadata, and any warnings
+   */
+  static async importWithValidation(
+    bundle: Uint8Array,
+    key: Uint8Array,
+  ): Promise<{ store: NoteStore; metadata: BackupMetadata; warnings: string[] }> {
+    const warnings: string[] = [];
+
+    // Validate bundle integrity
+    const validation = validateBackupIntegrity(bundle);
+    if (!validation.valid) {
+      throw new Error(
+        `Backup integrity check failed:\n  - ${validation.errors.join('\n  - ')}`,
+      );
+    }
+
+    // Parse the bundle
+    const { encrypted, metadata } = parseBackupBundle(bundle);
+
+    // Check version compatibility
+    const currentVersion = getBackupSdkVersion();
+    if (metadata.version !== currentVersion) {
+      warnings.push(
+        `Backup was created with SDK version ${metadata.version}, ` +
+        `current version is ${currentVersion}. ` +
+        `Some features may not be compatible.`,
+      );
+    }
+
+    // Verify checksum matches
+    const computedChecksum = computeBackupChecksum(encrypted);
+    if (computedChecksum !== metadata.checksum) {
+      throw new Error(
+        `Checksum mismatch: backup may be corrupted ` +
+        `(expected ${metadata.checksum}, got ${computedChecksum})`,
+      );
+    }
+
+    // Create a new store and import
+    const store = new NoteStore(key);
+    const importedCount = await store.import(encrypted);
+
+    // Warn if the imported count does not match metadata
+    if (importedCount !== metadata.noteCount) {
+      warnings.push(
+        `Expected ${metadata.noteCount} notes but imported ${importedCount}. ` +
+        `Some notes may have already existed in the store or the backup may be partial.`,
+      );
+    }
+
+    return { store, metadata, warnings };
+  }
+
+  /**
+   * Check if the user should be warned about unspent notes lacking
+   * a recent backup.
+   *
+   * Returns a warning string if there are unspent notes and either:
+   *   - No backup has ever been created, OR
+   *   - The most recent backup is older than the staleness threshold
+   *   - New notes have been added since the last backup
+   *
+   * Returns null if no warning is needed.
+   *
+   * @param stalenessMs - How old a backup can be before it's considered
+   *   stale, in milliseconds. Defaults to 24 hours.
+   * @returns Warning message string, or null if no warning is needed
+   */
+  getBackupWarning(stalenessMs: number = 86_400_000): string | null {
+    // Count unspent notes
+    let unspentCount = 0;
+    let newestNoteAt = 0;
+    for (const stored of this.notes.values()) {
+      if (!stored.spent) {
+        unspentCount++;
+        if (stored.createdAt > newestNoteAt) {
+          newestNoteAt = stored.createdAt;
+        }
+      }
+    }
+
+    // No unspent notes means nothing to lose
+    if (unspentCount === 0) {
+      return null;
+    }
+
+    // No backup ever created
+    if (this.lastBackupAt === null) {
+      return (
+        `WARNING: You have ${unspentCount} unspent note(s) with NO backup. ` +
+        `If you lose your notes, your funds are permanently locked in the pool. ` +
+        `Create a backup immediately using exportWithMetadata().`
+      );
+    }
+
+    // Backup is stale (older than threshold)
+    const backupAge = Date.now() - this.lastBackupAt;
+    if (backupAge > stalenessMs) {
+      const hoursAgo = Math.round(backupAge / 3_600_000);
+      return (
+        `WARNING: Your last backup was ${hoursAgo} hour(s) ago and you have ` +
+        `${unspentCount} unspent note(s). Consider creating a fresh backup.`
+      );
+    }
+
+    // New notes added since last backup
+    if (newestNoteAt > this.lastBackupAt) {
+      return (
+        `WARNING: You have ${unspentCount} unspent note(s) and new notes ` +
+        `were added since your last backup. Create an updated backup to ` +
+        `protect your funds.`
+      );
+    }
+
+    return null;
   }
 }
 
