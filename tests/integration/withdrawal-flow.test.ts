@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { Cl, ClarityType } from "@stacks/transactions";
+import { buildValidProof } from "../helpers/proof-builder";
 
 // ============================================================================
 // Constants
@@ -19,9 +20,6 @@ const NULLIFIER_1 =
   "1111111111111111111111111111111111111111111111111111111111111111";
 const NULLIFIER_2 =
   "2222222222222222222222222222222222222222222222222222222222222222";
-
-// Dummy proof (mock verifier accepts anything)
-const DUMMY_PROOF = "deadbeef".repeat(8); // 32 bytes hex
 
 // Ephemeral pubkey (33-byte compressed secp256k1 key for stealth detection)
 const EPHEMERAL_PUBKEY =
@@ -175,11 +173,12 @@ describe("integration: withdrawal flow", () => {
     const recipientBalanceBefore = getBalance(recipient);
     const relayerBalanceBefore = getBalance(relayer);
 
+    const withdrawProof = buildValidProof(NULLIFIER_1, root, recipient, relayerFee);
     const withdrawResult = simnet.callPublicFn(
       "pool-v1",
       "withdraw",
       [
-        Cl.bufferFromHex(DUMMY_PROOF),
+        Cl.bufferFromHex(withdrawProof),
         Cl.bufferFromHex(NULLIFIER_1),
         Cl.bufferFromHex(root),
         Cl.standardPrincipal(recipient),
@@ -279,11 +278,12 @@ describe("integration: withdrawal flow", () => {
     );
 
     // First withdrawal succeeds
+    const dsProof1 = buildValidProof(NULLIFIER_1, root, recipient, 0);
     const firstWithdraw = simnet.callPublicFn(
       "pool-v1",
       "withdraw",
       [
-        Cl.bufferFromHex(DUMMY_PROOF),
+        Cl.bufferFromHex(dsProof1),
         Cl.bufferFromHex(NULLIFIER_1),
         Cl.bufferFromHex(root),
         Cl.standardPrincipal(recipient),
@@ -295,11 +295,12 @@ describe("integration: withdrawal flow", () => {
     expect(firstWithdraw.result).toHaveClarityType(ClarityType.ResponseOk);
 
     // Second withdrawal with SAME nullifier is rejected (double-spend attempt)
+    const dsProof2 = buildValidProof(NULLIFIER_1, root, recipient, 0);
     const secondWithdraw = simnet.callPublicFn(
       "pool-v1",
       "withdraw",
       [
-        Cl.bufferFromHex(DUMMY_PROOF),
+        Cl.bufferFromHex(dsProof2),
         Cl.bufferFromHex(NULLIFIER_1),
         Cl.bufferFromHex(root),
         Cl.standardPrincipal(recipient),
@@ -362,11 +363,12 @@ describe("integration: withdrawal flow", () => {
     );
 
     // First withdrawal with NULLIFIER_1
+    const indepProof1 = buildValidProof(NULLIFIER_1, root, recipient, 0);
     const withdraw1 = simnet.callPublicFn(
       "pool-v1",
       "withdraw",
       [
-        Cl.bufferFromHex(DUMMY_PROOF),
+        Cl.bufferFromHex(indepProof1),
         Cl.bufferFromHex(NULLIFIER_1),
         Cl.bufferFromHex(root),
         Cl.standardPrincipal(recipient),
@@ -378,11 +380,12 @@ describe("integration: withdrawal flow", () => {
     expect(withdraw1.result).toHaveClarityType(ClarityType.ResponseOk);
 
     // Second withdrawal with NULLIFIER_2 (different nullifier)
+    const indepProof2 = buildValidProof(NULLIFIER_2, root, recipient, 0);
     const withdraw2 = simnet.callPublicFn(
       "pool-v1",
       "withdraw",
       [
-        Cl.bufferFromHex(DUMMY_PROOF),
+        Cl.bufferFromHex(indepProof2),
         Cl.bufferFromHex(NULLIFIER_2),
         Cl.bufferFromHex(root),
         Cl.standardPrincipal(recipient),
@@ -457,11 +460,12 @@ describe("integration: withdrawal flow", () => {
     // Try to withdraw with a fabricated root
     const fakeRoot =
       "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
+    const fakeProof = buildValidProof(NULLIFIER_1, fakeRoot, recipient, 0);
     const withdrawResult = simnet.callPublicFn(
       "pool-v1",
       "withdraw",
       [
-        Cl.bufferFromHex(DUMMY_PROOF),
+        Cl.bufferFromHex(fakeProof),
         Cl.bufferFromHex(NULLIFIER_1),
         Cl.bufferFromHex(fakeRoot),
         Cl.standardPrincipal(recipient),
@@ -515,11 +519,12 @@ describe("integration: withdrawal flow", () => {
     const recipientBefore = getBalance(recipient);
     const relayerBefore = getBalance(relayer);
 
+    const feeProof = buildValidProof(NULLIFIER_1, root, recipient, relayerFee);
     simnet.callPublicFn(
       "pool-v1",
       "withdraw",
       [
-        Cl.bufferFromHex(DUMMY_PROOF),
+        Cl.bufferFromHex(feeProof),
         Cl.bufferFromHex(NULLIFIER_1),
         Cl.bufferFromHex(root),
         Cl.standardPrincipal(recipient),
@@ -582,11 +587,12 @@ describe("integration: withdrawal flow", () => {
     );
     const root1 = getCurrentRootHex();
 
+    const cycleProof1 = buildValidProof(NULLIFIER_1, root1, recipient, 0);
     const withdraw1 = simnet.callPublicFn(
       "pool-v1",
       "withdraw",
       [
-        Cl.bufferFromHex(DUMMY_PROOF),
+        Cl.bufferFromHex(cycleProof1),
         Cl.bufferFromHex(NULLIFIER_1),
         Cl.bufferFromHex(root1),
         Cl.standardPrincipal(recipient),
@@ -612,11 +618,12 @@ describe("integration: withdrawal flow", () => {
     );
     const root2 = getCurrentRootHex();
 
+    const cycleProof2 = buildValidProof(NULLIFIER_2, root2, recipient, 0);
     const withdraw2 = simnet.callPublicFn(
       "pool-v1",
       "withdraw",
       [
-        Cl.bufferFromHex(DUMMY_PROOF),
+        Cl.bufferFromHex(cycleProof2),
         Cl.bufferFromHex(NULLIFIER_2),
         Cl.bufferFromHex(root2),
         Cl.standardPrincipal(recipient),

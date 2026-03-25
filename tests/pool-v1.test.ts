@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { Cl, ClarityType } from "@stacks/transactions";
+import { buildValidProof } from "./helpers/proof-builder";
 
 // ============================================================================
 // Constants
@@ -22,10 +23,7 @@ const NULLIFIER_1 =
 const NULLIFIER_2 =
   "2222222222222222222222222222222222222222222222222222222222222222";
 
-// Dummy proof (small buffer - mock verifier accepts anything)
-const DUMMY_PROOF = "deadbeef".repeat(8); // 32 bytes hex
-
-// Dummy ephemeral pubkey (33 bytes, starts with 0x02)
+// Ephemeral pubkey (33 bytes, starts with 0x02)
 const EPHEMERAL_PUBKEY =
   "020000000000000000000000000000000000000000000000000000000000000001";
 
@@ -80,8 +78,33 @@ function deposit(commitment: string, source: string, caller?: string) {
   );
 }
 
-/** Make a withdrawal from the pool */
+/** Make a withdrawal from the pool. Constructs a valid proof automatically. */
 function withdraw(
+  nullifier: string,
+  root: string,
+  recipient: string,
+  ephemeralPubkey: string,
+  relayerFee: number,
+  caller: string,
+) {
+  const proof = buildValidProof(nullifier, root, recipient, relayerFee);
+  return simnet.callPublicFn(
+    "pool-v1",
+    "withdraw",
+    [
+      Cl.bufferFromHex(proof),
+      Cl.bufferFromHex(nullifier),
+      Cl.bufferFromHex(root),
+      Cl.standardPrincipal(recipient),
+      Cl.bufferFromHex(ephemeralPubkey),
+      Cl.uint(relayerFee),
+    ],
+    caller,
+  );
+}
+
+/** Make a withdrawal with a specific (possibly invalid) proof buffer. */
+function withdrawWithProof(
   proof: string,
   nullifier: string,
   root: string,
@@ -418,7 +441,6 @@ describe("pool-v1 contract", () => {
 
       // Withdraw to wallet2
       const result = withdraw(
-        DUMMY_PROOF,
         NULLIFIER_1,
         root,
         wallet2,
@@ -441,7 +463,6 @@ describe("pool-v1 contract", () => {
       const recipientBalanceBefore = getBalance(wallet2);
 
       withdraw(
-        DUMMY_PROOF,
         NULLIFIER_1,
         root,
         wallet2,
@@ -466,7 +487,6 @@ describe("pool-v1 contract", () => {
         "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
 
       const result = withdraw(
-        DUMMY_PROOF,
         NULLIFIER_1,
         fakeRoot,
         wallet2,
@@ -490,7 +510,6 @@ describe("pool-v1 contract", () => {
 
       // First withdrawal succeeds
       const result1 = withdraw(
-        DUMMY_PROOF,
         NULLIFIER_1,
         root,
         wallet2,
@@ -502,7 +521,6 @@ describe("pool-v1 contract", () => {
 
       // Second withdrawal with same nullifier fails
       const result2 = withdraw(
-        DUMMY_PROOF,
         NULLIFIER_1,
         root,
         wallet2,
@@ -528,7 +546,6 @@ describe("pool-v1 contract", () => {
 
       // wallet3 is the relayer (tx-sender)
       withdraw(
-        DUMMY_PROOF,
         NULLIFIER_1,
         root,
         wallet2,
@@ -560,7 +577,6 @@ describe("pool-v1 contract", () => {
       // The contract validates relayer-fee < POOL-DENOMINATION before
       // computing the subtraction, returning ERR-INVALID-AMOUNT (u1002)
       const result = withdraw(
-        DUMMY_PROOF,
         NULLIFIER_1,
         root,
         wallet2,
@@ -582,7 +598,6 @@ describe("pool-v1 contract", () => {
       // relayer-fee == denomination is rejected by the strict less-than check
       // to ensure recipient always receives a non-zero amount
       const result = withdraw(
-        DUMMY_PROOF,
         NULLIFIER_1,
         root,
         wallet2,
@@ -604,7 +619,6 @@ describe("pool-v1 contract", () => {
       const recipientBalanceBefore = getBalance(wallet2);
 
       const result = withdraw(
-        DUMMY_PROOF,
         NULLIFIER_1,
         root,
         wallet2,
@@ -638,7 +652,6 @@ describe("pool-v1 contract", () => {
       expect(beforeResult.result).toBeOk(Cl.bool(false));
 
       withdraw(
-        DUMMY_PROOF,
         NULLIFIER_1,
         root,
         wallet2,
@@ -668,7 +681,6 @@ describe("pool-v1 contract", () => {
       expect(poolBalanceBefore).toBe(BigInt(POOL_DENOMINATION));
 
       withdraw(
-        DUMMY_PROOF,
         NULLIFIER_1,
         root,
         wallet2,
@@ -690,7 +702,6 @@ describe("pool-v1 contract", () => {
       const root = getCurrentRootHex();
 
       const result = withdraw(
-        DUMMY_PROOF,
         NULLIFIER_1,
         root,
         wallet2,
@@ -721,7 +732,6 @@ describe("pool-v1 contract", () => {
 
       // Withdraw using the root from after the first deposit (historical)
       const result = withdraw(
-        DUMMY_PROOF,
         NULLIFIER_1,
         rootAfterFirst,
         wallet2,
@@ -828,7 +838,6 @@ describe("pool-v1 contract", () => {
 
       const root = getCurrentRootHex();
       withdraw(
-        DUMMY_PROOF,
         NULLIFIER_1,
         root,
         wallet2,
@@ -865,7 +874,6 @@ describe("pool-v1 contract", () => {
 
       // Two withdrawals with different nullifiers
       const result1 = withdraw(
-        DUMMY_PROOF,
         NULLIFIER_1,
         root,
         wallet2,
@@ -876,7 +884,6 @@ describe("pool-v1 contract", () => {
       expect(result1.result).toHaveClarityType(ClarityType.ResponseOk);
 
       const result2 = withdraw(
-        DUMMY_PROOF,
         NULLIFIER_2,
         root,
         wallet2,
