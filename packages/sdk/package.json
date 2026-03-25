@@ -1,0 +1,27 @@
+{
+  "name": "@satsu/sdk",
+  "version": "0.1.0",
+  "description": "TypeScript client SDK for Satsu privacy payments on Stacks",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest watch"
+  },
+  "dependencies": {
+    "@stacks/transactions": "^7.2.0",
+    "@stacks/network": "^7.0.0",
+    "@stacks/connect": "^7.0.0",
+    "@noble/secp256k1": "^2.2.0",
+    "@noble/hashes": "^1.7.0",
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.0",
+    "vitest": "^3.2.4",
+    "@types/node": "^24.4.0"
+  },
+  "license": "MIT"
+}
