@@ -27,6 +27,8 @@ export default defineConfig({
     // clarinet handles test isolation by resetting the simnet between tests
     isolate: false,
     maxWorkers: 1,
+    // Only run Clarity contract tests from root; packages have their own configs
+    include: ["tests/**/*.test.ts"],
     setupFiles: [
       vitestSetupFilePath,
       // custom setup files can be added here
