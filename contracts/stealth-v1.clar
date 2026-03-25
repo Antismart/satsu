@@ -244,7 +244,7 @@
     (asserts!
       (and
         (is-some existing)
-        (is-eq (get owner (unwrap-panic existing)) tx-sender)
+        (is-eq (get owner (unwrap! existing ERR-NOT-AUTHORIZED)) tx-sender)
       )
       ERR-NOT-AUTHORIZED
     )

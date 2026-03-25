@@ -548,7 +548,7 @@ describe("pool-v1 contract", () => {
       );
     });
 
-    it("should reject withdrawal if relayer-fee exceeds denomination (runtime underflow)", () => {
+    it("should reject withdrawal if relayer-fee exceeds denomination (err u1002)", () => {
       authorizePool();
       mintSbtc(MINT_AMOUNT, wallet1);
       approvePool(wallet1, POOL_DENOMINATION);
@@ -557,22 +557,21 @@ describe("pool-v1 contract", () => {
       const root = getCurrentRootHex();
       const excessiveFee = POOL_DENOMINATION + 1;
 
-      // The contract computes (- POOL-DENOMINATION relayer-fee) in a let binding
-      // before the assert, causing an arithmetic underflow runtime error
-      expect(() =>
-        withdraw(
-          DUMMY_PROOF,
-          NULLIFIER_1,
-          root,
-          wallet2,
-          EPHEMERAL_PUBKEY,
-          excessiveFee,
-          wallet3,
-        ),
-      ).toThrow();
+      // The contract validates relayer-fee < POOL-DENOMINATION before
+      // computing the subtraction, returning ERR-INVALID-AMOUNT (u1002)
+      const result = withdraw(
+        DUMMY_PROOF,
+        NULLIFIER_1,
+        root,
+        wallet2,
+        EPHEMERAL_PUBKEY,
+        excessiveFee,
+        wallet3,
+      );
+      expect(result.result).toBeErr(Cl.uint(1002));
     });
 
-    it("should reject relayer-fee equal to denomination (ft-transfer fails for 0 amount)", () => {
+    it("should reject relayer-fee equal to denomination (err u1002)", () => {
       authorizePool();
       mintSbtc(MINT_AMOUNT, wallet1);
       approvePool(wallet1, POOL_DENOMINATION);
@@ -580,8 +579,8 @@ describe("pool-v1 contract", () => {
 
       const root = getCurrentRootHex();
 
-      // relayer-fee == denomination means recipient-amount = 0
-      // ft-transfer? with amount 0 fails, so withdrawal fails with ERR-TRANSFER-FAILED
+      // relayer-fee == denomination is rejected by the strict less-than check
+      // to ensure recipient always receives a non-zero amount
       const result = withdraw(
         DUMMY_PROOF,
         NULLIFIER_1,
@@ -591,7 +590,7 @@ describe("pool-v1 contract", () => {
         POOL_DENOMINATION,
         wallet3,
       );
-      expect(result.result).toBeErr(Cl.uint(1007));
+      expect(result.result).toBeErr(Cl.uint(1002));
     });
 
     it("should allow zero relayer-fee (no fee transfer)", () => {

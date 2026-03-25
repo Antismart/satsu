@@ -6,16 +6,14 @@
 
 ;; Error codes
 (define-constant ERR-NOT-AUTHORIZED (err u5001))
-(define-constant ERR-INSUFFICIENT-BALANCE (err u5002))
-(define-constant ERR-INSUFFICIENT-ALLOWANCE (err u5003))
 
 ;; SIP-010 trait implementation
 (define-fungible-token sbtc)
 
 ;; Token metadata
-(define-data-var token-name (string-ascii 32) "sBTC")
-(define-data-var token-symbol (string-ascii 10) "sBTC")
-(define-data-var token-uri (optional (string-utf8 256)) none)
+(define-constant TOKEN-NAME "sBTC")
+(define-constant TOKEN-SYMBOL "sBTC")
+(define-constant TOKEN-URI none)
 (define-constant TOKEN-DECIMALS u8)
 
 ;; Allowance map (for pool contract approval pattern)
@@ -43,11 +41,11 @@
 )
 
 (define-read-only (get-name)
-  (ok (var-get token-name))
+  (ok TOKEN-NAME)
 )
 
 (define-read-only (get-symbol)
-  (ok (var-get token-symbol))
+  (ok TOKEN-SYMBOL)
 )
 
 (define-read-only (get-decimals)
@@ -63,7 +61,7 @@
 )
 
 (define-read-only (get-token-uri)
-  (ok (var-get token-uri))
+  (ok TOKEN-URI)
 )
 
 ;; Allowance functions (for pool approval pattern)

@@ -24,15 +24,15 @@
 ;; ============================================================================
 
 ;; Error codes (6000s range - proof-verifier module)
-(define-constant ERR-INVALID-PROOF (err u6001))
-(define-constant ERR-INVALID-PROOF-LENGTH (err u6002))
-(define-constant ERR-DESERIALIZATION-FAILED (err u6003))
-(define-constant ERR-FRI-VERIFICATION-FAILED (err u6004))
-(define-constant ERR-CONSTRAINT-CHECK-FAILED (err u6005))
-(define-constant ERR-MERKLE-AUTH-FAILED (err u6006))
+;; In the production STARK verifier, these errors will be used during
+;; deserialization, FRI verification, constraint checking, and Merkle
+;; authentication. They are omitted from the mock to avoid unused warnings.
+;; Reserved codes: u6001 (invalid proof), u6002 (invalid proof length),
+;; u6003 (deserialization failed), u6004 (FRI verification failed),
+;; u6005 (constraint check failed), u6006 (Merkle auth failed).
 
 ;; ============================================================================
-;; Public functions
+;; Read-only functions
 ;; ============================================================================
 
 ;; verify-proof - Verify a STARK proof against public inputs
@@ -55,11 +55,11 @@
 ;;
 ;; Returns: (ok true) if the proof is valid
 ;; Errors:  ERR-INVALID-PROOF (u6001) if verification fails
-(define-public (verify-proof
-    (proof (buff 2048))
-    (nullifier (buff 32))
-    (root (buff 32))
-    (recipient principal)
-    (relayer-fee uint))
+(define-read-only (verify-proof
+    (proof_ (buff 2048))
+    (nullifier_ (buff 32))
+    (root_ (buff 32))
+    (recipient_ principal)
+    (relayer-fee_ uint))
   (ok true)
 )

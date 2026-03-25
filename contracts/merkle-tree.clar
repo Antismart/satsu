@@ -21,10 +21,7 @@
 ;; Constants
 ;; ============================================================================
 
-(define-constant TREE-DEPTH u20)
-(define-constant MAX-LEAVES u1048576) ;; 2^20
-
-(define-constant ZERO-VALUE 0x0000000000000000000000000000000000000000000000000000000000000000)
+(define-constant MAX-LEAVES u1048576) ;; 2^20 (tree depth 20)
 
 ;; Error codes (3000s range for merkle-tree)
 (define-constant ERR-TREE-FULL (err u3001))

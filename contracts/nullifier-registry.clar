@@ -48,8 +48,11 @@
 ;; ============================================================================
 
 ;; Check whether the caller is the contract owner (deployer).
+;; Uses both tx-sender and contract-caller to prevent a malicious
+;; intermediary contract from invoking admin functions while the
+;; deployer is the original tx-sender.
 (define-private (is-contract-owner)
-  (is-eq tx-sender CONTRACT-OWNER)
+  (and (is-eq tx-sender CONTRACT-OWNER) (is-eq contract-caller CONTRACT-OWNER))
 )
 
 ;; Check whether the caller is the authorized pool contract or the deployer.

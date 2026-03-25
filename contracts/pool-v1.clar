@@ -29,13 +29,10 @@
 ;; Constants
 ;; ============================================================================
 
-(define-constant CONTRACT-OWNER tx-sender)
-
 ;; Fixed deposit denomination: 0.1 sBTC (10,000,000 satoshis)
 (define-constant POOL-DENOMINATION u10000000)
 
 ;; Error codes (1000s range - pool-v1 module)
-(define-constant ERR-NOT-AUTHORIZED (err u1001))
 (define-constant ERR-INVALID-AMOUNT (err u1002))
 (define-constant ERR-NULLIFIER-USED (err u1003))
 (define-constant ERR-INVALID-PROOF (err u1004))
@@ -43,6 +40,10 @@
 (define-constant ERR-TREE-FULL (err u1006))
 (define-constant ERR-TRANSFER-FAILED (err u1007))
 (define-constant ERR-DUPLICATE-COMMITMENT (err u1008))
+(define-constant ERR-INVALID-COMMITMENT (err u1009))
+
+;; 32-byte zero buffer for commitment validation
+(define-constant ZERO-COMMITMENT 0x0000000000000000000000000000000000000000000000000000000000000000)
 
 ;; ============================================================================
 ;; State
@@ -78,11 +79,15 @@
       (pool-address (as-contract tx-sender))
     )
 
-    ;; 1. Verify commitment has not been used before
+    ;; 1. Reject the zero commitment -- it is trivially guessable and would
+    ;;    allow an attacker to withdraw without knowing a real secret.
+    (asserts! (not (is-eq commitment ZERO-COMMITMENT)) ERR-INVALID-COMMITMENT)
+
+    ;; 2. Verify commitment has not been used before
     (asserts! (is-none (map-get? deposit-commitments { commitment: commitment }))
               ERR-DUPLICATE-COMMITMENT)
 
-    ;; 2. Transfer POOL-DENOMINATION sBTC from source to this contract
+    ;; 3. Transfer POOL-DENOMINATION sBTC from source to this contract
     (unwrap! (contract-call? .sbtc-token transfer
                POOL-DENOMINATION
                source
@@ -90,7 +95,7 @@
                none)
              ERR-TRANSFER-FAILED)
 
-    ;; 3. Append commitment to the Merkle tree
+    ;; 4. Append commitment to the Merkle tree
     (let
       (
         (tree-result (unwrap! (contract-call? .merkle-tree append-leaf commitment)
@@ -99,13 +104,13 @@
         (leaf-index (get leaf-index tree-result))
       )
 
-      ;; 4. Store commitment metadata
+      ;; 5. Store commitment metadata
       (map-set deposit-commitments
         { commitment: commitment }
         { amount: POOL-DENOMINATION, block-height: stacks-block-height }
       )
 
-      ;; 5. Emit event for off-chain indexing
+      ;; 6. Emit event for off-chain indexing
       (print {
         event: "deposit",
         commitment: commitment,
@@ -115,7 +120,7 @@
         source: source
       })
 
-      ;; 6. Return new root and leaf index
+      ;; 7. Return new root and leaf index
       (ok { root: new-root, leaf-index: leaf-index })
     )
   )
@@ -151,61 +156,74 @@
   (let
     (
       (relayer tx-sender)
-      (recipient-amount (- POOL-DENOMINATION relayer-fee))
     )
 
-    ;; 0. Sanity check: relayer fee must not exceed the denomination
-    (asserts! (<= relayer-fee POOL-DENOMINATION) ERR-INVALID-AMOUNT)
+    ;; 0. Validate relayer fee before arithmetic to prevent underflow.
+    ;; The fee must be strictly less than the denomination so the recipient
+    ;; always receives a non-zero amount. A fee equal to POOL-DENOMINATION
+    ;; would send the recipient nothing, which is economically nonsensical
+    ;; and could be used to grief relayer-assisted withdrawals.
+    (asserts! (< relayer-fee POOL-DENOMINATION) ERR-INVALID-AMOUNT)
 
-    ;; 1. Verify root is a known historical root
-    (asserts! (contract-call? .merkle-tree is-known-root root) ERR-INVALID-ROOT)
+    ;; Safe to compute after the bounds check above.
+    (let
+      (
+        (recipient-amount (- POOL-DENOMINATION relayer-fee))
+      )
 
-    ;; 2. Verify nullifier has not been used
-    (asserts! (not (contract-call? .nullifier-registry is-nullifier-used nullifier))
-              ERR-NULLIFIER-USED)
+      ;; 1. Verify root is a known historical root
+      (asserts! (contract-call? .merkle-tree is-known-root root) ERR-INVALID-ROOT)
 
-    ;; 3. Verify the ZK proof against public inputs
-    (asserts! (unwrap! (contract-call? .proof-verifier verify-proof
-                         proof nullifier root recipient relayer-fee)
-                       ERR-INVALID-PROOF)
-              ERR-INVALID-PROOF)
+      ;; 2. Verify nullifier has not been used (checked before mark-used to
+      ;;    fail fast; Clarity has no reentrancy so the gap is safe)
+      (asserts! (not (contract-call? .nullifier-registry is-nullifier-used nullifier))
+                ERR-NULLIFIER-USED)
 
-    ;; 4. Mark nullifier as used (prevents double-spend)
-    (unwrap! (contract-call? .nullifier-registry mark-used nullifier)
-             ERR-NULLIFIER-USED)
+      ;; 3. Verify the ZK proof against public inputs.
+      ;; The proof binds to (nullifier, root, recipient, relayer-fee) so a
+      ;; front-runner cannot alter recipient or fee without invalidating it.
+      (asserts! (unwrap! (contract-call? .proof-verifier verify-proof
+                           proof nullifier root recipient relayer-fee)
+                         ERR-INVALID-PROOF)
+                ERR-INVALID-PROOF)
 
-    ;; 5. Transfer sBTC from this contract to the recipient
-    (unwrap! (as-contract (contract-call? .sbtc-token transfer
-               recipient-amount
-               tx-sender
-               recipient
-               none))
-             ERR-TRANSFER-FAILED)
+      ;; 4. Mark nullifier as used (prevents double-spend)
+      (unwrap! (contract-call? .nullifier-registry mark-used nullifier)
+               ERR-NULLIFIER-USED)
 
-    ;; 6. Transfer relayer fee if non-zero
-    (if (> relayer-fee u0)
+      ;; 5. Transfer sBTC from this contract to the recipient
       (unwrap! (as-contract (contract-call? .sbtc-token transfer
-                 relayer-fee
+                 recipient-amount
                  tx-sender
-                 relayer
+                 recipient
                  none))
                ERR-TRANSFER-FAILED)
-      true
+
+      ;; 6. Transfer relayer fee if non-zero
+      (if (> relayer-fee u0)
+        (unwrap! (as-contract (contract-call? .sbtc-token transfer
+                   relayer-fee
+                   tx-sender
+                   relayer
+                   none))
+                 ERR-TRANSFER-FAILED)
+        true
+      )
+
+      ;; 7. Emit event for off-chain indexing
+      (print {
+        event: "withdrawal",
+        nullifier: nullifier,
+        recipient: recipient,
+        ephemeral-pubkey: ephemeral-pubkey,
+        relayer: relayer,
+        relayer-fee: relayer-fee,
+        amount: recipient-amount
+      })
+
+      ;; 8. Return the spent nullifier
+      (ok { nullifier: nullifier })
     )
-
-    ;; 7. Emit event for off-chain indexing
-    (print {
-      event: "withdrawal",
-      nullifier: nullifier,
-      recipient: recipient,
-      ephemeral-pubkey: ephemeral-pubkey,
-      relayer: relayer,
-      relayer-fee: relayer-fee,
-      amount: recipient-amount
-    })
-
-    ;; 8. Return the spent nullifier
-    (ok { nullifier: nullifier })
   )
 )
 
