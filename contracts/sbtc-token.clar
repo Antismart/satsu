@@ -1,4 +1,4 @@
-;; sbtc-token — Mock SIP-010 compliant sBTC token for devnet testing
+;; sbtc-token - Mock SIP-010 compliant sBTC token for devnet testing
 ;; This contract simulates the sBTC token for local development and testing.
 ;; On testnet/mainnet, the real sBTC contract address is used instead.
 
@@ -89,7 +89,7 @@
   (map-set allowances { owner: owner, spender: spender } { amount: amount })
 )
 
-;; Mint function (devnet only — for testing)
+;; Mint function (devnet only - for testing)
 (define-public (mint (amount uint) (recipient principal))
   (begin
     (asserts! (is-eq tx-sender CONTRACT-OWNER) ERR-NOT-AUTHORIZED)

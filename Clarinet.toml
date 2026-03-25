@@ -7,35 +7,43 @@ cache_dir = "./.cache"
 
 [contracts.merkle-tree]
 path = "contracts/merkle-tree.clar"
-epoch = "latest"
+epoch = "3.0"
+clarity_version = 3
 
 [contracts.nullifier-registry]
 path = "contracts/nullifier-registry.clar"
-epoch = "latest"
+epoch = "3.0"
+clarity_version = 3
 
 [contracts.stealth-v1]
 path = "contracts/stealth-v1.clar"
-epoch = "latest"
+epoch = "3.0"
+clarity_version = 3
 
 [contracts.pool-trait]
 path = "contracts/traits/pool-trait.clar"
-epoch = "latest"
+epoch = "3.0"
+clarity_version = 3
 
 [contracts.verifier-trait]
 path = "contracts/traits/verifier-trait.clar"
-epoch = "latest"
+epoch = "3.0"
+clarity_version = 3
 
 [contracts.proof-verifier]
 path = "contracts/proof-verifier.clar"
-epoch = "latest"
+epoch = "3.0"
+clarity_version = 3
 
 [contracts.sbtc-token]
 path = "contracts/sbtc-token.clar"
-epoch = "latest"
+epoch = "3.0"
+clarity_version = 3
 
 [contracts.pool-v1]
 path = "contracts/pool-v1.clar"
-epoch = "latest"
+epoch = "3.0"
+clarity_version = 3
 
 [repl.analysis]
 passes = ["check_checker"]
