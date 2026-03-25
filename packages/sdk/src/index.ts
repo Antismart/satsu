@@ -92,6 +92,30 @@ export type {
 } from './relayer/client.js';
 
 // ---------------------------------------------------------------------------
+// Proof — circuit, witness, prover
+// ---------------------------------------------------------------------------
+
+export {
+  validatePublicInputs,
+  validatePrivateInputs,
+  CIRCUIT_CONSTRAINTS,
+  CIRCUIT_INFO,
+} from './proof/circuit.js';
+export type { PublicInputs, PrivateInputs, CircuitConstraint } from './proof/circuit.js';
+
+export { generateWitness } from './proof/witness.js';
+export type { Witness } from './proof/witness.js';
+
+export {
+  generateWithdrawalProof,
+  serializeProof,
+  deserializeProof,
+  verifyProofLocally,
+  computeChallenge,
+} from './proof/prover.js';
+export type { StarkProof, ProofData } from './proof/prover.js';
+
+// ---------------------------------------------------------------------------
 // Utils
 // ---------------------------------------------------------------------------
 

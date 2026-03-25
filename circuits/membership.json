@@ -1,0 +1,109 @@
+{
+  "name": "satsu-membership-v1",
+  "version": "1.0.0",
+  "description": "Merkle membership proof for Satsu privacy pool. Proves knowledge of a commitment pre-image (secret, nullifier, amount) that is a leaf in the Merkle tree with a stated root, and that sha256(nullifier) equals the revealed nullifierHash.",
+  "hashFunction": "sha256",
+  "treeDepth": 20,
+  "proofPathLength": 19,
+  "maxProofBytes": 2048,
+  "privateInputs": [
+    {
+      "name": "secret",
+      "type": "bytes",
+      "size": 32,
+      "description": "Random secret; pre-image component of the commitment."
+    },
+    {
+      "name": "nullifier",
+      "type": "bytes",
+      "size": 32,
+      "description": "Random nullifier; its hash is revealed at withdrawal for double-spend prevention."
+    },
+    {
+      "name": "amount",
+      "type": "uint128",
+      "encoding": "big-endian",
+      "size": 16,
+      "description": "Deposit amount in micro-sBTC, encoded as 16-byte big-endian uint128 to match Clarity's native uint representation."
+    },
+    {
+      "name": "leafIndex",
+      "type": "uint32",
+      "description": "Position of the commitment leaf in the Merkle tree (0-indexed)."
+    },
+    {
+      "name": "merklePathElements",
+      "type": "bytes[]",
+      "elementSize": 32,
+      "length": 19,
+      "description": "Sibling hashes along the authentication path from leaf to root."
+    },
+    {
+      "name": "merklePathIndices",
+      "type": "bit[]",
+      "length": 19,
+      "description": "Direction bits for each step: 0 = current is left child, 1 = current is right child."
+    }
+  ],
+  "publicInputs": [
+    {
+      "name": "nullifierHash",
+      "type": "bytes",
+      "size": 32,
+      "computation": "sha256(nullifier)",
+      "description": "Hash of the nullifier, revealed on-chain for double-spend prevention."
+    },
+    {
+      "name": "root",
+      "type": "bytes",
+      "size": 32,
+      "description": "Merkle root of the commitment tree at the time of withdrawal."
+    },
+    {
+      "name": "recipient",
+      "type": "principal",
+      "description": "Stacks address receiving the withdrawal. Bound to prevent front-running."
+    },
+    {
+      "name": "relayerFee",
+      "type": "uint128",
+      "description": "Fee paid to the relayer. Bound to prevent fee manipulation."
+    }
+  ],
+  "constraints": [
+    {
+      "name": "commitment_preimage",
+      "expression": "commitment = sha256(secret || nullifier || amount_be128)",
+      "description": "The commitment is correctly formed from the secret, nullifier, and amount."
+    },
+    {
+      "name": "nullifier_hash",
+      "expression": "nullifierHash == sha256(nullifier)",
+      "description": "The revealed nullifier hash matches the private nullifier value."
+    },
+    {
+      "name": "merkle_membership",
+      "expression": "merkle_verify(commitment, merklePathElements, merklePathIndices) == root",
+      "description": "The commitment leaf is in the Merkle tree with the stated root."
+    },
+    {
+      "name": "public_input_binding",
+      "expression": "challenge = sha256(nullifierHash || root || recipient || relayerFee)",
+      "description": "Public inputs are bound to the proof via a Fiat-Shamir challenge, preventing front-running and fee manipulation."
+    }
+  ],
+  "proofFormat": {
+    "description": "Serialized proof layout for on-chain verification.",
+    "maxBytes": 2048,
+    "fields": [
+      { "name": "version", "type": "uint8", "size": 1, "value": 1 },
+      { "name": "nullifierHash", "type": "bytes", "size": 32 },
+      { "name": "challengeHash", "type": "bytes", "size": 32 },
+      { "name": "responseHash", "type": "bytes", "size": 32 },
+      { "name": "pathLength", "type": "uint8", "size": 1 },
+      { "name": "merklePathElements", "type": "bytes[]", "elementSize": 32, "length": "pathLength" },
+      { "name": "merklePathIndices", "type": "packed_bits", "length": "pathLength" },
+      { "name": "padding", "type": "zeros", "size": "remaining" }
+    ]
+  }
+}
