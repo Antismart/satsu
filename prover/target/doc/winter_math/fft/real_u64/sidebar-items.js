@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["fft2_real","fft4_real","ifft2_real_unreduced","ifft4_real_unreduced"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"attr":["maybe_async","maybe_async_trait"],"macro":["maybe_await"]};

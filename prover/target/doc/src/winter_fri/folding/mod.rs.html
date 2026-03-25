@@ -1,0 +1,189 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/Users/onchainchef/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/winter-fri-0.11.0/src/folding/mod.rs`."><title>mod.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-77263533.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="winter_fri" data-themes="" data-resource-suffix="" data-rustdoc-version="1.94.0 (4a4ef493e 2026-03-02)" data-channel="1.94.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-b897f86f.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-7bab91a1.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-ffcac47a.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">winter_fri/folding/</div>mod.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// Copyright (c) Facebook, Inc. and its affiliates.
+<a href=#2 id=2 data-nosnippet>2</a>//
+<a href=#3 id=3 data-nosnippet>3</a>// This source code is licensed under the MIT license found in the
+<a href=#4 id=4 data-nosnippet>4</a>// LICENSE file in the root directory of this source tree.
+<a href=#5 id=5 data-nosnippet>5</a>
+<a href=#6 id=6 data-nosnippet>6</a></span><span class="doccomment">//! Contains functions for folding FRI layers.
+<a href=#7 id=7 data-nosnippet>7</a>//!
+<a href=#8 id=8 data-nosnippet>8</a>//! This module is exposed publicly primarily for benchmarking and documentation purposes. The
+<a href=#9 id=9 data-nosnippet>9</a>//! functions contained here are not intended to be used by the end-user of the crate.
+<a href=#10 id=10 data-nosnippet>10</a>
+<a href=#11 id=11 data-nosnippet>11</a></span><span class="kw">use </span>alloc::vec::Vec;
+<a href=#12 id=12 data-nosnippet>12</a>
+<a href=#13 id=13 data-nosnippet>13</a><span class="kw">use </span>math::{
+<a href=#14 id=14 data-nosnippet>14</a>    fft::{get_inv_twiddles, serial_fft},
+<a href=#15 id=15 data-nosnippet>15</a>    get_power_series_with_offset, polynom, FieldElement, StarkField,
+<a href=#16 id=16 data-nosnippet>16</a>};
+<a href=#17 id=17 data-nosnippet>17</a><span class="attr">#[cfg(feature = <span class="string">"concurrent"</span>)]
+<a href=#18 id=18 data-nosnippet>18</a></span><span class="kw">use </span>utils::iterators::<span class="kw-2">*</span>;
+<a href=#19 id=19 data-nosnippet>19</a><span class="kw">use </span>utils::{iter_mut, uninit_vector};
+<a href=#20 id=20 data-nosnippet>20</a>
+<a href=#21 id=21 data-nosnippet>21</a><span class="comment">// DEGREE-RESPECTING PROJECTION
+<a href=#22 id=22 data-nosnippet>22</a>// ================================================================================================
+<a href=#23 id=23 data-nosnippet>23</a></span><span class="doccomment">/// Applies degree-respecting projection to evaluations of a polynomial.
+<a href=#24 id=24 data-nosnippet>24</a>///
+<a href=#25 id=25 data-nosnippet>25</a>/// This process reduces the  degree of the polynomial implied by the `evaluations` by `N`.
+<a href=#26 id=26 data-nosnippet>26</a>/// For example, for `N` = 4, this is equivalent to the following:
+<a href=#27 id=27 data-nosnippet>27</a>/// - Let `evaluations` contain the evaluations of polynomial *f*(x) of degree *k*.
+<a href=#28 id=28 data-nosnippet>28</a>/// - Group coefficients of *f* so that *f*(x) = a(x) + x * b(x) + x^2 * c(x) + x^3 * d(x)
+<a href=#29 id=29 data-nosnippet>29</a>/// - Compute random linear combination of polynomials a, b, c, d as
+<a href=#30 id=30 data-nosnippet>30</a>///   *f'*(x) = a + α * b + α^2 * c + α^3 * d, where α is an element drawn uniformly at random from
+<a href=#31 id=31 data-nosnippet>31</a>///   the entire field.
+<a href=#32 id=32 data-nosnippet>32</a>/// - evaluate f'(x) on a domain which consists of x^4 from the original domain (and thus is
+<a href=#33 id=33 data-nosnippet>33</a>///   1/4 the size).
+<a href=#34 id=34 data-nosnippet>34</a>///
+<a href=#35 id=35 data-nosnippet>35</a>/// However, the reduction is performed without converting the polynomials into coefficient form.
+<a href=#36 id=36 data-nosnippet>36</a>/// That is, we can go directly form evaluations to folded evaluations. For this, for each
+<a href=#37 id=37 data-nosnippet>37</a>/// evaluation in the folded domain, we need `N` evaluations in the source domain. For example,
+<a href=#38 id=38 data-nosnippet>38</a>/// for the case of `N` = 4, to compute the evaluation of *f'*(x) we need to have evaluations of
+<a href=#39 id=39 data-nosnippet>39</a>/// *f*(x) from the source domain at x^{1/4}, x^{2/4}, x^{3/4}, x.
+<a href=#40 id=40 data-nosnippet>40</a>///
+<a href=#41 id=41 data-nosnippet>41</a>/// This function expect the `evaluations` to be already in a transposed form such that all
+<a href=#42 id=42 data-nosnippet>42</a>/// evaluations needed to compute a single evaluation in the folded domain are next to each other.
+<a href=#43 id=43 data-nosnippet>43</a>///
+<a href=#44 id=44 data-nosnippet>44</a>/// The example below shows the equivalence of performing the projection via coefficient form and
+<a href=#45 id=45 data-nosnippet>45</a>/// via evaluation form for `N` = 2.
+<a href=#46 id=46 data-nosnippet>46</a>/// ```
+<a href=#47 id=47 data-nosnippet>47</a>/// # use math::{StarkField, FieldElement, fields::f128::BaseElement, get_power_series_with_offset, polynom};
+<a href=#48 id=48 data-nosnippet>48</a>/// # use rand_utils::{rand_value, rand_vector};
+<a href=#49 id=49 data-nosnippet>49</a>/// # use utils::transpose_slice;
+<a href=#50 id=50 data-nosnippet>50</a>/// # use winter_fri::folding::apply_drp;
+<a href=#51 id=51 data-nosnippet>51</a>/// // generate random alpha
+<a href=#52 id=52 data-nosnippet>52</a>/// let alpha: BaseElement = rand_value();
+<a href=#53 id=53 data-nosnippet>53</a>///
+<a href=#54 id=54 data-nosnippet>54</a>/// // degree 7 polynomial f(x)
+<a href=#55 id=55 data-nosnippet>55</a>/// let poly: Vec&lt;BaseElement&gt; = rand_vector(8);
+<a href=#56 id=56 data-nosnippet>56</a>///
+<a href=#57 id=57 data-nosnippet>57</a>/// // f'(x) = g(x) + alpha * h(x) such that g(x) consists of even coefficients of f(x) and h(x)
+<a href=#58 id=58 data-nosnippet>58</a>/// // consists of odd coefficients of f(x). This is equivalent to using `folding_factor = 2`.
+<a href=#59 id=59 data-nosnippet>59</a>/// let mut folded_poly = Vec::new();
+<a href=#60 id=60 data-nosnippet>60</a>/// for i in 0..poly.len() / 2 {
+<a href=#61 id=61 data-nosnippet>61</a>///     folded_poly.push(poly[2 * i] + alpha * poly[2 * i + 1]);
+<a href=#62 id=62 data-nosnippet>62</a>/// }
+<a href=#63 id=63 data-nosnippet>63</a>///
+<a href=#64 id=64 data-nosnippet>64</a>/// // build a domain of 32 elements
+<a href=#65 id=65 data-nosnippet>65</a>/// let n = 32_usize;
+<a href=#66 id=66 data-nosnippet>66</a>/// let offset = BaseElement::GENERATOR;
+<a href=#67 id=67 data-nosnippet>67</a>/// let g = BaseElement::get_root_of_unity(n.trailing_zeros());
+<a href=#68 id=68 data-nosnippet>68</a>/// let domain = get_power_series_with_offset(g, offset, n);
+<a href=#69 id=69 data-nosnippet>69</a>///
+<a href=#70 id=70 data-nosnippet>70</a>/// // build a folded domain of half the size, such that x in the source domain maps to
+<a href=#71 id=71 data-nosnippet>71</a>/// // x^2 in the folded domain.
+<a href=#72 id=72 data-nosnippet>72</a>/// let g = BaseElement::get_root_of_unity((n / 2).trailing_zeros());
+<a href=#73 id=73 data-nosnippet>73</a>/// let folded_domain = get_power_series_with_offset(g, offset.exp(2), n / 2);
+<a href=#74 id=74 data-nosnippet>74</a>///
+<a href=#75 id=75 data-nosnippet>75</a>/// // evaluate the polynomials over their respective domains
+<a href=#76 id=76 data-nosnippet>76</a>/// let evaluations = polynom::eval_many(&amp;poly, &amp;domain);
+<a href=#77 id=77 data-nosnippet>77</a>/// let folded_evaluations = polynom::eval_many(&amp;folded_poly, &amp;folded_domain);
+<a href=#78 id=78 data-nosnippet>78</a>///
+<a href=#79 id=79 data-nosnippet>79</a>/// // use DRP to perform folding without converting polynomials into coefficient form
+<a href=#80 id=80 data-nosnippet>80</a>/// let transposed_evaluations = transpose_slice::&lt;BaseElement, 2&gt;(&amp;evaluations);
+<a href=#81 id=81 data-nosnippet>81</a>/// let drp_evaluations = apply_drp(&amp;transposed_evaluations, offset, alpha);
+<a href=#82 id=82 data-nosnippet>82</a>///
+<a href=#83 id=83 data-nosnippet>83</a>/// // applying DRP should be equivalent to folding polynomials in coefficient form
+<a href=#84 id=84 data-nosnippet>84</a>/// assert_eq!(folded_evaluations, drp_evaluations);
+<a href=#85 id=85 data-nosnippet>85</a>/// ```
+<a href=#86 id=86 data-nosnippet>86</a></span><span class="kw">pub fn </span>apply_drp&lt;B, E, <span class="kw">const </span>N: usize&gt;(values: <span class="kw-2">&amp;</span>[[E; N]], domain_offset: B, alpha: E) -&gt; Vec&lt;E&gt;
+<a href=#87 id=87 data-nosnippet>87</a><span class="kw">where
+<a href=#88 id=88 data-nosnippet>88</a>    </span>B: StarkField,
+<a href=#89 id=89 data-nosnippet>89</a>    E: FieldElement&lt;BaseField = B&gt;,
+<a href=#90 id=90 data-nosnippet>90</a>{
+<a href=#91 id=91 data-nosnippet>91</a>    <span class="comment">// build offset inverses and twiddles used during polynomial interpolation
+<a href=#92 id=92 data-nosnippet>92</a>    </span><span class="kw">let </span>inv_offsets = get_inv_offsets(values.len(), domain_offset, N);
+<a href=#93 id=93 data-nosnippet>93</a>    <span class="kw">let </span>inv_twiddles = get_inv_twiddles::&lt;B&gt;(N);
+<a href=#94 id=94 data-nosnippet>94</a>    <span class="kw">let </span>len_offset = E::inv((N <span class="kw">as </span>u32).into());
+<a href=#95 id=95 data-nosnippet>95</a>
+<a href=#96 id=96 data-nosnippet>96</a>    <span class="kw">let </span><span class="kw-2">mut </span>result = <span class="kw">unsafe </span>{ uninit_vector(values.len()) };
+<a href=#97 id=97 data-nosnippet>97</a>    <span class="macro">iter_mut!</span>(result)
+<a href=#98 id=98 data-nosnippet>98</a>        .zip(values)
+<a href=#99 id=99 data-nosnippet>99</a>        .zip(inv_offsets)
+<a href=#100 id=100 data-nosnippet>100</a>        .for_each(|((result, values), domain_offset)| {
+<a href=#101 id=101 data-nosnippet>101</a>            <span class="comment">// interpolate the values into a polynomial; this is similar to interpolation with
+<a href=#102 id=102 data-nosnippet>102</a>            // offset implemented in math::fft module
+<a href=#103 id=103 data-nosnippet>103</a>            </span><span class="kw">let </span><span class="kw-2">mut </span>poly = <span class="kw-2">*</span>values;
+<a href=#104 id=104 data-nosnippet>104</a>            serial_fft(<span class="kw-2">&amp;mut </span>poly, <span class="kw-2">&amp;</span>inv_twiddles);
+<a href=#105 id=105 data-nosnippet>105</a>
+<a href=#106 id=106 data-nosnippet>106</a>            <span class="kw">let </span><span class="kw-2">mut </span>offset = len_offset;
+<a href=#107 id=107 data-nosnippet>107</a>            <span class="kw">let </span>domain_offset = E::from(domain_offset);
+<a href=#108 id=108 data-nosnippet>108</a>            <span class="kw">for </span>coeff <span class="kw">in </span>poly.iter_mut() {
+<a href=#109 id=109 data-nosnippet>109</a>                <span class="kw-2">*</span>coeff <span class="kw-2">*</span>= offset;
+<a href=#110 id=110 data-nosnippet>110</a>                offset <span class="kw-2">*</span>= domain_offset;
+<a href=#111 id=111 data-nosnippet>111</a>            }
+<a href=#112 id=112 data-nosnippet>112</a>
+<a href=#113 id=113 data-nosnippet>113</a>            <span class="comment">// evaluate the polynomial at alpha, and save the result
+<a href=#114 id=114 data-nosnippet>114</a>            </span><span class="kw-2">*</span>result = polynom::eval(<span class="kw-2">&amp;</span>poly, alpha)
+<a href=#115 id=115 data-nosnippet>115</a>        });
+<a href=#116 id=116 data-nosnippet>116</a>
+<a href=#117 id=117 data-nosnippet>117</a>    result
+<a href=#118 id=118 data-nosnippet>118</a>}
+<a href=#119 id=119 data-nosnippet>119</a>
+<a href=#120 id=120 data-nosnippet>120</a><span class="comment">// POSITION FOLDING
+<a href=#121 id=121 data-nosnippet>121</a>// ================================================================================================
+<a href=#122 id=122 data-nosnippet>122</a></span><span class="doccomment">/// Maps positions in the source domain, to positions in the folded domain.
+<a href=#123 id=123 data-nosnippet>123</a>///
+<a href=#124 id=124 data-nosnippet>124</a>/// The size of the folded domain is reduced by the `folding_factor` as compared to the size of the
+<a href=#125 id=125 data-nosnippet>125</a>/// source domain. Thus, the original positions may fall outside of the folded domain. To map
+<a href=#126 id=126 data-nosnippet>126</a>/// positions in the source domain to positions in the folded domain, we simply compute
+<a href=#127 id=127 data-nosnippet>127</a>/// `new_position = old_position % folded_domain_size` and discard duplicates.
+<a href=#128 id=128 data-nosnippet>128</a>///
+<a href=#129 id=129 data-nosnippet>129</a>/// ```
+<a href=#130 id=130 data-nosnippet>130</a>/// # use winter_fri::folding::fold_positions;
+<a href=#131 id=131 data-nosnippet>131</a>/// let positions = [1, 9, 12, 20];
+<a href=#132 id=132 data-nosnippet>132</a>/// let folded_positions = fold_positions(&amp;positions, 32, 4);
+<a href=#133 id=133 data-nosnippet>133</a>///
+<a href=#134 id=134 data-nosnippet>134</a>/// // 1 and 9 should map to 1; 12 and 20 should map to 4
+<a href=#135 id=135 data-nosnippet>135</a>/// assert_eq!(vec![1, 4], folded_positions);
+<a href=#136 id=136 data-nosnippet>136</a>/// ```
+<a href=#137 id=137 data-nosnippet>137</a>///
+<a href=#138 id=138 data-nosnippet>138</a>/// The domains we usually work with have the following form: c, c * ω, c * ω^2, ..., c * ω^(*n*-1),
+<a href=#139 id=139 data-nosnippet>139</a>/// where *n* is the size of the domain, ω is *n*th root of unity, and c is the domain offset. Thus,
+<a href=#140 id=140 data-nosnippet>140</a>/// the procedure described above maps c * ω^*i* to (c * ω^*i*)^*k*, where *k* is the folding factor.
+<a href=#141 id=141 data-nosnippet>141</a>/// ```
+<a href=#142 id=142 data-nosnippet>142</a>/// # use math::{fields::f128::BaseElement, StarkField, FieldElement, get_power_series_with_offset};
+<a href=#143 id=143 data-nosnippet>143</a>/// // build a domain of size 32
+<a href=#144 id=144 data-nosnippet>144</a>/// let n = 32usize;
+<a href=#145 id=145 data-nosnippet>145</a>/// let c = BaseElement::GENERATOR;
+<a href=#146 id=146 data-nosnippet>146</a>/// let g = BaseElement::get_root_of_unity(n.trailing_zeros());
+<a href=#147 id=147 data-nosnippet>147</a>/// let source_domain = get_power_series_with_offset(g, c, n);
+<a href=#148 id=148 data-nosnippet>148</a>///
+<a href=#149 id=149 data-nosnippet>149</a>/// // build a domain of size 8 (folding_factor = 4)
+<a href=#150 id=150 data-nosnippet>150</a>/// let g = BaseElement::get_root_of_unity((n / 4).trailing_zeros());
+<a href=#151 id=151 data-nosnippet>151</a>/// let folded_domain = get_power_series_with_offset(g, c.exp(4_u32.into()), (n / 4));
+<a href=#152 id=152 data-nosnippet>152</a>///
+<a href=#153 id=153 data-nosnippet>153</a>/// // position 1 in the source domain maps to position 1 in the folded domain
+<a href=#154 id=154 data-nosnippet>154</a>/// assert_eq!(folded_domain[1], source_domain[1].exp(4));
+<a href=#155 id=155 data-nosnippet>155</a>///
+<a href=#156 id=156 data-nosnippet>156</a>/// // position 9 in the source domain also maps to position 1 in the folded domain
+<a href=#157 id=157 data-nosnippet>157</a>/// assert_eq!(folded_domain[1], source_domain[9].exp(4));
+<a href=#158 id=158 data-nosnippet>158</a>/// ```
+<a href=#159 id=159 data-nosnippet>159</a></span><span class="kw">pub fn </span>fold_positions(
+<a href=#160 id=160 data-nosnippet>160</a>    positions: <span class="kw-2">&amp;</span>[usize],
+<a href=#161 id=161 data-nosnippet>161</a>    source_domain_size: usize,
+<a href=#162 id=162 data-nosnippet>162</a>    folding_factor: usize,
+<a href=#163 id=163 data-nosnippet>163</a>) -&gt; Vec&lt;usize&gt; {
+<a href=#164 id=164 data-nosnippet>164</a>    <span class="kw">let </span>target_domain_size = source_domain_size / folding_factor;
+<a href=#165 id=165 data-nosnippet>165</a>
+<a href=#166 id=166 data-nosnippet>166</a>    <span class="kw">let </span><span class="kw-2">mut </span>result = Vec::new();
+<a href=#167 id=167 data-nosnippet>167</a>    <span class="kw">for </span>position <span class="kw">in </span>positions {
+<a href=#168 id=168 data-nosnippet>168</a>        <span class="kw">let </span>position = position % target_domain_size;
+<a href=#169 id=169 data-nosnippet>169</a>        <span class="comment">// make sure we don't record duplicated values
+<a href=#170 id=170 data-nosnippet>170</a>        </span><span class="kw">if </span>!result.contains(<span class="kw-2">&amp;</span>position) {
+<a href=#171 id=171 data-nosnippet>171</a>            result.push(position);
+<a href=#172 id=172 data-nosnippet>172</a>        }
+<a href=#173 id=173 data-nosnippet>173</a>    }
+<a href=#174 id=174 data-nosnippet>174</a>
+<a href=#175 id=175 data-nosnippet>175</a>    result
+<a href=#176 id=176 data-nosnippet>176</a>}
+<a href=#177 id=177 data-nosnippet>177</a>
+<a href=#178 id=178 data-nosnippet>178</a><span class="comment">// HELPER FUNCTIONS
+<a href=#179 id=179 data-nosnippet>179</a>// ================================================================================================
+<a href=#180 id=180 data-nosnippet>180</a>
+<a href=#181 id=181 data-nosnippet>181</a></span><span class="kw">fn </span>get_inv_offsets&lt;B&gt;(domain_size: usize, domain_offset: B, folding_factor: usize) -&gt; Vec&lt;B&gt;
+<a href=#182 id=182 data-nosnippet>182</a><span class="kw">where
+<a href=#183 id=183 data-nosnippet>183</a>    </span>B: StarkField,
+<a href=#184 id=184 data-nosnippet>184</a>{
+<a href=#185 id=185 data-nosnippet>185</a>    <span class="kw">let </span>n = domain_size * folding_factor;
+<a href=#186 id=186 data-nosnippet>186</a>    <span class="kw">let </span>g = B::get_root_of_unity(n.ilog2());
+<a href=#187 id=187 data-nosnippet>187</a>    get_power_series_with_offset(g.inv(), domain_offset.inv(), domain_size)
+<a href=#188 id=188 data-nosnippet>188</a>}
+</code></pre></div></section></main></body></html>

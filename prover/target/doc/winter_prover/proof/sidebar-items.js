@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["ceil","log2","powf","sqrt"],"struct":["Commitments","Context","OodFrame","Proof","Queries","Table","TraceOodFrame"]};

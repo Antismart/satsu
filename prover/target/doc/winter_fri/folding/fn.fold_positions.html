@@ -1,0 +1,34 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Maps positions in the source domain, to positions in the folded domain."><title>fold_positions in winter_fri::folding - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-77263533.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="winter_fri" data-themes="" data-resource-suffix="" data-rustdoc-version="1.94.0 (4a4ef493e 2026-03-02)" data-channel="1.94.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-b897f86f.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="sidebar-items.js"></script><script defer src="../../static.files/main-7bab91a1.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-ffcac47a.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc fn"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><rustdoc-topbar><h2><a href="#">fold_positions</a></h2></rustdoc-topbar><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../winter_fri/index.html">winter_<wbr>fri</a><span class="version">0.11.0</span></h2></div><div class="sidebar-elems"><div id="rustdoc-modnav"><h2><a href="index.html">In winter_<wbr>fri::<wbr>folding</a></h2></div></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><div class="width-limiter"><section id="main-content" class="content"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="../index.html">winter_fri</a>::<wbr><a href="index.html">folding</a></div><h1>Function <span class="fn">fold_<wbr>positions</span>&nbsp;<button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../src/winter_fri/folding/mod.rs.html#159-176">Source</a> </span></div><pre class="rust item-decl"><code>pub fn fold_positions(
+    positions: &amp;[<a class="primitive" href="https://doc.rust-lang.org/1.94.0/std/primitive.usize.html">usize</a>],
+    source_domain_size: <a class="primitive" href="https://doc.rust-lang.org/1.94.0/std/primitive.usize.html">usize</a>,
+    folding_factor: <a class="primitive" href="https://doc.rust-lang.org/1.94.0/std/primitive.usize.html">usize</a>,
+) -&gt; <a class="struct" href="https://doc.rust-lang.org/1.94.0/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/1.94.0/std/primitive.usize.html">usize</a>&gt;</code></pre><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Maps positions in the source domain, to positions in the folded domain.</p>
+<p>The size of the folded domain is reduced by the <code>folding_factor</code> as compared to the size of the
+source domain. Thus, the original positions may fall outside of the folded domain. To map
+positions in the source domain to positions in the folded domain, we simply compute
+<code>new_position = old_position % folded_domain_size</code> and discard duplicates.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>positions = [<span class="number">1</span>, <span class="number">9</span>, <span class="number">12</span>, <span class="number">20</span>];
+<span class="kw">let </span>folded_positions = fold_positions(<span class="kw-2">&amp;</span>positions, <span class="number">32</span>, <span class="number">4</span>);
+
+<span class="comment">// 1 and 9 should map to 1; 12 and 20 should map to 4
+</span><span class="macro">assert_eq!</span>(<span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">4</span>], folded_positions);</code></pre></div>
+<p>The domains we usually work with have the following form: c, c * ω, c * ω^2, …, c * ω^(<em>n</em>-1),
+where <em>n</em> is the size of the domain, ω is <em>n</em>th root of unity, and c is the domain offset. Thus,
+the procedure described above maps c * ω^<em>i</em> to (c * ω^<em>i</em>)^<em>k</em>, where <em>k</em> is the folding factor.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="comment">// build a domain of size 32
+</span><span class="kw">let </span>n = <span class="number">32usize</span>;
+<span class="kw">let </span>c = BaseElement::GENERATOR;
+<span class="kw">let </span>g = BaseElement::get_root_of_unity(n.trailing_zeros());
+<span class="kw">let </span>source_domain = get_power_series_with_offset(g, c, n);
+
+<span class="comment">// build a domain of size 8 (folding_factor = 4)
+</span><span class="kw">let </span>g = BaseElement::get_root_of_unity((n / <span class="number">4</span>).trailing_zeros());
+<span class="kw">let </span>folded_domain = get_power_series_with_offset(g, c.exp(<span class="number">4_u32</span>.into()), (n / <span class="number">4</span>));
+
+<span class="comment">// position 1 in the source domain maps to position 1 in the folded domain
+</span><span class="macro">assert_eq!</span>(folded_domain[<span class="number">1</span>], source_domain[<span class="number">1</span>].exp(<span class="number">4</span>));
+
+<span class="comment">// position 9 in the source domain also maps to position 1 in the folded domain
+</span><span class="macro">assert_eq!</span>(folded_domain[<span class="number">1</span>], source_domain[<span class="number">9</span>].exp(<span class="number">4</span>));</code></pre></div></div></details></section></div></main></body></html>

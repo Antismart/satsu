@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["add","degree_of","div","eval","eval_many","interpolate","interpolate_batch","mul","mul_by_scalar","poly_from_roots","remove_leading_zeros","sub","syn_div","syn_div_in_place","syn_div_roots_in_place"]};

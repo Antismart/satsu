@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["add_in_place","batch_inversion","get_power_series","get_power_series_with_offset","mul_acc"],"mod":["fft","fields","polynom"],"trait":["ExtensibleField","ExtensionOf","FieldElement","StarkField","ToElements"]};

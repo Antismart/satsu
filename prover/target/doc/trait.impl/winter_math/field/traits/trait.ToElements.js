@@ -1,0 +1,9 @@
+(function() {
+    const implementors = Object.fromEntries([["winter_air",[["impl&lt;E: <a class=\"trait\" href=\"winter_math/field/traits/trait.StarkField.html\" title=\"trait winter_math::field::traits::StarkField\">StarkField</a>&gt; <a class=\"trait\" href=\"winter_math/field/traits/trait.ToElements.html\" title=\"trait winter_math::field::traits::ToElements\">ToElements</a>&lt;E&gt; for <a class=\"struct\" href=\"winter_air/proof/struct.Context.html\" title=\"struct winter_air::proof::Context\">Context</a>",0],["impl&lt;E: <a class=\"trait\" href=\"winter_math/field/traits/trait.StarkField.html\" title=\"trait winter_math::field::traits::StarkField\">StarkField</a>&gt; <a class=\"trait\" href=\"winter_math/field/traits/trait.ToElements.html\" title=\"trait winter_math::field::traits::ToElements\">ToElements</a>&lt;E&gt; for <a class=\"struct\" href=\"winter_air/struct.ProofOptions.html\" title=\"struct winter_air::ProofOptions\">ProofOptions</a>",0],["impl&lt;E: <a class=\"trait\" href=\"winter_math/field/traits/trait.StarkField.html\" title=\"trait winter_math::field::traits::StarkField\">StarkField</a>&gt; <a class=\"trait\" href=\"winter_math/field/traits/trait.ToElements.html\" title=\"trait winter_math::field::traits::ToElements\">ToElements</a>&lt;E&gt; for <a class=\"struct\" href=\"winter_air/struct.TraceInfo.html\" title=\"struct winter_air::TraceInfo\">TraceInfo</a>",0]]],["winter_math",[]]]);
+    if (window.register_implementors) {
+        window.register_implementors(implementors);
+    } else {
+        window.pending_implementors = implementors;
+    }
+})()
+//{"start":59,"fragment_lengths":[1349,19]}

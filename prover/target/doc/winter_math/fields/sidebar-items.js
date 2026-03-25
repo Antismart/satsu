@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"mod":["f128","f62","f64"],"struct":["CubeExtension","QuadExtension"]};

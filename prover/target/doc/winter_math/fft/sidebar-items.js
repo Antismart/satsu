@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["evaluate_poly","evaluate_poly_with_offset","get_inv_twiddles","get_twiddles","infer_degree","interpolate_poly","interpolate_poly_with_offset","permute_index","serial_fft"],"mod":["fft_inputs","real_u64"]};

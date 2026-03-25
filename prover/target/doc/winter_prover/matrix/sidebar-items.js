@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["build_segments","get_evaluation_offsets"],"struct":["ColMatrix","ColumnIter","RowMatrix","Segment"]};
