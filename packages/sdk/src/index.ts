@@ -117,7 +117,7 @@ export type {
 } from './relayer/client.js';
 
 // ---------------------------------------------------------------------------
-// Proof — circuit, witness, prover
+// Proof — circuit, witness, prover, STARK, WASM loader
 // ---------------------------------------------------------------------------
 
 export {
@@ -137,8 +137,26 @@ export {
   deserializeProof,
   verifyProofLocally,
   computeChallenge,
+  ProverBackend,
 } from './proof/prover.js';
-export type { StarkProof, ProofData } from './proof/prover.js';
+export type { StarkProof, ProofData, ProverOptions } from './proof/prover.js';
+
+export {
+  generateStarkProof,
+  verifyStarkProof,
+  serializeForClarity,
+  flattenMerklePath,
+} from './proof/stark-prover.js';
+export type { StarkProofResult } from './proof/stark-prover.js';
+
+export {
+  loadWasmProver,
+  isWasmAvailable,
+  getWasmProver,
+  setWasmProver,
+  resetWasmLoader,
+} from './proof/wasm-loader.js';
+export type { WasmProverModule } from './proof/wasm-loader.js';
 
 // ---------------------------------------------------------------------------
 // Utils
