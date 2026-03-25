@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"struct":["ScopedClosure"],"type":["Closure"]};

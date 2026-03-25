@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":["map_positions_to_indexes"]};

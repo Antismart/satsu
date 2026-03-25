@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["MerkleTreeError","RandomCoinError"],"fn":["build_merkle_nodes"],"mod":["hashers"],"struct":["BatchMerkleProof","DefaultRandomCoin","MerkleTree"],"trait":["Digest","ElementHasher","Hasher","RandomCoin","VectorCommitment"]};

@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":["apply_drp","fold_positions"]};
