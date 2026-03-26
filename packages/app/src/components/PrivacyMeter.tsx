@@ -17,24 +17,17 @@ function getScoreLabel(score: number): string {
 }
 
 function getScoreColor(score: number): string {
-  if (score >= 80) return "text-[#22c55e]";
-  if (score >= 50) return "text-[#0057ff]";
-  if (score >= 20) return "text-[#f59e0b]";
-  return "text-[#ef4444]";
+  if (score >= 80) return "text-[#028901]";
+  if (score >= 50) return "text-[#0057FF]";
+  if (score >= 20) return "text-[#F97C00]";
+  return "text-[#D00D00]";
 }
 
-function getGlowColor(score: number): string {
-  if (score >= 80) return "rgba(34, 197, 94, 0.15)";
-  if (score >= 50) return "rgba(0, 87, 255, 0.15)";
-  if (score >= 20) return "rgba(245, 158, 11, 0.15)";
-  return "rgba(239, 68, 68, 0.15)";
-}
-
-function getBarColor(score: number): string {
-  if (score >= 80) return "from-[#22c55e] to-[#22c55e]/70";
-  if (score >= 50) return "from-[#0057ff] to-[#4f8aff]";
-  if (score >= 20) return "from-[#f59e0b] to-[#f59e0b]/70";
-  return "from-[#ef4444] to-[#ef4444]/70";
+function getBarGradient(score: number): string {
+  if (score >= 80) return "from-[#028901] to-[#046700]";
+  if (score >= 50) return "from-[#0057FF] to-[#006ACB]";
+  if (score >= 20) return "from-[#F97C00] to-[#F97C00]/70";
+  return "from-[#D00D00] to-[#910000]";
 }
 
 export function PrivacyMeter({
@@ -44,21 +37,20 @@ export function PrivacyMeter({
   const score = getPrivacyScore(anonymitySetSize, maxSetSize);
   const label = getScoreLabel(score);
   const scoreColor = getScoreColor(score);
-  const glowColor = getGlowColor(score);
-  const barColor = getBarColor(score);
+  const barGradient = getBarGradient(score);
 
-  // Calculate circumference for circular gauge
+  // Circular gauge
   const radius = 52;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (score / 100) * circumference;
 
   return (
-    <div className="bg-white rounded-2xl border border-[#e8e8e8] p-6 sm:p-8 shadow-sm transition-all duration-300 hover:shadow-[0_4px_12px_rgba(0,0,0,0.08)]">
+    <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-[0_5px_20px_rgba(0,0,0,0.08)] transition-all duration-300 hover:shadow-[0_5px_30px_rgba(0,0,0,0.12)]">
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
-        <div className="h-10 w-10 rounded-full bg-[#0057ff]/[0.08] flex items-center justify-center">
+        <div className="h-10 w-10 rounded-full bg-[#0057FF]/[0.08] flex items-center justify-center">
           <svg
-            className="h-5 w-5 text-[#0057ff]"
+            className="h-5 w-5 text-[#0057FF]"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -72,27 +64,24 @@ export function PrivacyMeter({
           </svg>
         </div>
         <div>
-          <h2 className="text-lg font-semibold tracking-tight text-[#191919]">
+          <h2 className="text-xl font-semibold tracking-tight text-[#191919]">
             Privacy Score
           </h2>
-          <p className="text-xs text-[#9ca3af]">Anonymity set strength</p>
+          <p className="text-xs text-[#9CA3AF]">Anonymity set strength</p>
         </div>
       </div>
 
       {/* Circular gauge */}
       <div className="flex flex-col items-center mb-6">
         <div className="relative w-36 h-36">
-          <svg
-            className="w-36 h-36 -rotate-90"
-            viewBox="0 0 120 120"
-          >
+          <svg className="w-36 h-36 -rotate-90" viewBox="0 0 120 120">
             {/* Background ring */}
             <circle
               cx="60"
               cy="60"
               r={radius}
               fill="none"
-              stroke="#e8e8e8"
+              stroke="#E8E8E8"
               strokeWidth="8"
             />
             {/* Score ring */}
@@ -108,7 +97,6 @@ export function PrivacyMeter({
               strokeDashoffset={strokeDashoffset}
               style={{
                 transition: "stroke-dashoffset 1s ease-out",
-                filter: `drop-shadow(0 0 8px ${glowColor})`,
               }}
             />
             <defs>
@@ -119,19 +107,19 @@ export function PrivacyMeter({
                 x2="100%"
                 y2="100%"
               >
-                <stop offset="0%" stopColor="#0057ff" />
-                <stop offset="100%" stopColor="#4f8aff" />
+                <stop offset="0%" stopColor="#0057FF" />
+                <stop offset="100%" stopColor="#006ACB" />
               </linearGradient>
             </defs>
           </svg>
           {/* Center text */}
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             <span
-              className={`text-3xl font-bold font-mono tabular-nums ${scoreColor}`}
+              className={`text-3xl font-bold tabular-nums ${scoreColor}`}
             >
               {score}
             </span>
-            <span className="text-xs text-[#9ca3af] mt-0.5">/ 100</span>
+            <span className="text-xs text-[#9CA3AF] mt-0.5">/ 100</span>
           </div>
         </div>
       </div>
@@ -139,29 +127,25 @@ export function PrivacyMeter({
       {/* Label and set size */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <span className={`h-2 w-2 rounded-full bg-gradient-to-r ${barColor}`} />
           <span className={`text-sm font-semibold ${scoreColor}`}>
             {label}
           </span>
         </div>
-        <span className="text-xs text-[#9ca3af] font-mono tabular-nums">
+        <span className="text-xs text-[#9CA3AF] tabular-nums">
           {anonymitySetSize.toLocaleString()} deposits
         </span>
       </div>
 
-      {/* Progress bar */}
-      <div className="w-full h-1.5 rounded-full bg-[#e8e8e8] mb-4">
+      {/* Progress bar - thin horizontal */}
+      <div className="w-full h-1.5 rounded-full bg-[#E8E8E8] mb-4">
         <div
-          className={`h-full rounded-full bg-gradient-to-r ${barColor} transition-all duration-700`}
-          style={{
-            width: `${score}%`,
-            boxShadow: `0 0 12px ${glowColor}`,
-          }}
+          className={`h-full rounded-full bg-gradient-to-r ${barGradient} transition-all duration-700`}
+          style={{ width: `${score}%` }}
         />
       </div>
 
       {/* Explanation */}
-      <p className="text-xs text-[#9ca3af] leading-relaxed">
+      <p className="text-xs text-[#9CA3AF] leading-relaxed">
         A larger anonymity set makes it harder for observers to link your
         deposits and withdrawals. The score reflects the relative size of the
         current pool.

@@ -59,16 +59,16 @@ export function BackupModal({ onClose }: BackupModalProps) {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/40 backdrop-blur-[30px]"
+        className="absolute inset-0 bg-black/40 backdrop-blur-sm"
         onClick={onClose}
       />
 
       {/* Modal */}
-      <div className="relative w-full max-w-md bg-white rounded-2xl border border-[#e8e8e8] p-8 shadow-[0_8px_40px_rgba(0,0,0,0.12)]">
+      <div className="relative w-full max-w-md bg-white rounded-2xl p-8 shadow-[0_5px_30px_rgba(0,0,0,0.15)]">
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 h-8 w-8 rounded-full bg-[#f9f9f9] border border-[#e8e8e8] flex items-center justify-center text-[#9ca3af] hover:text-[#191919] hover:bg-white transition-all duration-300"
+          className="absolute top-5 right-5 h-8 w-8 rounded-full bg-[#F9F9F9] border border-[#E8E8E8] flex items-center justify-center text-[#9CA3AF] hover:text-[#191919] hover:border-[#0057FF] transition-all duration-300"
         >
           <svg
             className="h-4 w-4"
@@ -87,9 +87,9 @@ export function BackupModal({ onClose }: BackupModalProps) {
 
         {/* Title */}
         <div className="flex items-center gap-3 mb-8">
-          <div className="h-10 w-10 rounded-full bg-[#0057ff]/[0.08] flex items-center justify-center">
+          <div className="h-10 w-10 rounded-full bg-[#0057FF]/[0.08] flex items-center justify-center">
             <svg
-              className="h-5 w-5 text-[#0057ff]"
+              className="h-5 w-5 text-[#0057FF]"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -102,22 +102,22 @@ export function BackupModal({ onClose }: BackupModalProps) {
               />
             </svg>
           </div>
-          <h3 className="text-lg font-semibold tracking-tight text-[#191919]">
+          <h3 className="text-xl font-semibold tracking-tight text-[#191919]">
             Note Backup
           </h3>
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-1 p-1 rounded-full bg-[#f9f9f9] border border-[#e8e8e8] mb-8">
+        <div className="flex gap-1 p-1 rounded-full bg-[#F9F9F9] border border-[#E8E8E8] mb-8">
           <button
             onClick={() => {
               setTab("backup");
               setStatus("idle");
             }}
-            className={`flex-1 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ${
+            className={`flex-1 h-10 rounded-full text-sm font-semibold transition-all duration-300 ${
               tab === "backup"
-                ? "bg-white text-[#191919] shadow-sm border border-[#e8e8e8]"
-                : "text-[#6b7280] hover:text-[#191919]"
+                ? "bg-white text-[#191919] shadow-[0_5px_20px_rgba(0,0,0,0.08)] border border-[#E8E8E8]"
+                : "text-[#6B7280] hover:text-[#191919]"
             }`}
           >
             Backup
@@ -127,10 +127,10 @@ export function BackupModal({ onClose }: BackupModalProps) {
               setTab("restore");
               setStatus("idle");
             }}
-            className={`flex-1 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ${
+            className={`flex-1 h-10 rounded-full text-sm font-semibold transition-all duration-300 ${
               tab === "restore"
-                ? "bg-white text-[#191919] shadow-sm border border-[#e8e8e8]"
-                : "text-[#6b7280] hover:text-[#191919]"
+                ? "bg-white text-[#191919] shadow-[0_5px_20px_rgba(0,0,0,0.08)] border border-[#E8E8E8]"
+                : "text-[#6B7280] hover:text-[#191919]"
             }`}
           >
             Restore
@@ -140,20 +140,20 @@ export function BackupModal({ onClose }: BackupModalProps) {
         {/* Content */}
         {tab === "backup" ? (
           <div>
-            <p className="text-sm text-[#6b7280] mb-6 leading-relaxed">
+            <p className="text-sm text-[#6B7280] mb-6 leading-relaxed">
               Download an encrypted backup of your notes. Store this file
               securely -- it is required to recover your funds.
             </p>
             <button
               onClick={handleBackup}
-              className="w-full py-3 rounded-full bg-[#0057ff] text-white font-semibold text-sm shadow-[0_1px_2px_rgba(0,0,0,0.4)] transition-all duration-300 hover:bg-[#0046cc] hover:brightness-110"
+              className="w-full h-12 rounded-full bg-[#0057FF] text-white font-semibold text-sm shadow-[0_1px_2px_rgba(0,0,0,0.4)] transition-all duration-300 hover:bg-[#006ACB]"
             >
               Download Backup
             </button>
           </div>
         ) : (
           <div>
-            <p className="text-sm text-[#6b7280] mb-6 leading-relaxed">
+            <p className="text-sm text-[#6B7280] mb-6 leading-relaxed">
               Restore notes from a backup file. This will merge with any
               existing notes.
             </p>
@@ -169,12 +169,12 @@ export function BackupModal({ onClose }: BackupModalProps) {
               />
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="w-full py-4 rounded-2xl border border-dashed border-[#e8e8e8] bg-[#f9f9f9] text-sm text-[#6b7280] hover:border-[#0057ff]/30 hover:text-[#191919] hover:bg-white transition-all duration-300"
+                className="w-full h-14 rounded-xl border border-dashed border-[#CDCDCD] bg-[#F9F9F9] text-sm text-[#6B7280] hover:border-[#0057FF] hover:text-[#191919] hover:bg-white transition-all duration-300"
               >
                 {restoreData ? (
                   <span className="flex items-center justify-center gap-2">
                     <svg
-                      className="h-4 w-4 text-[#22c55e]"
+                      className="h-4 w-4 text-[#028901]"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -200,14 +200,14 @@ export function BackupModal({ onClose }: BackupModalProps) {
               onChange={(e) => setRestoreData(e.target.value)}
               placeholder="Or paste backup JSON here..."
               rows={4}
-              className="w-full px-4 py-3 rounded-2xl bg-white border border-[#e8e8e8] text-[#191919] text-sm font-mono placeholder:text-[#9ca3af] focus:outline-1 focus:outline-[#0057ff] focus:outline-offset-2 transition-all duration-300 resize-none mb-4"
+              className="w-full px-4 py-3 rounded-xl bg-white border border-[#CDCDCD] text-[#191919] text-sm placeholder:text-[#CDCDCD] focus:border-[#0057FF] focus:ring-1 focus:ring-[#0057FF] focus:outline-none transition-all duration-300 resize-none mb-4"
             />
 
             {/* Restore button */}
             <button
               onClick={handleRestore}
               disabled={!restoreData.trim()}
-              className="w-full py-3 rounded-full bg-[#0057ff] disabled:bg-[#0057ff]/30 disabled:cursor-not-allowed text-white font-semibold text-sm shadow-[0_1px_2px_rgba(0,0,0,0.4)] transition-all duration-300 hover:bg-[#0046cc] hover:brightness-110 disabled:hover:shadow-none disabled:hover:brightness-100"
+              className="w-full h-12 rounded-full bg-[#0057FF] disabled:bg-[#0057FF]/30 disabled:cursor-not-allowed text-white font-semibold text-sm shadow-[0_1px_2px_rgba(0,0,0,0.4)] transition-all duration-300 hover:bg-[#006ACB]"
             >
               Restore Notes
             </button>
@@ -218,7 +218,7 @@ export function BackupModal({ onClose }: BackupModalProps) {
         {status !== "idle" && (
           <div
             className={`mt-5 flex items-center gap-2 text-sm ${
-              status === "success" ? "text-[#22c55e]" : "text-[#ef4444]"
+              status === "success" ? "text-[#028901]" : "text-[#D00D00]"
             }`}
           >
             {status === "success" ? (

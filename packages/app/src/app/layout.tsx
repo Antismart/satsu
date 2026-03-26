@@ -1,18 +1,7 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "Satsu - Private Payments on Bitcoin",
@@ -26,11 +15,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col bg-[#f9f9f9] text-[#191919]">
+    <html lang="en" className="h-full antialiased">
+      <body className="min-h-full flex flex-col bg-[#F9F9F9] text-[#191919]" style={{ fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif' }}>
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />

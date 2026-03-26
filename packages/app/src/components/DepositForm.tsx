@@ -37,29 +37,29 @@ export function DepositForm() {
     { label: string; color: string } | null
   > = {
     idle: null,
-    approving: { label: "Approving token transfer...", color: "text-[#0057ff]" },
+    approving: { label: "Approving token transfer...", color: "text-[#0057FF]" },
     depositing: {
       label: "Submitting deposit to pool...",
-      color: "text-[#0057ff]",
+      color: "text-[#0057FF]",
     },
     success: {
       label: "Deposit successful. Note saved locally.",
-      color: "text-[#22c55e]",
+      color: "text-[#028901]",
     },
-    error: { label: errorMsg || "Deposit failed", color: "text-[#ef4444]" },
+    error: { label: errorMsg || "Deposit failed", color: "text-[#D00D00]" },
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-[#e8e8e8] p-6 sm:p-8 shadow-sm transition-all duration-300 hover:shadow-[0_4px_12px_rgba(0,0,0,0.08)]">
+    <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-[0_5px_20px_rgba(0,0,0,0.08)] transition-all duration-300 hover:shadow-[0_5px_30px_rgba(0,0,0,0.12)]">
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
-        <div className="h-10 w-10 rounded-full bg-[#22c55e]/[0.1] flex items-center justify-center">
+        <div className="h-10 w-10 rounded-full bg-[#028901]/[0.1] flex items-center justify-center">
           <svg
-            className="h-5 w-5 text-[#22c55e]"
+            className="h-5 w-5 text-[#028901]"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
-            strokeWidth={1.5}
+            strokeWidth={2}
           >
             <path
               strokeLinecap="round"
@@ -69,19 +69,21 @@ export function DepositForm() {
           </svg>
         </div>
         <div>
-          <h2 className="text-lg font-semibold tracking-tight text-[#191919]">Deposit sBTC</h2>
-          <p className="text-xs text-[#9ca3af]">Into the privacy pool</p>
+          <h2 className="text-xl font-semibold tracking-tight text-[#191919]">
+            Deposit sBTC
+          </h2>
+          <p className="text-xs text-[#9CA3AF]">Into the privacy pool</p>
         </div>
       </div>
 
-      <p className="text-sm text-[#6b7280] mb-6 leading-relaxed">
+      <p className="text-sm text-[#6B7280] mb-6 leading-relaxed">
         Select a fixed denomination to deposit. Your funds become part of the
         anonymity set, indistinguishable from all other deposits.
       </p>
 
       {/* Denomination selector */}
       <div className="mb-6">
-        <label className="block text-xs font-medium text-[#9ca3af] uppercase tracking-wider mb-3">
+        <label className="block text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-widest mb-3">
           Amount
         </label>
         <div className="flex gap-3">
@@ -89,13 +91,13 @@ export function DepositForm() {
             <button
               key={amount}
               onClick={() => setSelectedAmount(amount)}
-              className={`flex-1 py-3 rounded-full text-sm font-semibold border transition-all duration-300 ${
+              className={`flex-1 h-12 rounded-full text-sm font-semibold border transition-all duration-300 ${
                 selectedAmount === amount
-                  ? "border-[#0057ff] bg-[#0057ff]/[0.06] text-[#0057ff]"
-                  : "border-[#e8e8e8] bg-white text-[#6b7280] hover:border-[#0057ff]/30 hover:text-[#191919]"
+                  ? "border-[#0057FF] bg-[#0057FF]/[0.06] text-[#0057FF]"
+                  : "border-[#CDCDCD] bg-white text-[#6B7280] hover:border-[#0057FF] hover:text-[#191919]"
               }`}
             >
-              <span className="font-mono tabular-nums">{amount}</span>
+              <span className="tabular-nums">{amount}</span>
               <span className="ml-1 text-xs opacity-70">sBTC</span>
             </button>
           ))}
@@ -108,7 +110,7 @@ export function DepositForm() {
         disabled={
           !isConnected || status === "depositing" || status === "approving"
         }
-        className="w-full py-3 rounded-full bg-[#0057ff] disabled:bg-[#0057ff]/30 disabled:cursor-not-allowed text-white font-semibold text-sm shadow-[0_1px_2px_rgba(0,0,0,0.4)] transition-all duration-300 hover:bg-[#0046cc] hover:brightness-110 disabled:hover:shadow-none disabled:hover:brightness-100"
+        className="w-full h-12 rounded-full bg-[#0057FF] disabled:bg-[#0057FF]/30 disabled:cursor-not-allowed text-white font-semibold text-sm shadow-[0_1px_2px_rgba(0,0,0,0.4)] transition-all duration-300 hover:bg-[#006ACB]"
       >
         {status === "approving" || status === "depositing" ? (
           <span className="flex items-center justify-center gap-2">
@@ -140,7 +142,7 @@ export function DepositForm() {
 
       {/* Not connected notice */}
       {!isConnected && (
-        <p className="text-xs text-[#9ca3af] mt-4 text-center">
+        <p className="text-xs text-[#9CA3AF] mt-4 text-center">
           Connect your wallet to make a deposit.
         </p>
       )}

@@ -35,11 +35,14 @@ export function WithdrawForm() {
   }
 
   function handlePaste() {
-    navigator.clipboard.readText().then((text) => {
-      setRecipient(text);
-    }).catch(() => {
-      // clipboard access denied
-    });
+    navigator.clipboard
+      .readText()
+      .then((text) => {
+        setRecipient(text);
+      })
+      .catch(() => {
+        // clipboard access denied
+      });
   }
 
   const statusConfig: Record<
@@ -49,30 +52,33 @@ export function WithdrawForm() {
     idle: null,
     "generating-proof": {
       label: "Generating zero-knowledge proof...",
-      color: "text-[#0057ff]",
+      color: "text-[#0057FF]",
     },
     submitting: {
       label: "Submitting withdrawal via relayer...",
-      color: "text-[#0057ff]",
+      color: "text-[#0057FF]",
     },
     success: {
       label: "Withdrawal submitted. Funds will arrive shortly.",
-      color: "text-[#22c55e]",
+      color: "text-[#028901]",
     },
-    error: { label: errorMsg || "Withdrawal failed", color: "text-[#ef4444]" },
+    error: {
+      label: errorMsg || "Withdrawal failed",
+      color: "text-[#D00D00]",
+    },
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-[#e8e8e8] p-6 sm:p-8 shadow-sm transition-all duration-300 hover:shadow-[0_4px_12px_rgba(0,0,0,0.08)]">
+    <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-[0_5px_20px_rgba(0,0,0,0.08)] transition-all duration-300 hover:shadow-[0_5px_30px_rgba(0,0,0,0.12)]">
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
-        <div className="h-10 w-10 rounded-full bg-[#0057ff]/[0.1] flex items-center justify-center">
+        <div className="h-10 w-10 rounded-full bg-[#0057FF]/[0.1] flex items-center justify-center">
           <svg
-            className="h-5 w-5 text-[#0057ff]"
+            className="h-5 w-5 text-[#0057FF]"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
-            strokeWidth={1.5}
+            strokeWidth={2}
           >
             <path
               strokeLinecap="round"
@@ -82,14 +88,14 @@ export function WithdrawForm() {
           </svg>
         </div>
         <div>
-          <h2 className="text-lg font-semibold tracking-tight text-[#191919]">
+          <h2 className="text-xl font-semibold tracking-tight text-[#191919]">
             Withdraw sBTC
           </h2>
-          <p className="text-xs text-[#9ca3af]">Privately via relayer</p>
+          <p className="text-xs text-[#9CA3AF]">Privately via relayer</p>
         </div>
       </div>
 
-      <p className="text-sm text-[#6b7280] mb-6 leading-relaxed">
+      <p className="text-sm text-[#6B7280] mb-6 leading-relaxed">
         Withdraw funds to any address. A zero-knowledge proof is generated
         locally in your browser to preserve your privacy.
       </p>
@@ -98,7 +104,7 @@ export function WithdrawForm() {
       <div className="mb-6">
         <label
           htmlFor="recipient"
-          className="block text-xs font-medium text-[#9ca3af] uppercase tracking-wider mb-3"
+          className="block text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-widest mb-3"
         >
           Recipient Address
         </label>
@@ -109,11 +115,11 @@ export function WithdrawForm() {
             value={recipient}
             onChange={(e) => setRecipient(e.target.value)}
             placeholder="SP... or ST..."
-            className="w-full px-4 py-3 pr-20 rounded-2xl bg-white border border-[#e8e8e8] text-[#191919] text-sm font-mono placeholder:text-[#9ca3af] focus:outline-1 focus:outline-[#0057ff] focus:outline-offset-2 transition-all duration-300"
+            className="w-full h-12 px-4 pr-20 rounded-xl bg-white border border-[#CDCDCD] text-[#191919] text-sm placeholder:text-[#CDCDCD] focus:border-[#0057FF] focus:ring-1 focus:ring-[#0057FF] focus:outline-none transition-all duration-300"
           />
           <button
             onClick={handlePaste}
-            className="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1.5 rounded-full bg-[#f9f9f9] border border-[#e8e8e8] text-xs text-[#6b7280] hover:text-[#191919] hover:bg-white transition-all duration-300"
+            className="absolute right-2 top-1/2 -translate-y-1/2 h-8 px-4 rounded-full bg-[#F9F9F9] border border-[#E8E8E8] text-xs font-semibold text-[#6B7280] hover:text-[#191919] hover:border-[#0057FF] transition-all duration-300"
           >
             Paste
           </button>
@@ -129,7 +135,7 @@ export function WithdrawForm() {
           status === "generating-proof" ||
           status === "submitting"
         }
-        className="w-full py-3 rounded-full bg-[#0057ff] disabled:bg-[#0057ff]/30 disabled:cursor-not-allowed text-white font-semibold text-sm shadow-[0_1px_2px_rgba(0,0,0,0.4)] transition-all duration-300 hover:bg-[#0046cc] hover:brightness-110 disabled:hover:shadow-none disabled:hover:brightness-100"
+        className="w-full h-12 rounded-full bg-[#0057FF] disabled:bg-[#0057FF]/30 disabled:cursor-not-allowed text-white font-semibold text-sm shadow-[0_1px_2px_rgba(0,0,0,0.4)] transition-all duration-300 hover:bg-[#006ACB]"
       >
         {status === "generating-proof" || status === "submitting" ? (
           <span className="flex items-center justify-center gap-2">
@@ -163,7 +169,7 @@ export function WithdrawForm() {
 
       {/* Not connected notice */}
       {!isConnected && (
-        <p className="text-xs text-[#9ca3af] mt-4 text-center">
+        <p className="text-xs text-[#9CA3AF] mt-4 text-center">
           Connect your wallet to withdraw.
         </p>
       )}

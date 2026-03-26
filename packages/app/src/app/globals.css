@@ -1,20 +1,27 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f9f9f9;
+  --background: #F9F9F9;
   --foreground: #191919;
-  --primary: #0057ff;
-  --primary-hover: #0046cc;
-  --accent-green: #22c55e;
-  --accent-amber: #f59e0b;
-  --accent-red: #ef4444;
-  --card-bg: #ffffff;
-  --card-border: #e8e8e8;
-  --muted: #9ca3af;
-  --muted-dim: #6b7280;
-  --input-bg: #ffffff;
-  --input-border: #e8e8e8;
+  --primary: #0057FF;
+  --primary-hover: #006ACB;
+  --primary-deep: #002F9A;
+  --primary-darkest: #0F214D;
+  --purple-accent: #B125C0;
+  --orange-alert: #F97C00;
+  --card-bg: #FFFFFF;
+  --card-border: #E8E8E8;
+  --border-default: #CDCDCD;
+  --text-secondary: #6B7280;
+  --text-muted: #9CA3AF;
+  --text-light: #CDCDCD;
   --dark-bg: #191919;
+  --dark-inverted: #303030;
+  --input-disabled: #F0F0F0;
+  --success: #028901;
+  --success-dark: #046700;
+  --danger: #D00D00;
+  --danger-dark: #910000;
 }
 
 @theme inline {
@@ -22,18 +29,24 @@
   --color-foreground: var(--foreground);
   --color-primary: var(--primary);
   --color-primary-hover: var(--primary-hover);
-  --color-accent-green: var(--accent-green);
-  --color-accent-amber: var(--accent-amber);
-  --color-accent-red: var(--accent-red);
+  --color-primary-deep: var(--primary-deep);
+  --color-primary-darkest: var(--primary-darkest);
+  --color-purple-accent: var(--purple-accent);
+  --color-orange-alert: var(--orange-alert);
   --color-card-bg: var(--card-bg);
   --color-card-border: var(--card-border);
-  --color-muted: var(--muted);
-  --color-muted-dim: var(--muted-dim);
-  --color-input-bg: var(--input-bg);
-  --color-input-border: var(--input-border);
+  --color-border-default: var(--border-default);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-text-light: var(--text-light);
   --color-dark-bg: var(--dark-bg);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-dark-inverted: var(--dark-inverted);
+  --color-input-disabled: var(--input-disabled);
+  --color-success: var(--success);
+  --color-success-dark: var(--success-dark);
+  --color-danger: var(--danger);
+  --color-danger-dark: var(--danger-dark);
+  --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 html {
@@ -43,7 +56,7 @@ html {
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), "Inter", system-ui, -apple-system, sans-serif;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 /* Scrollbar styling */
@@ -65,12 +78,6 @@ body {
 ::selection {
   background: rgba(0, 87, 255, 0.15);
   color: #191919;
-}
-
-/* Subtle dot grid pattern for backgrounds */
-.dot-pattern {
-  background-image: radial-gradient(circle, rgba(0, 87, 255, 0.06) 1px, transparent 1px);
-  background-size: 32px 32px;
 }
 
 /* Pulse animation for status dots */
@@ -100,7 +107,7 @@ body {
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(16px);
   }
   to {
     opacity: 1;
@@ -108,7 +115,7 @@ body {
   }
 }
 .animate-fade-in-up {
-  animation: fadeInUp 0.6s ease-out both;
+  animation: fadeInUp 0.7s ease-out both;
 }
 .animation-delay-100 {
   animation-delay: 0.1s;
@@ -121,4 +128,20 @@ body {
 }
 .animation-delay-400 {
   animation-delay: 0.4s;
+}
+
+/* Shimmer animation for decorative elements */
+@keyframes shimmer {
+  0% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 0.3;
+  }
+}
+.animate-shimmer {
+  animation: shimmer 4s ease-in-out infinite;
 }

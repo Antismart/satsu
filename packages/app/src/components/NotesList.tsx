@@ -20,32 +20,30 @@ export function NotesList() {
     { dot: string; badge: string; label: string }
   > = {
     unspent: {
-      dot: "bg-[#22c55e]",
-      badge:
-        "bg-[#22c55e]/[0.08] text-[#22c55e] border border-[#22c55e]/20",
+      dot: "bg-[#028901]",
+      badge: "bg-[#028901]/[0.08] text-[#028901] border border-[#028901]/20",
       label: "Active",
     },
     pending: {
-      dot: "bg-[#f59e0b]",
-      badge:
-        "bg-[#f59e0b]/[0.08] text-[#f59e0b] border border-[#f59e0b]/20",
+      dot: "bg-[#F97C00]",
+      badge: "bg-[#F97C00]/[0.08] text-[#F97C00] border border-[#F97C00]/20",
       label: "Pending",
     },
     spent: {
-      dot: "bg-[#9ca3af]",
-      badge: "bg-[#f9f9f9] text-[#9ca3af] border border-[#e8e8e8]",
+      dot: "bg-[#9CA3AF]",
+      badge: "bg-[#F9F9F9] text-[#9CA3AF] border border-[#E8E8E8]",
       label: "Spent",
     },
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-[#e8e8e8] p-6 sm:p-8 shadow-sm transition-all duration-300 hover:shadow-[0_4px_12px_rgba(0,0,0,0.08)]">
+    <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-[0_5px_20px_rgba(0,0,0,0.08)] transition-all duration-300 hover:shadow-[0_5px_30px_rgba(0,0,0,0.12)]">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-full bg-[#0057ff]/[0.08] flex items-center justify-center">
+          <div className="h-10 w-10 rounded-full bg-[#0057FF]/[0.08] flex items-center justify-center">
             <svg
-              className="h-5 w-5 text-[#0057ff]"
+              className="h-5 w-5 text-[#0057FF]"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -59,10 +57,10 @@ export function NotesList() {
             </svg>
           </div>
           <div>
-            <h2 className="text-lg font-semibold tracking-tight text-[#191919]">
+            <h2 className="text-xl font-semibold tracking-tight text-[#191919]">
               Your Notes
             </h2>
-            <p className="text-xs text-[#9ca3af]">
+            <p className="text-xs text-[#9CA3AF]">
               {notes.length} note{notes.length !== 1 ? "s" : ""} total
             </p>
           </div>
@@ -70,13 +68,13 @@ export function NotesList() {
         <div className="flex gap-2">
           <button
             onClick={() => setShowBackup(true)}
-            className="px-5 py-2 rounded-full bg-white border border-[#e8e8e8] text-xs font-semibold text-[#191919] hover:brightness-95 transition-all duration-300"
+            className="h-8 px-5 rounded-full bg-white border border-[#CDCDCD] text-xs font-semibold text-[#303030] hover:border-[#0057FF] transition-all duration-300"
           >
             Backup
           </button>
           <button
             onClick={() => setShowBackup(true)}
-            className="px-5 py-2 rounded-full bg-white border border-[#e8e8e8] text-xs font-semibold text-[#191919] hover:brightness-95 transition-all duration-300"
+            className="h-8 px-5 rounded-full bg-white border border-[#CDCDCD] text-xs font-semibold text-[#303030] hover:border-[#0057FF] transition-all duration-300"
           >
             Restore
           </button>
@@ -85,9 +83,9 @@ export function NotesList() {
 
       {/* Backup warning */}
       {!hasBackedUp && notes.length > 0 && (
-        <div className="mb-6 flex items-start gap-3 p-4 rounded-2xl bg-[#f59e0b]/[0.06] border border-[#f59e0b]/20">
+        <div className="mb-6 flex items-start gap-3 p-4 rounded-xl bg-[#F97C00]/[0.06] border border-[#F97C00]/20">
           <svg
-            className="h-5 w-5 text-[#f59e0b] flex-shrink-0 mt-0.5"
+            className="h-5 w-5 text-[#F97C00] flex-shrink-0 mt-0.5"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -100,10 +98,10 @@ export function NotesList() {
             />
           </svg>
           <div>
-            <p className="text-sm text-[#f59e0b] font-medium">
+            <p className="text-sm text-[#F97C00] font-semibold">
               Notes not backed up
             </p>
-            <p className="text-xs text-[#f59e0b]/70 mt-0.5">
+            <p className="text-xs text-[#F97C00]/70 mt-0.5">
               If you lose access to this browser, your funds cannot be
               recovered.
             </p>
@@ -114,9 +112,9 @@ export function NotesList() {
       {/* Empty state */}
       {notes.length === 0 ? (
         <div className="py-16 text-center">
-          <div className="h-12 w-12 rounded-full bg-[#f9f9f9] border border-[#e8e8e8] flex items-center justify-center mx-auto mb-4">
+          <div className="h-12 w-12 rounded-full bg-[#F9F9F9] border border-[#E8E8E8] flex items-center justify-center mx-auto mb-4">
             <svg
-              className="h-6 w-6 text-[#9ca3af]"
+              className="h-6 w-6 text-[#9CA3AF]"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -129,34 +127,65 @@ export function NotesList() {
               />
             </svg>
           </div>
-          <p className="text-[#6b7280] text-sm font-medium">No notes yet</p>
-          <p className="text-[#9ca3af] text-xs mt-1">
+          <p className="text-[#6B7280] text-sm font-semibold">No notes yet</p>
+          <p className="text-[#9CA3AF] text-xs mt-1">
             Make a deposit to create your first private note.
           </p>
         </div>
       ) : (
-        <div className="space-y-2">
-          {notes.map((note, i) => {
+        <div className="divide-y divide-[#E8E8E8]">
+          {notes.map((note) => {
             const style = statusStyles[note.status];
             return (
               <div
                 key={note.id}
-                className={`flex items-center justify-between px-4 py-3.5 rounded-2xl border border-[#e8e8e8] transition-all duration-300 hover:shadow-sm ${
-                  i % 2 === 0 ? "bg-white" : "bg-[#f9f9f9]"
-                }`}
+                className="flex items-center justify-between py-4 first:pt-0 last:pb-0"
               >
                 <div className="flex items-center gap-3.5">
-                  <span className={`h-2 w-2 rounded-full ${style.dot}`} />
-                  <span className="text-sm font-mono font-semibold tabular-nums text-[#191919]">
-                    {note.amount} sBTC
-                  </span>
+                  <div
+                    className={`h-10 w-10 rounded-full flex items-center justify-center ${
+                      note.status === "unspent"
+                        ? "bg-[#028901]/[0.08]"
+                        : note.status === "pending"
+                          ? "bg-[#F97C00]/[0.08]"
+                          : "bg-[#F9F9F9]"
+                    }`}
+                  >
+                    <svg
+                      className={`h-5 w-5 ${
+                        note.status === "unspent"
+                          ? "text-[#028901]"
+                          : note.status === "pending"
+                            ? "text-[#F97C00]"
+                            : "text-[#9CA3AF]"
+                      }`}
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={1.5}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
+                      />
+                    </svg>
+                  </div>
+                  <div>
+                    <span className="text-sm font-semibold tabular-nums text-[#191919]">
+                      {note.amount} sBTC
+                    </span>
+                    <p className="text-xs text-[#9CA3AF] mt-0.5">
+                      Deposit Note
+                    </p>
+                  </div>
                 </div>
                 <div className="flex items-center gap-4">
-                  <span className="text-xs text-[#9ca3af] font-mono tabular-nums">
+                  <span className="text-xs text-[#9CA3AF] tabular-nums">
                     {note.createdAt}
                   </span>
                   <span
-                    className={`text-xs px-2.5 py-1 rounded-full font-medium ${style.badge}`}
+                    className={`text-xs px-3 py-1 rounded-full font-semibold ${style.badge}`}
                   >
                     {style.label}
                   </span>
