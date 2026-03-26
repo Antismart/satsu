@@ -162,16 +162,17 @@ export function deriveSelfStealth(
 
 /**
  * Check if a stealth payment (identified by its ephemeral public key R)
- * is addressed to us.
+ * is addressed to us, by comparing against a known target address.
  *
  * This is called by the RECIPIENT (or their scanning service). Given
  * the ephemeral key R published on-chain, the recipient uses their
  * view private key to reconstruct the shared secret and check if the
- * derived stealth address matches.
+ * derived stealth address matches the on-chain target.
  *
  * @param ephemeralPubKey - 33-byte compressed ephemeral public key R (from on-chain event)
  * @param viewPrivKey - 32-byte view private key
  * @param spendPubKey - 33-byte compressed spend public key
+ * @param targetAddress - The Stacks address to compare the derived address against
  * @param spendPrivKey - 32-byte spend private key (optional; needed to recover spending key)
  * @param network - Stacks network for address derivation
  * @returns Match result with stealth address and spending key if matched
@@ -180,6 +181,7 @@ export function checkStealthPayment(
   ephemeralPubKey: Uint8Array,
   viewPrivKey: Uint8Array,
   spendPubKey: Uint8Array,
+  targetAddress: string,
   spendPrivKey?: Uint8Array,
   network: 'mainnet' | 'testnet' | 'devnet' = 'testnet',
 ): StealthPaymentCheck {
@@ -199,7 +201,12 @@ export function checkStealthPayment(
   // 4. Derive Stacks address
   const stealthAddress = publicKeyToStacksAddress(stealthPubKey, network);
 
-  // 5. If we have the spend private key, compute the stealth spending key
+  // 5. Compare derived address to the target address
+  if (stealthAddress !== targetAddress) {
+    return { match: false };
+  }
+
+  // 6. If we have the spend private key, compute the stealth spending key
   let stealthPrivKey: Uint8Array | undefined;
   if (spendPrivKey) {
     const spendScalar = secp.etc.bytesToNumberBE(spendPrivKey);
@@ -242,19 +249,15 @@ export function verifyStealthPayment(
   spendPrivKey?: Uint8Array,
   network: 'mainnet' | 'testnet' | 'devnet' = 'testnet',
 ): StealthPaymentCheck {
-  const result = checkStealthPayment(
+  // Delegate to checkStealthPayment which now performs the address comparison
+  return checkStealthPayment(
     ephemeralPubKey,
     viewPrivKey,
     spendPubKey,
+    targetAddress,
     spendPrivKey,
     network,
   );
-
-  if (result.stealthAddress !== targetAddress) {
-    return { match: false };
-  }
-
-  return result;
 }
 
 // ---------------------------------------------------------------------------

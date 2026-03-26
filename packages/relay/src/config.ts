@@ -44,6 +44,8 @@ export interface RelayerConfig {
   batchDelayMs: number;
   /** File path used to persist the in-memory queue for crash recovery. */
   queuePersistPath: string;
+  /** Human-readable relayer name for discovery (optional). */
+  relayerName?: string;
 }
 
 // ---------------------------------------------------------------------------
@@ -70,6 +72,7 @@ const envSchema = z.object({
   MAX_FEE: z.coerce.bigint().default(BigInt(500_000)),
   BATCH_DELAY_MS: z.coerce.number().int().nonnegative().default(15_000),
   QUEUE_PERSIST_PATH: z.string().default('./data/queue.json'),
+  RELAYER_NAME: z.string().optional(),
 });
 
 // ---------------------------------------------------------------------------
@@ -93,5 +96,6 @@ export function loadConfig(env: Record<string, string | undefined> = process.env
     },
     batchDelayMs: parsed.BATCH_DELAY_MS,
     queuePersistPath: parsed.QUEUE_PERSIST_PATH,
+    relayerName: parsed.RELAYER_NAME,
   };
 }

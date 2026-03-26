@@ -76,6 +76,26 @@ export interface WasmProverModule {
 }
 
 // ---------------------------------------------------------------------------
+// Constants
+// ---------------------------------------------------------------------------
+
+/**
+ * Default path to the WASM binary, relative to the SDK package root.
+ * This points to the wasm-pack output in the circuits/build directory.
+ */
+const DEFAULT_WASM_PATH = '../../circuits/build/wasm/satsu_prover_bg.wasm';
+
+// ---------------------------------------------------------------------------
+// Constants
+// ---------------------------------------------------------------------------
+
+/**
+ * Default path to the WASM binary, relative to the SDK package root.
+ * This points to the wasm-pack output in the circuits/build directory.
+ */
+const DEFAULT_WASM_PATH = '../../circuits/build/wasm/satsu_prover_bg.wasm';
+
+// ---------------------------------------------------------------------------
 // Module state
 // ---------------------------------------------------------------------------
 
@@ -119,7 +139,7 @@ export async function loadWasmProver(
 
   loadAttempted = true;
 
-  const path = wasmPath ?? './satsu_prover_bg.wasm';
+  const path = wasmPath ?? DEFAULT_WASM_PATH;
 
   try {
     let wasmBytes: ArrayBuffer | Uint8Array;

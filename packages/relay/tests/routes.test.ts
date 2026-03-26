@@ -257,6 +257,62 @@ describe('Routes', () => {
   });
 
   // -----------------------------------------------------------------------
+  // GET /api/v1/info
+  // -----------------------------------------------------------------------
+
+  describe('GET /api/v1/info', () => {
+    it('returns relayer metadata', async () => {
+      const res = await request(app, 'GET', '/api/v1/info');
+      expect(res.status).toBe(200);
+      expect(res.body).toHaveProperty('name');
+      expect(res.body).toHaveProperty('version');
+      expect(res.body).toHaveProperty('fee');
+      expect(res.body).toHaveProperty('network');
+      expect(res.body).toHaveProperty('supportedPools');
+      expect(typeof res.body.name).toBe('string');
+      expect(typeof res.body.version).toBe('string');
+      expect(typeof res.body.fee).toBe('string');
+      expect(res.body.network).toBe('devnet');
+      expect(Array.isArray(res.body.supportedPools)).toBe(true);
+    });
+
+    it('returns the current fee as a string', async () => {
+      const res = await request(app, 'GET', '/api/v1/info');
+      expect(res.body.fee).toMatch(/^\d+$/);
+    });
+
+    it('includes the pool contract in supportedPools', async () => {
+      const res = await request(app, 'GET', '/api/v1/info');
+      expect(res.body.supportedPools).toContain(config.poolContract);
+    });
+
+    it('uses relayerName from config when set', async () => {
+      // Rebuild the app with a custom relayer name
+      const namedConfig = {
+        ...config,
+        relayerName: 'my-custom-relayer',
+        queuePersistPath: tmpPath(),
+      };
+      const namedQueue = new TransactionQueue(namedConfig.queuePersistPath, logger);
+      const namedFeeManager = new FeeManager(namedConfig.feeConfig, () => {
+        const c = namedQueue.getPendingCount();
+        return c.deposits + c.withdrawals;
+      });
+      const namedApp = express();
+      namedApp.use(express.json());
+      namedApp.use(createRouter({
+        queue: namedQueue,
+        feeManager: namedFeeManager,
+        config: namedConfig,
+        logger,
+      }));
+
+      const res = await request(namedApp, 'GET', '/api/v1/info');
+      expect(res.body.name).toBe('my-custom-relayer');
+    });
+  });
+
+  // -----------------------------------------------------------------------
   // GET /api/v1/health
   // -----------------------------------------------------------------------
 

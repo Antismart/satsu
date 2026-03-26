@@ -148,6 +148,21 @@ export function createRouter(deps: RouteDeps): Router {
   });
 
   // -----------------------------------------------------------------------
+  // GET /api/v1/info
+  // -----------------------------------------------------------------------
+
+  router.get('/api/v1/info', (_req: Request, res: Response) => {
+    const currentFee = feeManager.getCurrentFee();
+    res.json({
+      name: config.relayerName ?? `satsu-relayer-${config.network}`,
+      version: '0.1.0',
+      fee: currentFee.toString(),
+      network: config.network,
+      supportedPools: [config.poolContract],
+    });
+  });
+
+  // -----------------------------------------------------------------------
   // GET /api/v1/health
   // -----------------------------------------------------------------------
 

@@ -48,6 +48,18 @@ export interface NetworkConfig {
   poolContract: string;
   /** Contract name for the Merkle tree library. */
   merkleContract: string;
+  /** Contract name for the stealth address registry. */
+  stealthContract: string;
+  /** Contract name for the nullifier registry. */
+  nullifierContract: string;
+  /**
+   * Full contract identifier for sBTC on this network.
+   * On devnet this is `<deployer>.sbtc-token` (mock).
+   * On testnet/mainnet this is the real sBTC contract deployed by the signer set.
+   */
+  sbtcContract: string;
+  /** Stacks API base URL for this network. */
+  stacksApiUrl: string;
   /** Stacks network name for @stacks/transactions. */
   stacksNetwork: 'devnet' | 'testnet' | 'mainnet';
 }
@@ -57,18 +69,30 @@ export const NETWORKS: Record<SatsuNetwork, NetworkConfig> = {
     deployer: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
     poolContract: 'pool-v1',
     merkleContract: 'merkle-tree',
+    stealthContract: 'stealth-v1',
+    nullifierContract: 'nullifier-registry',
+    sbtcContract: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.sbtc-token',
+    stacksApiUrl: 'http://localhost:3999',
     stacksNetwork: 'devnet',
   },
   testnet: {
-    deployer: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
+    deployer: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM', // TODO: update after deploy
     poolContract: 'pool-v1',
     merkleContract: 'merkle-tree',
+    stealthContract: 'stealth-v1',
+    nullifierContract: 'nullifier-registry',
+    sbtcContract: 'SN3R84XZYA63QS28932XQF3G1J8R9PC3W8AKR0EP.sbtc-token',
+    stacksApiUrl: 'https://api.testnet.hiro.so',
     stacksNetwork: 'testnet',
   },
   mainnet: {
     deployer: 'SP000000000000000000002Q6VF78', // Placeholder - TBD at launch
     poolContract: 'pool-v1',
     merkleContract: 'merkle-tree',
+    stealthContract: 'stealth-v1',
+    nullifierContract: 'nullifier-registry',
+    sbtcContract: 'SM3VDXK3WZZSA84XXFKAFAF15NNZX32CTSG82JFQ4.sbtc-token', // Placeholder - TBD
+    stacksApiUrl: 'https://api.hiro.so',
     stacksNetwork: 'mainnet',
   },
 };
