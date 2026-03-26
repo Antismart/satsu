@@ -1,52 +1,44 @@
 @import "tailwindcss";
 
 :root {
-  --background: #F9F9F9;
-  --foreground: #191919;
-  --primary: #0057FF;
-  --primary-hover: #006ACB;
-  --primary-deep: #002F9A;
-  --primary-darkest: #0F214D;
-  --purple-accent: #B125C0;
-  --orange-alert: #F97C00;
-  --card-bg: #FFFFFF;
-  --card-border: #E8E8E8;
-  --border-default: #CDCDCD;
-  --text-secondary: #6B7280;
-  --text-muted: #9CA3AF;
-  --text-light: #CDCDCD;
-  --dark-bg: #191919;
-  --dark-inverted: #303030;
-  --input-disabled: #F0F0F0;
-  --success: #028901;
-  --success-dark: #046700;
-  --danger: #D00D00;
-  --danger-dark: #910000;
+  --background: #0A0A0A;
+  --foreground: #FFFFFF;
+  --card-bg: rgba(28, 28, 28, 0.7);
+  --card-border: rgba(255, 255, 255, 0.08);
+  --card-border-hover: rgba(255, 255, 255, 0.15);
+  --accent: #F97C00;
+  --accent-end: #E84D00;
+  --accent-yellow: #FACC15;
+  --accent-green: #4ADE80;
+  --text-primary: #FFFFFF;
+  --text-secondary: rgba(255, 255, 255, 0.6);
+  --text-muted: rgba(255, 255, 255, 0.35);
+  --btn-bg: rgba(255, 255, 255, 0.06);
+  --btn-border: rgba(255, 255, 255, 0.12);
+  --btn-hover: rgba(255, 255, 255, 0.1);
+  --input-bg: rgba(255, 255, 255, 0.04);
+  --input-border: rgba(255, 255, 255, 0.1);
+  --input-focus: rgba(249, 124, 0, 0.4);
+  --danger: #EF4444;
+  --success: #4ADE80;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-primary: var(--primary);
-  --color-primary-hover: var(--primary-hover);
-  --color-primary-deep: var(--primary-deep);
-  --color-primary-darkest: var(--primary-darkest);
-  --color-purple-accent: var(--purple-accent);
-  --color-orange-alert: var(--orange-alert);
   --color-card-bg: var(--card-bg);
   --color-card-border: var(--card-border);
-  --color-border-default: var(--border-default);
+  --color-accent: var(--accent);
+  --color-accent-yellow: var(--accent-yellow);
+  --color-accent-green: var(--accent-green);
   --color-text-secondary: var(--text-secondary);
   --color-text-muted: var(--text-muted);
-  --color-text-light: var(--text-light);
-  --color-dark-bg: var(--dark-bg);
-  --color-dark-inverted: var(--dark-inverted);
-  --color-input-disabled: var(--input-disabled);
-  --color-success: var(--success);
-  --color-success-dark: var(--success-dark);
+  --color-btn-bg: var(--btn-bg);
+  --color-btn-border: var(--btn-border);
   --color-danger: var(--danger);
-  --color-danger-dark: var(--danger-dark);
-  --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --color-success: var(--success);
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-serif: "Georgia", "Times New Roman", serif;
 }
 
 html {
@@ -54,12 +46,12 @@ html {
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background: #0A0A0A;
+  color: #FFFFFF;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
-/* Scrollbar styling */
+/* Dark scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
 }
@@ -67,20 +59,121 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.08);
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.18);
+  background: rgba(255, 255, 255, 0.15);
 }
 
-/* Selection */
+/* Selection - orange tint */
 ::selection {
-  background: rgba(0, 87, 255, 0.15);
-  color: #191919;
+  background: rgba(249, 124, 0, 0.3);
+  color: #FFFFFF;
 }
 
-/* Pulse animation for status dots */
+/* ----------------------------------------------------------------
+   GLASS CARD
+   ---------------------------------------------------------------- */
+.glass-card {
+  background: rgba(28, 28, 28, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  transition: border-color 0.3s ease;
+}
+.glass-card:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+/* ----------------------------------------------------------------
+   DIAMOND GRID PATTERN
+   ---------------------------------------------------------------- */
+.diamond-grid {
+  background-image:
+    linear-gradient(45deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(-45deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* ----------------------------------------------------------------
+   WARM GLOW - ambient orange radial
+   ---------------------------------------------------------------- */
+.warm-glow {
+  position: relative;
+}
+.warm-glow::before {
+  content: "";
+  position: absolute;
+  top: -20%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120%;
+  height: 100%;
+  background: radial-gradient(ellipse at 50% 30%, rgba(249, 124, 0, 0.20), transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ----------------------------------------------------------------
+   DARK GLASS BUTTON
+   ---------------------------------------------------------------- */
+.btn-glass {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  color: #FFFFFF;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+.btn-glass:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* ----------------------------------------------------------------
+   ACCENT BUTTON (filled orange)
+   ---------------------------------------------------------------- */
+.btn-accent {
+  background: linear-gradient(135deg, #F97C00, #E84D00);
+  border: none;
+  border-radius: 999px;
+  color: #FFFFFF;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(249, 124, 0, 0.25);
+}
+.btn-accent:hover {
+  box-shadow: 0 4px 30px rgba(249, 124, 0, 0.4);
+  transform: translateY(-1px);
+}
+.btn-accent:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ----------------------------------------------------------------
+   PROGRESS BAR (orange -> yellow gradient)
+   ---------------------------------------------------------------- */
+.progress-track {
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 999px;
+  height: 8px;
+  overflow: hidden;
+}
+.progress-fill {
+  background: linear-gradient(90deg, #F97C00, #FACC15);
+  border-radius: 999px;
+  height: 100%;
+  transition: width 0.7s ease-out;
+}
+
+/* ----------------------------------------------------------------
+   ANIMATIONS
+   ---------------------------------------------------------------- */
 @keyframes pulse-ring {
   0% {
     transform: scale(1);
@@ -103,7 +196,6 @@ body {
   animation: pulse-ring 2s ease-out infinite;
 }
 
-/* Smooth fade in for page content */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -130,7 +222,6 @@ body {
   animation-delay: 0.4s;
 }
 
-/* Shimmer animation for decorative elements */
 @keyframes shimmer {
   0% {
     opacity: 0.3;
@@ -144,4 +235,23 @@ body {
 }
 .animate-shimmer {
   animation: shimmer 4s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* ----------------------------------------------------------------
+   SERIF HEADING
+   ---------------------------------------------------------------- */
+.font-heading {
+  font-family: "Georgia", "Times New Roman", serif;
 }

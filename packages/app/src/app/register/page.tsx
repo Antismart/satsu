@@ -82,9 +82,9 @@ export default function RegisterPage() {
     return (
       <div className="mx-auto max-w-[1200px] px-6 py-28">
         <div className="max-w-md mx-auto text-center">
-          <div className="h-16 w-16 rounded-2xl bg-[#0057FF]/[0.08] flex items-center justify-center mx-auto mb-6">
+          <div className="h-16 w-16 rounded-2xl bg-[#F97C00]/10 flex items-center justify-center mx-auto mb-6">
             <svg
-              className="h-8 w-8 text-[#0057FF]"
+              className="h-8 w-8 text-[#F97C00]"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -97,16 +97,16 @@ export default function RegisterPage() {
               />
             </svg>
           </div>
-          <h1 className="text-3xl font-bold tracking-tight mb-3 text-[#191919]">
+          <h1 className="text-3xl font-bold tracking-tight mb-3 text-white">
             Register
           </h1>
-          <p className="text-[#6B7280] mb-8 leading-relaxed">
+          <p className="text-white/50 mb-8 leading-relaxed">
             Connect your wallet to generate stealth keys and register your
             meta-address for receiving private payments.
           </p>
           <button
             onClick={connect}
-            className="h-12 px-8 rounded-full bg-[#0057FF] text-white font-semibold text-sm shadow-[0_1px_2px_rgba(0,0,0,0.4)] transition-all duration-300 hover:bg-[#006ACB]"
+            className="btn-accent h-12 px-8 text-sm"
           >
             Connect Wallet
           </button>
@@ -127,17 +127,17 @@ export default function RegisterPage() {
     <div className="mx-auto max-w-2xl px-6 py-10 sm:py-16">
       {/* Header */}
       <div className="mb-10">
-        <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2 text-[#191919]">
+        <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2 text-white">
           Register Stealth Address
         </h1>
-        <p className="text-base text-[#6B7280] leading-relaxed">
+        <p className="text-base text-white/50 leading-relaxed">
           Generate your stealth keys and register your meta-address on-chain so
           others can send you private payments.
         </p>
       </div>
 
       {/* ================================================================
-          STEP PROGRESS INDICATOR - Horizontal line with numbered circles
+          STEP PROGRESS INDICATOR
           ================================================================ */}
       <div className="flex items-center gap-0 mb-12">
         {steps.map((s, i) => {
@@ -153,11 +153,12 @@ export default function RegisterPage() {
                 <div
                   className={`h-10 w-10 rounded-full flex items-center justify-center text-xs font-semibold transition-all duration-300 ${
                     isCompleted
-                      ? "bg-[#028901] text-white"
+                      ? "bg-[#4ADE80] text-white"
                       : isCurrent
-                        ? "bg-[#0057FF] text-white shadow-[0_5px_20px_rgba(0,87,255,0.25)]"
-                        : "border border-[#CDCDCD] bg-white text-[#9CA3AF]"
+                        ? "text-white shadow-[0_5px_20px_rgba(249,124,0,0.3)]"
+                        : "border border-white/[0.12] bg-white/[0.04] text-white/35"
                   }`}
+                  style={isCurrent ? { background: "linear-gradient(135deg, #F97C00, #E84D00)" } : undefined}
                 >
                   {isCompleted ? (
                     <svg
@@ -180,10 +181,10 @@ export default function RegisterPage() {
                 <span
                   className={`text-[10px] font-semibold mt-2 whitespace-nowrap uppercase tracking-wider ${
                     isCurrent
-                      ? "text-[#191919]"
+                      ? "text-[#F97C00]"
                       : isCompleted
-                        ? "text-[#028901]"
-                        : "text-[#9CA3AF]"
+                        ? "text-[#4ADE80]"
+                        : "text-white/25"
                   }`}
                 >
                   {STEP_LABELS[i]}
@@ -191,8 +192,8 @@ export default function RegisterPage() {
               </div>
               {i < 3 && (
                 <div
-                  className={`h-[2px] flex-1 mx-3 mt-[-18px] transition-colors duration-300 ${
-                    isCompleted ? "bg-[#028901]" : "bg-[#E8E8E8]"
+                  className={`h-[1px] flex-1 mx-3 mt-[-18px] transition-colors duration-300 ${
+                    isCompleted ? "bg-[#4ADE80]" : "bg-white/[0.08]"
                   }`}
                 />
               )}
@@ -203,9 +204,9 @@ export default function RegisterPage() {
 
       {/* Error */}
       {error && (
-        <div className="mb-6 flex items-start gap-3 p-4 rounded-xl bg-[#D00D00]/[0.06] border border-[#D00D00]/20">
+        <div className="mb-6 flex items-start gap-3 p-4 rounded-xl bg-[#EF4444]/[0.06] border border-[#EF4444]/20">
           <svg
-            className="h-5 w-5 text-[#D00D00] flex-shrink-0 mt-0.5"
+            className="h-5 w-5 text-[#EF4444] flex-shrink-0 mt-0.5"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -217,17 +218,17 @@ export default function RegisterPage() {
               d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"
             />
           </svg>
-          <p className="text-sm text-[#D00D00]">{error}</p>
+          <p className="text-sm text-[#EF4444]">{error}</p>
         </div>
       )}
 
       {/* Step: Generate stealth keys */}
       {step === "generate" && (
-        <div className="bg-white rounded-2xl p-8 shadow-[0_5px_20px_rgba(0,0,0,0.08)]">
-          <h2 className="text-xl font-semibold tracking-tight mb-3 text-[#191919]">
+        <div className="glass-card p-8">
+          <h2 className="text-xl font-semibold tracking-tight mb-3 text-white">
             Generate Stealth Keys
           </h2>
-          <p className="text-sm text-[#6B7280] mb-8 leading-relaxed">
+          <p className="text-sm text-white/50 mb-8 leading-relaxed">
             This will generate a spend key and a view key. The spend key
             controls your funds. The view key lets you detect incoming payments
             without exposing your spend key.
@@ -235,7 +236,7 @@ export default function RegisterPage() {
           <button
             onClick={handleGenerate}
             disabled={isProcessing}
-            className="w-full h-12 rounded-full bg-[#0057FF] disabled:bg-[#0057FF]/30 disabled:cursor-not-allowed text-white font-semibold text-sm shadow-[0_1px_2px_rgba(0,0,0,0.4)] transition-all duration-300 hover:bg-[#006ACB]"
+            className="w-full h-12 btn-accent text-sm"
           >
             {isProcessing ? (
               <span className="flex items-center justify-center gap-2">
@@ -269,29 +270,29 @@ export default function RegisterPage() {
 
       {/* Step: Register on-chain */}
       {step === "register" && (
-        <div className="bg-white rounded-2xl p-8 shadow-[0_5px_20px_rgba(0,0,0,0.08)]">
-          <h2 className="text-xl font-semibold tracking-tight mb-3 text-[#191919]">
+        <div className="glass-card p-8">
+          <h2 className="text-xl font-semibold tracking-tight mb-3 text-white">
             Register On-Chain
           </h2>
-          <p className="text-sm text-[#6B7280] mb-6 leading-relaxed">
+          <p className="text-sm text-white/50 mb-6 leading-relaxed">
             Your stealth meta-address will be published on-chain so others can
             derive one-time addresses to send you private payments.
           </p>
 
           {/* Meta address display */}
           <div className="mb-8">
-            <label className="block text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-widest mb-3">
+            <label className="block text-[10px] font-semibold text-white/35 uppercase tracking-widest mb-3">
               Your Stealth Meta-Address
             </label>
             <div className="flex gap-2">
-              <div className="flex-1 h-12 px-4 rounded-xl bg-[#F9F9F9] border border-[#E8E8E8] overflow-hidden flex items-center">
-                <p className="text-xs font-mono text-[#6B7280] truncate">
+              <div className="flex-1 h-12 px-4 rounded-xl bg-white/[0.04] border border-white/[0.08] overflow-hidden flex items-center">
+                <p className="text-xs font-mono text-white/50 truncate">
                   {metaAddress}
                 </p>
               </div>
               <button
                 onClick={copyToClipboard}
-                className="h-12 px-6 rounded-full bg-white border border-[#CDCDCD] text-sm font-semibold text-[#303030] hover:border-[#0057FF] transition-all duration-300 flex-shrink-0"
+                className="btn-glass h-12 px-6 text-sm font-semibold flex-shrink-0"
               >
                 Copy
               </button>
@@ -301,7 +302,7 @@ export default function RegisterPage() {
           <button
             onClick={handleRegister}
             disabled={isProcessing}
-            className="w-full h-12 rounded-full bg-[#0057FF] disabled:bg-[#0057FF]/30 disabled:cursor-not-allowed text-white font-semibold text-sm shadow-[0_1px_2px_rgba(0,0,0,0.4)] transition-all duration-300 hover:bg-[#006ACB]"
+            className="w-full h-12 btn-accent text-sm"
           >
             {isProcessing ? (
               <span className="flex items-center justify-center gap-2">
@@ -335,16 +336,16 @@ export default function RegisterPage() {
 
       {/* Step: Link BNS */}
       {step === "link-bns" && (
-        <div className="bg-white rounded-2xl p-8 shadow-[0_5px_20px_rgba(0,0,0,0.08)]">
-          <h2 className="text-xl font-semibold tracking-tight mb-3 text-[#191919]">
+        <div className="glass-card p-8">
+          <h2 className="text-xl font-semibold tracking-tight mb-3 text-white">
             Link BNS Name
           </h2>
-          <div className="inline-flex items-center px-3 py-1 rounded-full bg-[#F9F9F9] border border-[#E8E8E8] mb-4">
-            <span className="text-[10px] text-[#9CA3AF] font-semibold uppercase tracking-widest">
+          <div className="inline-flex items-center px-3 py-1 rounded-full bg-white/[0.04] border border-white/[0.08] mb-4">
+            <span className="text-[10px] text-white/35 font-semibold uppercase tracking-widest">
               Optional
             </span>
           </div>
-          <p className="text-sm text-[#6B7280] mb-6 leading-relaxed">
+          <p className="text-sm text-white/50 mb-6 leading-relaxed">
             Link a BNS name to your stealth meta-address. This lets others look
             up your address by name instead of the full key.
           </p>
@@ -352,7 +353,7 @@ export default function RegisterPage() {
           <div className="mb-8">
             <label
               htmlFor="bns-name"
-              className="block text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-widest mb-3"
+              className="block text-[10px] font-semibold text-white/35 uppercase tracking-widest mb-3"
             >
               BNS Name
             </label>
@@ -362,14 +363,14 @@ export default function RegisterPage() {
               value={bnsName}
               onChange={(e) => setBnsName(e.target.value)}
               placeholder="yourname.btc"
-              className="w-full h-12 px-4 rounded-xl bg-white border border-[#CDCDCD] text-[#191919] text-sm placeholder:text-[#CDCDCD] focus:border-[#0057FF] focus:ring-1 focus:ring-[#0057FF] focus:outline-none transition-all duration-300"
+              className="w-full h-12 px-4 rounded-xl bg-white/[0.04] border border-white/[0.1] text-white text-sm placeholder:text-white/25 focus:border-[#F97C00]/50 focus:ring-1 focus:ring-[#F97C00]/30 focus:outline-none transition-all duration-300"
             />
           </div>
 
           <button
             onClick={handleLinkBns}
             disabled={isProcessing}
-            className="w-full h-12 rounded-full bg-[#0057FF] disabled:bg-[#0057FF]/30 disabled:cursor-not-allowed text-white font-semibold text-sm shadow-[0_1px_2px_rgba(0,0,0,0.4)] transition-all duration-300 hover:bg-[#006ACB]"
+            className="w-full h-12 btn-accent text-sm"
           >
             {isProcessing ? (
               <span className="flex items-center justify-center gap-2">
@@ -405,9 +406,9 @@ export default function RegisterPage() {
 
       {/* Step: Done */}
       {step === "done" && (
-        <div className="bg-white rounded-2xl p-8 shadow-[0_5px_20px_rgba(0,0,0,0.08)]">
+        <div className="glass-card p-8">
           <div className="text-center mb-8">
-            <div className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-[#028901] mb-5">
+            <div className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-[#4ADE80] mb-5">
               <svg
                 className="h-7 w-7 text-white"
                 fill="none"
@@ -422,28 +423,28 @@ export default function RegisterPage() {
                 />
               </svg>
             </div>
-            <h2 className="text-xl font-semibold tracking-tight text-[#191919]">
+            <h2 className="text-xl font-semibold tracking-tight text-white">
               Registration Complete
             </h2>
-            <p className="text-sm text-[#6B7280] mt-2">
+            <p className="text-sm text-white/50 mt-2">
               Your stealth meta-address has been registered on-chain.
             </p>
           </div>
 
           {/* Address display */}
           <div className="mb-6">
-            <label className="block text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-widest mb-3">
+            <label className="block text-[10px] font-semibold text-white/35 uppercase tracking-widest mb-3">
               Share this address to receive private payments
             </label>
             <div className="flex gap-2">
-              <div className="flex-1 h-12 px-4 rounded-xl bg-[#F9F9F9] border border-[#E8E8E8] overflow-hidden flex items-center">
-                <p className="text-xs font-mono text-[#6B7280] truncate">
+              <div className="flex-1 h-12 px-4 rounded-xl bg-white/[0.04] border border-white/[0.08] overflow-hidden flex items-center">
+                <p className="text-xs font-mono text-white/50 truncate">
                   {metaAddress}
                 </p>
               </div>
               <button
                 onClick={copyToClipboard}
-                className="h-12 px-6 rounded-full bg-white border border-[#CDCDCD] text-sm font-semibold text-[#303030] hover:border-[#0057FF] transition-all duration-300 flex-shrink-0"
+                className="btn-glass h-12 px-6 text-sm font-semibold flex-shrink-0"
               >
                 Copy
               </button>
@@ -451,10 +452,10 @@ export default function RegisterPage() {
           </div>
 
           {bnsName && (
-            <div className="text-center py-4 rounded-xl bg-[#F9F9F9] border border-[#E8E8E8]">
-              <p className="text-sm text-[#6B7280]">
+            <div className="text-center py-4 rounded-xl bg-white/[0.04] border border-white/[0.08]">
+              <p className="text-sm text-white/50">
                 Linked to:{" "}
-                <span className="text-[#191919] font-mono font-semibold">
+                <span className="text-white font-mono font-semibold">
                   {bnsName}
                 </span>
               </p>

@@ -28,18 +28,21 @@ const footerSections = [
 
 export function Footer() {
   return (
-    <footer className="bg-[#191919] mt-auto">
+    <footer className="bg-[#0A0A0A] mt-auto border-t border-white/[0.06]">
       <div className="mx-auto max-w-[1200px] px-6 py-16">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-10 mb-12">
           {/* Brand column */}
           <div className="col-span-2 sm:col-span-1">
             <div className="flex items-center gap-2.5 mb-4">
-              <div className="h-8 w-8 rounded-lg bg-[#0057FF] flex items-center justify-center">
+              <div
+                className="h-8 w-8 rounded-lg flex items-center justify-center"
+                style={{ background: "linear-gradient(135deg, #F97C00, #E84D00)" }}
+              >
                 <span className="text-sm font-bold text-white">S</span>
               </div>
               <span className="text-base font-semibold text-white">Satsu</span>
             </div>
-            <p className="text-sm text-[#9CA3AF] leading-relaxed max-w-[200px]">
+            <p className="text-sm text-white/35 leading-relaxed max-w-[200px]">
               Private payments on Bitcoin through zero-knowledge proofs and stealth addresses.
             </p>
           </div>
@@ -47,7 +50,7 @@ export function Footer() {
           {/* Link columns */}
           {footerSections.map((section) => (
             <div key={section.title}>
-              <h4 className="text-[10px] uppercase tracking-widest font-semibold text-[#9CA3AF] mb-4">
+              <h4 className="text-[10px] uppercase tracking-widest font-semibold text-white/35 mb-4">
                 {section.title}
               </h4>
               <ul className="space-y-3">
@@ -55,7 +58,7 @@ export function Footer() {
                   <li key={link.label}>
                     <Link
                       href={link.href}
-                      className="text-sm text-[#CDCDCD] hover:text-white transition-colors duration-300"
+                      className="text-sm text-white/50 hover:text-white transition-colors duration-300"
                     >
                       {link.label}
                     </Link>
@@ -67,11 +70,11 @@ export function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="pt-8 border-t border-white/[0.08] flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-[#6B7280]">
+        <div className="pt-8 border-t border-white/[0.06] flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-xs text-white/25">
             Built on Stacks. Secured by Bitcoin.
           </p>
-          <p className="text-xs text-[#6B7280]">
+          <p className="text-xs text-white/25">
             Satsu Protocol. All rights reserved.
           </p>
         </div>

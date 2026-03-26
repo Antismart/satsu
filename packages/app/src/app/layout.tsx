@@ -15,8 +15,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full antialiased">
-      <body className="min-h-full flex flex-col bg-[#F9F9F9] text-[#191919]" style={{ fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif' }}>
+    <html lang="en" className="h-full antialiased" style={{ background: "#0A0A0A" }}>
+      <body
+        className="min-h-full flex flex-col"
+        style={{
+          background: "#0A0A0A",
+          color: "#FFFFFF",
+          fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+        }}
+      >
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />

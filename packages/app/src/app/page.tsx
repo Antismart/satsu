@@ -12,22 +12,31 @@ const features = [
     title: "Stealth Addresses",
     description:
       "Generate one-time addresses for every payment. Receivers stay completely hidden on-chain -- no address reuse, no trail.",
-    icon: "S",
-    color: "#0057FF",
+    icon: (
+      <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z" />
+      </svg>
+    ),
   },
   {
     title: "Shielded Pool",
     description:
       "Deposit sBTC into a shared pool where all deposits become indistinguishable. Your funds blend in with the entire anonymity set.",
-    icon: "L",
-    color: "#B125C0",
+    icon: (
+      <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+      </svg>
+    ),
   },
   {
     title: "Zero Knowledge",
     description:
       "Prove you own funds without revealing which deposit is yours. ZK proofs are generated locally in your browser -- nothing leaves your device.",
-    icon: "Z",
-    color: "#002F9A",
+    icon: (
+      <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
+      </svg>
+    ),
   },
 ];
 
@@ -56,50 +65,63 @@ export default function Home() {
   return (
     <div className="flex flex-col">
       {/* ================================================================
-          HERO - Deep blue dark section with decorative shapes
+          HERO - Dark with warm orange glow
           ================================================================ */}
-      <section className="relative overflow-hidden bg-[#0F214D]">
-        {/* Decorative SVG shapes */}
+      <section className="relative overflow-hidden bg-[#0A0A0A]">
+        {/* Warm ambient glow */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[700px] bg-[radial-gradient(ellipse_at_50%_30%,rgba(249,124,0,0.20),transparent_60%)]" />
+          <div className="absolute top-[20%] right-[15%] w-[300px] h-[300px] bg-[radial-gradient(circle,rgba(249,124,0,0.08),transparent_70%)] blur-[60px]" />
+        </div>
+
+        {/* Diamond grid overlay */}
+        <div className="absolute inset-0 pointer-events-none diamond-grid opacity-50" />
+
+        {/* Decorative shapes */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          {/* Large circle top-right */}
-          <div className="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full border border-white/[0.04] animate-shimmer" />
-          <div className="absolute -top-16 -right-16 w-[400px] h-[400px] rounded-full border border-white/[0.03]" />
-          {/* Small circle bottom-left */}
-          <div className="absolute bottom-20 -left-20 w-[300px] h-[300px] rounded-full bg-[#0057FF]/[0.06]" />
-          {/* Rounded rect mid-right */}
-          <div className="absolute top-1/3 right-[10%] w-[200px] h-[120px] rounded-3xl bg-[#0057FF]/[0.04] rotate-12" />
-          {/* Small accent dot */}
-          <div className="absolute top-[20%] left-[15%] w-3 h-3 rounded-full bg-[#0057FF]/20" />
-          <div className="absolute bottom-[30%] right-[20%] w-2 h-2 rounded-full bg-white/10" />
-          {/* Gradient glow */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[600px] bg-gradient-to-b from-[#0057FF]/[0.08] via-[#0057FF]/[0.03] to-transparent rounded-full blur-[120px]" />
+          <div className="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full border border-white/[0.03] animate-shimmer" />
+          <div className="absolute bottom-20 -left-20 w-[300px] h-[300px] rounded-full bg-[#F97C00]/[0.03]" />
+          <div className="absolute top-[20%] left-[15%] w-2 h-2 rounded-full bg-[#F97C00]/30" />
+          <div className="absolute bottom-[30%] right-[20%] w-1.5 h-1.5 rounded-full bg-white/10" />
         </div>
 
         <div className="relative mx-auto max-w-[1200px] px-6 py-28 sm:py-36 lg:py-48">
           <div className="max-w-3xl animate-fade-in-up">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/[0.06] border border-white/[0.08] mb-8">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#028901]" />
-              <span className="text-xs text-white/60 font-semibold tracking-wide uppercase">
-                Testnet Live
-              </span>
+            {/* Tag pills */}
+            <div className="flex flex-wrap gap-3 mb-8">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-card !border-white/[0.1]">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#4ADE80]" />
+                <span className="text-xs text-white/60 font-semibold tracking-wide uppercase">
+                  Privacy Protocol
+                </span>
+              </div>
+              <div className="inline-flex items-center px-4 py-1.5 rounded-full glass-card !border-white/[0.1]">
+                <span className="text-xs text-white/60 font-semibold tracking-wide uppercase">
+                  Zero Knowledge
+                </span>
+              </div>
             </div>
 
-            <h1 className="text-5xl md:text-7xl font-black tracking-tight leading-[1.05] text-white">
+            {/* Serif hero heading */}
+            <h1 className="font-heading text-5xl md:text-7xl tracking-tight leading-[1.08] text-white">
               Private Payments
               <br />
-              <span className="text-[#0057FF]">on Bitcoin</span>
+              <span className="bg-gradient-to-r from-[#F97C00] to-[#FACC15] bg-clip-text text-transparent">
+                on Bitcoin.
+              </span>
             </h1>
 
-            <p className="mt-6 text-lg text-white/70 leading-relaxed max-w-xl">
+            <p className="mt-6 text-lg text-white/60 leading-relaxed max-w-xl">
               Satsu brings zero-knowledge privacy to Bitcoin through Stacks.
               Deposit sBTC into shielded pools, generate stealth addresses, and
               withdraw without revealing the link between sender and receiver.
             </p>
 
+            {/* CTA buttons */}
             <div className="mt-10 flex flex-col sm:flex-row gap-4">
               <Link
                 href="/dashboard"
-                className="group inline-flex items-center justify-center h-12 px-8 rounded-full bg-white text-[#0F214D] font-semibold text-sm shadow-[0_1px_2px_rgba(0,0,0,0.4)] transition-all duration-300 hover:shadow-[0_5px_20px_rgba(255,255,255,0.15)]"
+                className="group btn-accent inline-flex items-center justify-center h-12 px-8 text-sm"
               >
                 Launch App
                 <svg
@@ -118,9 +140,9 @@ export default function Home() {
               </Link>
               <a
                 href="#features"
-                className="inline-flex items-center justify-center h-12 px-8 rounded-full border border-white/[0.15] text-white/80 hover:text-white hover:border-white/[0.3] hover:bg-white/[0.04] font-semibold text-sm transition-all duration-300"
+                className="btn-glass inline-flex items-center justify-center h-12 px-8 text-sm font-semibold"
               >
-                Documentation
+                Learn More
               </a>
             </div>
           </div>
@@ -128,20 +150,20 @@ export default function Home() {
       </section>
 
       {/* ================================================================
-          STATS ROW - White strip with 4 stat cards
+          STATS ROW - Dark glass cards on black
           ================================================================ */}
-      <section className="relative bg-white">
+      <section className="relative bg-[#0A0A0A]">
         <div className="mx-auto max-w-[1200px] px-6 py-14">
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {stats.map((stat, i) => (
               <div
                 key={stat.label}
-                className={`bg-white rounded-xl p-6 shadow-[0_5px_20px_rgba(0,0,0,0.08)] text-center transition-all duration-300 hover:shadow-[0_5px_30px_rgba(0,0,0,0.12)] animate-fade-in-up animation-delay-${(i + 1) * 100}`}
+                className={`glass-card p-6 text-center animate-fade-in-up animation-delay-${(i + 1) * 100}`}
               >
-                <p className="text-2xl sm:text-3xl font-bold tracking-tight text-[#191919]">
+                <p className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
                   {stat.value}
                 </p>
-                <p className="text-xs text-[#9CA3AF] mt-2 uppercase tracking-wider font-semibold">
+                <p className="text-xs text-white/35 mt-2 uppercase tracking-wider font-semibold">
                   {stat.label}
                 </p>
               </div>
@@ -151,43 +173,35 @@ export default function Home() {
       </section>
 
       {/* ================================================================
-          FEATURES - Elevated white cards on light background
+          FEATURES - Dark glass bento cards
           ================================================================ */}
-      <section id="features" className="relative bg-[#F9F9F9]">
+      <section id="features" className="relative bg-[#0A0A0A] diamond-grid">
         <div className="mx-auto max-w-[1200px] px-6 py-24">
           <div className="text-center mb-16">
-            <p className="text-[10px] uppercase tracking-widest font-semibold text-[#9CA3AF] mb-3">
+            <p className="text-[10px] uppercase tracking-widest font-semibold text-white/35 mb-3">
               Core Technology
             </p>
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-[#191919]">
+            <h2 className="font-heading text-3xl md:text-4xl tracking-tight text-white">
               Privacy by Design
             </h2>
-            <p className="mt-4 text-base text-[#6B7280] max-w-lg mx-auto">
+            <p className="mt-4 text-base text-white/50 max-w-lg mx-auto">
               Three pillars of privacy engineered into every transaction.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
             {features.map((feature) => (
               <div
                 key={feature.title}
-                className="group bg-white rounded-2xl p-8 shadow-[0_5px_20px_rgba(0,0,0,0.08)] transition-all duration-300 hover:shadow-[0_5px_30px_rgba(0,0,0,0.12)]"
+                className="glass-card p-8 group"
               >
-                <div
-                  className="h-14 w-14 rounded-full flex items-center justify-center mb-6"
-                  style={{ backgroundColor: `${feature.color}10` }}
-                >
-                  <span
-                    className="text-xl font-bold"
-                    style={{ color: feature.color }}
-                  >
-                    {feature.icon}
-                  </span>
+                <div className="h-14 w-14 rounded-2xl bg-[#F97C00]/10 flex items-center justify-center mb-6 text-[#F97C00] group-hover:bg-[#F97C00]/15 transition-colors duration-300">
+                  {feature.icon}
                 </div>
-                <h3 className="text-xl font-semibold mb-3 tracking-tight text-[#191919]">
+                <h3 className="text-xl font-semibold mb-3 tracking-tight text-white">
                   {feature.title}
                 </h3>
-                <p className="text-sm text-[#6B7280] leading-relaxed">
+                <p className="text-sm text-white/50 leading-relaxed">
                   {feature.description}
                 </p>
               </div>
@@ -197,18 +211,49 @@ export default function Home() {
       </section>
 
       {/* ================================================================
-          HOW IT WORKS - Numbered circles with connector line
+          LARGE TYPOGRAPHY SECTION
           ================================================================ */}
-      <section className="relative bg-white">
+      <section className="relative bg-[#0A0A0A]">
+        <div className="mx-auto max-w-[1200px] px-6 py-24">
+          <h2 className="font-heading text-4xl md:text-6xl tracking-tight text-white text-center leading-[1.1] max-w-4xl mx-auto">
+            Instant Privacy For Every Transaction
+          </h2>
+          <p className="mt-6 text-center text-white/40 text-base max-w-xl mx-auto">
+            Built on Stacks. Secured by Bitcoin. Powered by zero-knowledge cryptography.
+          </p>
+          {/* Avatar circles */}
+          <div className="flex justify-center mt-10 -space-x-3">
+            {[...Array(5)].map((_, i) => (
+              <div
+                key={i}
+                className="h-10 w-10 rounded-full border-2 border-[#0A0A0A] flex items-center justify-center text-xs font-bold text-white/60"
+                style={{
+                  background: `linear-gradient(135deg, rgba(249,124,0,${0.15 + i * 0.08}), rgba(250,204,21,${0.1 + i * 0.05}))`,
+                }}
+              >
+                {String.fromCharCode(65 + i)}
+              </div>
+            ))}
+            <div className="h-10 w-10 rounded-full border-2 border-[#0A0A0A] bg-white/[0.06] flex items-center justify-center text-xs font-semibold text-white/50">
+              +89
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ================================================================
+          HOW IT WORKS - Steps with connector
+          ================================================================ */}
+      <section className="relative bg-[#0A0A0A] diamond-grid">
         <div className="mx-auto max-w-[1200px] px-6 py-24">
           <div className="text-center mb-16">
-            <p className="text-[10px] uppercase tracking-widest font-semibold text-[#9CA3AF] mb-3">
+            <p className="text-[10px] uppercase tracking-widest font-semibold text-white/35 mb-3">
               Simple Process
             </p>
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-[#191919]">
+            <h2 className="font-heading text-3xl md:text-4xl tracking-tight text-white">
               How Satsu Works
             </h2>
-            <p className="mt-4 text-base text-[#6B7280] max-w-lg mx-auto">
+            <p className="mt-4 text-base text-white/50 max-w-lg mx-auto">
               Three simple steps to achieve complete financial privacy on
               Bitcoin.
             </p>
@@ -217,18 +262,20 @@ export default function Home() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
             {howItWorks.map((item, i) => (
               <div key={item.step} className="relative flex flex-col items-center text-center">
-                {/* Connector line between circles */}
+                {/* Connector line */}
                 {i < 2 && (
-                  <div className="hidden sm:block absolute top-8 left-[calc(50%+36px)] w-[calc(100%-72px)] h-[2px] bg-[#E8E8E8]" />
+                  <div className="hidden sm:block absolute top-8 left-[calc(50%+36px)] w-[calc(100%-72px)] h-[1px] bg-white/[0.08]" />
                 )}
-                {/* Numbered circle */}
-                <div className="relative z-10 h-16 w-16 rounded-full bg-[#0057FF] flex items-center justify-center mb-6 shadow-[0_5px_20px_rgba(0,87,255,0.25)]">
+                {/* Numbered circle with gradient */}
+                <div className="relative z-10 h-16 w-16 rounded-full flex items-center justify-center mb-6"
+                  style={{ background: "linear-gradient(135deg, #F97C00, #E84D00)", boxShadow: "0 5px 25px rgba(249,124,0,0.3)" }}
+                >
                   <span className="text-xl font-bold text-white">{item.step}</span>
                 </div>
-                <h3 className="text-xl font-semibold mb-3 tracking-tight text-[#191919]">
+                <h3 className="text-xl font-semibold mb-3 tracking-tight text-white">
                   {item.title}
                 </h3>
-                <p className="text-sm text-[#6B7280] leading-relaxed max-w-xs">
+                <p className="text-sm text-white/50 leading-relaxed max-w-xs">
                   {item.description}
                 </p>
               </div>
@@ -238,24 +285,31 @@ export default function Home() {
       </section>
 
       {/* ================================================================
-          CTA - Blue gradient card
+          CTA BANNER - Warm orange blurred background card
           ================================================================ */}
-      <section className="relative bg-[#F9F9F9]">
+      <section className="relative bg-[#0A0A0A]">
         <div className="mx-auto max-w-[1200px] px-6 py-24">
-          <div className="bg-gradient-to-br from-[#0057FF] to-[#002F9A] rounded-2xl p-12 sm:p-16 text-center shadow-[0_5px_30px_rgba(0,87,255,0.2)]">
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4 text-white">
-              Ready to go private?
-            </h2>
-            <p className="text-white/70 max-w-md mx-auto mb-8 text-base">
-              Start using Satsu today. Deposit sBTC, generate proofs, and
-              withdraw with complete privacy.
-            </p>
-            <Link
-              href="/dashboard"
-              className="inline-flex items-center justify-center h-12 px-10 rounded-full bg-white text-[#0057FF] font-semibold text-sm transition-all duration-300 hover:shadow-[0_5px_20px_rgba(255,255,255,0.2)] shadow-[0_1px_2px_rgba(0,0,0,0.4)]"
-            >
-              Get Started
-            </Link>
+          <div className="relative rounded-[24px] overflow-hidden p-12 sm:p-16 text-center">
+            {/* Warm blurred background */}
+            <div className="absolute inset-0 bg-gradient-to-br from-[#F97C00]/20 via-[#E84D00]/15 to-[#F97C00]/10" />
+            <div className="absolute inset-0 bg-[#0A0A0A]/60 backdrop-blur-sm" />
+            <div className="absolute inset-0 border border-white/[0.08] rounded-[24px]" />
+
+            <div className="relative z-10">
+              <h2 className="font-heading text-3xl md:text-4xl tracking-tight mb-4 text-white">
+                Ready to go private?
+              </h2>
+              <p className="text-white/50 max-w-md mx-auto mb-8 text-base">
+                Start using Satsu today. Deposit sBTC, generate proofs, and
+                withdraw with complete privacy.
+              </p>
+              <Link
+                href="/dashboard"
+                className="btn-accent inline-flex items-center justify-center h-12 px-10 text-sm"
+              >
+                Get Started
+              </Link>
+            </div>
           </div>
         </div>
       </section>

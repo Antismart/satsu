@@ -52,29 +52,29 @@ export function WithdrawForm() {
     idle: null,
     "generating-proof": {
       label: "Generating zero-knowledge proof...",
-      color: "text-[#0057FF]",
+      color: "text-[#F97C00]",
     },
     submitting: {
       label: "Submitting withdrawal via relayer...",
-      color: "text-[#0057FF]",
+      color: "text-[#F97C00]",
     },
     success: {
       label: "Withdrawal submitted. Funds will arrive shortly.",
-      color: "text-[#028901]",
+      color: "text-[#4ADE80]",
     },
     error: {
       label: errorMsg || "Withdrawal failed",
-      color: "text-[#D00D00]",
+      color: "text-[#EF4444]",
     },
   };
 
   return (
-    <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-[0_5px_20px_rgba(0,0,0,0.08)] transition-all duration-300 hover:shadow-[0_5px_30px_rgba(0,0,0,0.12)]">
+    <div className="glass-card p-6 sm:p-8">
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
-        <div className="h-10 w-10 rounded-full bg-[#0057FF]/[0.1] flex items-center justify-center">
+        <div className="h-10 w-10 rounded-full bg-[#F97C00]/10 flex items-center justify-center">
           <svg
-            className="h-5 w-5 text-[#0057FF]"
+            className="h-5 w-5 text-[#F97C00]"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -88,14 +88,14 @@ export function WithdrawForm() {
           </svg>
         </div>
         <div>
-          <h2 className="text-xl font-semibold tracking-tight text-[#191919]">
+          <h2 className="text-xl font-semibold tracking-tight text-white">
             Withdraw sBTC
           </h2>
-          <p className="text-xs text-[#9CA3AF]">Privately via relayer</p>
+          <p className="text-xs text-white/35">Privately via relayer</p>
         </div>
       </div>
 
-      <p className="text-sm text-[#6B7280] mb-6 leading-relaxed">
+      <p className="text-sm text-white/50 mb-6 leading-relaxed">
         Withdraw funds to any address. A zero-knowledge proof is generated
         locally in your browser to preserve your privacy.
       </p>
@@ -104,7 +104,7 @@ export function WithdrawForm() {
       <div className="mb-6">
         <label
           htmlFor="recipient"
-          className="block text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-widest mb-3"
+          className="block text-[10px] font-semibold text-white/35 uppercase tracking-widest mb-3"
         >
           Recipient Address
         </label>
@@ -115,11 +115,11 @@ export function WithdrawForm() {
             value={recipient}
             onChange={(e) => setRecipient(e.target.value)}
             placeholder="SP... or ST..."
-            className="w-full h-12 px-4 pr-20 rounded-xl bg-white border border-[#CDCDCD] text-[#191919] text-sm placeholder:text-[#CDCDCD] focus:border-[#0057FF] focus:ring-1 focus:ring-[#0057FF] focus:outline-none transition-all duration-300"
+            className="w-full h-12 px-4 pr-20 rounded-xl bg-white/[0.04] border border-white/[0.1] text-white text-sm placeholder:text-white/25 focus:border-[#F97C00]/50 focus:ring-1 focus:ring-[#F97C00]/30 focus:outline-none transition-all duration-300"
           />
           <button
             onClick={handlePaste}
-            className="absolute right-2 top-1/2 -translate-y-1/2 h-8 px-4 rounded-full bg-[#F9F9F9] border border-[#E8E8E8] text-xs font-semibold text-[#6B7280] hover:text-[#191919] hover:border-[#0057FF] transition-all duration-300"
+            className="absolute right-2 top-1/2 -translate-y-1/2 h-8 px-4 rounded-full bg-white/[0.06] border border-white/[0.1] text-xs font-semibold text-white/60 hover:text-white hover:border-white/[0.2] transition-all duration-300"
           >
             Paste
           </button>
@@ -135,7 +135,7 @@ export function WithdrawForm() {
           status === "generating-proof" ||
           status === "submitting"
         }
-        className="w-full h-12 rounded-full bg-[#0057FF] disabled:bg-[#0057FF]/30 disabled:cursor-not-allowed text-white font-semibold text-sm shadow-[0_1px_2px_rgba(0,0,0,0.4)] transition-all duration-300 hover:bg-[#006ACB]"
+        className="w-full h-12 btn-accent text-sm"
       >
         {status === "generating-proof" || status === "submitting" ? (
           <span className="flex items-center justify-center gap-2">
@@ -169,7 +169,7 @@ export function WithdrawForm() {
 
       {/* Not connected notice */}
       {!isConnected && (
-        <p className="text-xs text-[#9CA3AF] mt-4 text-center">
+        <p className="text-xs text-white/35 mt-4 text-center">
           Connect your wallet to withdraw.
         </p>
       )}

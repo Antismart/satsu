@@ -17,33 +17,36 @@ export function NotesList() {
 
   const statusStyles: Record<
     NoteDisplay["status"],
-    { dot: string; badge: string; label: string }
+    { badge: string; label: string }
   > = {
     unspent: {
-      dot: "bg-[#028901]",
-      badge: "bg-[#028901]/[0.08] text-[#028901] border border-[#028901]/20",
+      badge: "bg-[#4ADE80]/10 text-[#4ADE80] border border-[#4ADE80]/20",
       label: "Active",
     },
     pending: {
-      dot: "bg-[#F97C00]",
-      badge: "bg-[#F97C00]/[0.08] text-[#F97C00] border border-[#F97C00]/20",
+      badge: "bg-[#F97C00]/10 text-[#F97C00] border border-[#F97C00]/20",
       label: "Pending",
     },
     spent: {
-      dot: "bg-[#9CA3AF]",
-      badge: "bg-[#F9F9F9] text-[#9CA3AF] border border-[#E8E8E8]",
+      badge: "bg-white/[0.04] text-white/35 border border-white/[0.08]",
       label: "Spent",
     },
   };
 
+  const iconColors: Record<NoteDisplay["status"], string> = {
+    unspent: "bg-[#4ADE80]/10 text-[#4ADE80]",
+    pending: "bg-[#F97C00]/10 text-[#F97C00]",
+    spent: "bg-white/[0.04] text-white/35",
+  };
+
   return (
-    <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-[0_5px_20px_rgba(0,0,0,0.08)] transition-all duration-300 hover:shadow-[0_5px_30px_rgba(0,0,0,0.12)]">
+    <div className="glass-card p-6 sm:p-8">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-full bg-[#0057FF]/[0.08] flex items-center justify-center">
+          <div className="h-10 w-10 rounded-full bg-[#F97C00]/10 flex items-center justify-center">
             <svg
-              className="h-5 w-5 text-[#0057FF]"
+              className="h-5 w-5 text-[#F97C00]"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -57,10 +60,10 @@ export function NotesList() {
             </svg>
           </div>
           <div>
-            <h2 className="text-xl font-semibold tracking-tight text-[#191919]">
+            <h2 className="text-xl font-semibold tracking-tight text-white">
               Your Notes
             </h2>
-            <p className="text-xs text-[#9CA3AF]">
+            <p className="text-xs text-white/35">
               {notes.length} note{notes.length !== 1 ? "s" : ""} total
             </p>
           </div>
@@ -68,13 +71,13 @@ export function NotesList() {
         <div className="flex gap-2">
           <button
             onClick={() => setShowBackup(true)}
-            className="h-8 px-5 rounded-full bg-white border border-[#CDCDCD] text-xs font-semibold text-[#303030] hover:border-[#0057FF] transition-all duration-300"
+            className="btn-glass h-8 px-5 text-xs font-semibold"
           >
             Backup
           </button>
           <button
             onClick={() => setShowBackup(true)}
-            className="h-8 px-5 rounded-full bg-white border border-[#CDCDCD] text-xs font-semibold text-[#303030] hover:border-[#0057FF] transition-all duration-300"
+            className="btn-glass h-8 px-5 text-xs font-semibold"
           >
             Restore
           </button>
@@ -101,7 +104,7 @@ export function NotesList() {
             <p className="text-sm text-[#F97C00] font-semibold">
               Notes not backed up
             </p>
-            <p className="text-xs text-[#F97C00]/70 mt-0.5">
+            <p className="text-xs text-[#F97C00]/60 mt-0.5">
               If you lose access to this browser, your funds cannot be
               recovered.
             </p>
@@ -112,9 +115,9 @@ export function NotesList() {
       {/* Empty state */}
       {notes.length === 0 ? (
         <div className="py-16 text-center">
-          <div className="h-12 w-12 rounded-full bg-[#F9F9F9] border border-[#E8E8E8] flex items-center justify-center mx-auto mb-4">
+          <div className="h-12 w-12 rounded-full bg-white/[0.04] border border-white/[0.08] flex items-center justify-center mx-auto mb-4">
             <svg
-              className="h-6 w-6 text-[#9CA3AF]"
+              className="h-6 w-6 text-white/25"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -127,38 +130,28 @@ export function NotesList() {
               />
             </svg>
           </div>
-          <p className="text-[#6B7280] text-sm font-semibold">No notes yet</p>
-          <p className="text-[#9CA3AF] text-xs mt-1">
+          <p className="text-white/50 text-sm font-semibold">No notes yet</p>
+          <p className="text-white/25 text-xs mt-1">
             Make a deposit to create your first private note.
           </p>
         </div>
       ) : (
-        <div className="divide-y divide-[#E8E8E8]">
+        <div className="divide-y divide-white/[0.06]">
           {notes.map((note) => {
             const style = statusStyles[note.status];
+            const iconColor = iconColors[note.status];
             return (
               <div
                 key={note.id}
                 className="flex items-center justify-between py-4 first:pt-0 last:pb-0"
               >
                 <div className="flex items-center gap-3.5">
+                  {/* Transaction icon circle */}
                   <div
-                    className={`h-10 w-10 rounded-full flex items-center justify-center ${
-                      note.status === "unspent"
-                        ? "bg-[#028901]/[0.08]"
-                        : note.status === "pending"
-                          ? "bg-[#F97C00]/[0.08]"
-                          : "bg-[#F9F9F9]"
-                    }`}
+                    className={`h-10 w-10 rounded-full flex items-center justify-center ${iconColor}`}
                   >
                     <svg
-                      className={`h-5 w-5 ${
-                        note.status === "unspent"
-                          ? "text-[#028901]"
-                          : note.status === "pending"
-                            ? "text-[#F97C00]"
-                            : "text-[#9CA3AF]"
-                      }`}
+                      className="h-5 w-5"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -172,16 +165,16 @@ export function NotesList() {
                     </svg>
                   </div>
                   <div>
-                    <span className="text-sm font-semibold tabular-nums text-[#191919]">
+                    <span className="text-sm font-semibold tabular-nums text-white">
                       {note.amount} sBTC
                     </span>
-                    <p className="text-xs text-[#9CA3AF] mt-0.5">
+                    <p className="text-xs text-white/35 mt-0.5">
                       Deposit Note
                     </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
-                  <span className="text-xs text-[#9CA3AF] tabular-nums">
+                  <span className="text-xs text-white/35 tabular-nums">
                     {note.createdAt}
                   </span>
                   <span
@@ -189,6 +182,12 @@ export function NotesList() {
                   >
                     {style.label}
                   </span>
+                  {/* Three-dot menu */}
+                  <button className="text-white/25 hover:text-white/60 transition-colors">
+                    <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+                    </svg>
+                  </button>
                 </div>
               </div>
             );

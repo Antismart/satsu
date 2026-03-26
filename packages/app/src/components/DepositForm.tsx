@@ -37,25 +37,25 @@ export function DepositForm() {
     { label: string; color: string } | null
   > = {
     idle: null,
-    approving: { label: "Approving token transfer...", color: "text-[#0057FF]" },
+    approving: { label: "Approving token transfer...", color: "text-[#F97C00]" },
     depositing: {
       label: "Submitting deposit to pool...",
-      color: "text-[#0057FF]",
+      color: "text-[#F97C00]",
     },
     success: {
       label: "Deposit successful. Note saved locally.",
-      color: "text-[#028901]",
+      color: "text-[#4ADE80]",
     },
-    error: { label: errorMsg || "Deposit failed", color: "text-[#D00D00]" },
+    error: { label: errorMsg || "Deposit failed", color: "text-[#EF4444]" },
   };
 
   return (
-    <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-[0_5px_20px_rgba(0,0,0,0.08)] transition-all duration-300 hover:shadow-[0_5px_30px_rgba(0,0,0,0.12)]">
+    <div className="glass-card p-6 sm:p-8">
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
-        <div className="h-10 w-10 rounded-full bg-[#028901]/[0.1] flex items-center justify-center">
+        <div className="h-10 w-10 rounded-full bg-[#4ADE80]/10 flex items-center justify-center">
           <svg
-            className="h-5 w-5 text-[#028901]"
+            className="h-5 w-5 text-[#4ADE80]"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -69,21 +69,21 @@ export function DepositForm() {
           </svg>
         </div>
         <div>
-          <h2 className="text-xl font-semibold tracking-tight text-[#191919]">
+          <h2 className="text-xl font-semibold tracking-tight text-white">
             Deposit sBTC
           </h2>
-          <p className="text-xs text-[#9CA3AF]">Into the privacy pool</p>
+          <p className="text-xs text-white/35">Into the privacy pool</p>
         </div>
       </div>
 
-      <p className="text-sm text-[#6B7280] mb-6 leading-relaxed">
+      <p className="text-sm text-white/50 mb-6 leading-relaxed">
         Select a fixed denomination to deposit. Your funds become part of the
         anonymity set, indistinguishable from all other deposits.
       </p>
 
       {/* Denomination selector */}
       <div className="mb-6">
-        <label className="block text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-widest mb-3">
+        <label className="block text-[10px] font-semibold text-white/35 uppercase tracking-widest mb-3">
           Amount
         </label>
         <div className="flex gap-3">
@@ -93,8 +93,8 @@ export function DepositForm() {
               onClick={() => setSelectedAmount(amount)}
               className={`flex-1 h-12 rounded-full text-sm font-semibold border transition-all duration-300 ${
                 selectedAmount === amount
-                  ? "border-[#0057FF] bg-[#0057FF]/[0.06] text-[#0057FF]"
-                  : "border-[#CDCDCD] bg-white text-[#6B7280] hover:border-[#0057FF] hover:text-[#191919]"
+                  ? "border-[#F97C00] bg-[#F97C00]/10 text-[#F97C00]"
+                  : "border-white/[0.1] bg-white/[0.04] text-white/60 hover:border-[#F97C00]/50 hover:text-white"
               }`}
             >
               <span className="tabular-nums">{amount}</span>
@@ -110,7 +110,7 @@ export function DepositForm() {
         disabled={
           !isConnected || status === "depositing" || status === "approving"
         }
-        className="w-full h-12 rounded-full bg-[#0057FF] disabled:bg-[#0057FF]/30 disabled:cursor-not-allowed text-white font-semibold text-sm shadow-[0_1px_2px_rgba(0,0,0,0.4)] transition-all duration-300 hover:bg-[#006ACB]"
+        className="w-full h-12 btn-accent text-sm"
       >
         {status === "approving" || status === "depositing" ? (
           <span className="flex items-center justify-center gap-2">
@@ -142,7 +142,7 @@ export function DepositForm() {
 
       {/* Not connected notice */}
       {!isConnected && (
-        <p className="text-xs text-[#9CA3AF] mt-4 text-center">
+        <p className="text-xs text-white/35 mt-4 text-center">
           Connect your wallet to make a deposit.
         </p>
       )}
