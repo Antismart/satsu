@@ -170,11 +170,15 @@ export default function DashboardPage() {
         {/* Privacy Shield - Credit Card BACK design */}
         <div className="relative rounded-[1.5rem] overflow-hidden min-h-[320px] flex flex-col"
           style={{
-            background: "linear-gradient(160deg, #1a1a1a 0%, #141414 40%, #0f0f0f 70%, #0a0a0a 100%)",
-            boxShadow: "0 20px 60px rgba(0,0,0,0.8), inset 1px 1px 6px rgba(255,255,255,0.06), inset -1px -1px 6px rgba(0,0,0,0.6)",
+            background: "linear-gradient(145deg, #2a2a2a 0%, #1c1c1c 30%, #111 60%, #0a0a0a 100%)",
+            boxShadow: "0 20px 60px rgba(0,0,0,0.8), inset 1px 1px 6px rgba(255,255,255,0.08), inset -1px -1px 6px rgba(0,0,0,0.6)",
             border: "1px solid rgba(255,255,255,0.06)"
           }}
         >
+          {/* Brushed metal sheen - same as front */}
+          <div className="absolute inset-0 pointer-events-none rounded-[1.5rem]" style={{
+            background: "linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.03) 20%, transparent 45%, rgba(255,255,255,0.02) 70%, transparent 100%)"
+          }} />
           {/* Noise texture */}
           <div className="absolute inset-0 opacity-[0.04] mix-blend-overlay pointer-events-none rounded-[1.5rem]" style={{ backgroundImage: "url('https://grainy-gradients.vercel.app/noise.svg')" }} />
 
