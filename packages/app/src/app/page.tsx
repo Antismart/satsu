@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Shield, Lock, ArrowUpRight, Wallet, ArrowDownToLine, ShieldCheck } from "lucide-react";
+import { Shield, Lock, ArrowUpRight, Wallet } from "lucide-react";
 
 export default function Home() {
   return (
@@ -303,80 +303,155 @@ export default function Home() {
 
 
       {/* ================= HOW IT WORKS SECTION ================= */}
-      <section className="relative w-full py-24 px-6 z-10">
-        <div className="max-w-[1100px] mx-auto">
+      <section className="relative w-full py-32 px-6 z-10">
+        {/* Top gradient line */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+
+        <div className="max-w-[1200px] mx-auto">
+          {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.6 }}
-            className="text-center mb-16"
+            className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-20"
           >
-            <span className="text-white/40 text-[11px] tracking-[0.2em] font-medium uppercase mb-4 block">The Process</span>
-            <h2 className="text-white text-3xl sm:text-4xl font-medium tracking-tight">How It Works</h2>
+            <div>
+              <span className="text-[#F97C00] text-[11px] tracking-[0.25em] font-semibold uppercase block mb-4">The Process</span>
+              <h2 className="font-heading text-4xl sm:text-5xl md:text-6xl font-bold text-white tracking-tight" style={{ lineHeight: "1.08" }}>
+                Three steps to<br /><span className="text-gradient-warm">full privacy</span>
+              </h2>
+            </div>
+            <p className="text-white/35 text-base leading-relaxed max-w-sm md:text-right">
+              From deposit to withdrawal, your identity stays hidden at every stage.
+            </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
-            {/* Connecting dotted lines (desktop only) */}
-            <div className="hidden md:block absolute top-1/2 left-[calc(33.33%+12px)] right-[calc(66.67%-12px)] border-t border-dashed border-white/10 -translate-y-1/2 z-0" style={{ width: "calc(33.33% - 24px)", left: "calc(33.33% - calc(33.33% - 24px) / 2 + 12px)" }} />
+          {/* Steps */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-0 relative">
 
-            {/* Step 1: Deposit */}
+            {/* Connecting line across all three cards (desktop) */}
+            <div className="hidden md:block absolute top-[72px] left-[16.66%] right-[16.66%] h-px z-0" style={{
+              background: "linear-gradient(90deg, transparent, rgba(249,124,0,0.3) 20%, rgba(249,124,0,0.3) 80%, transparent)"
+            }} />
+
+            {/* Step 1 */}
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
-              transition={{ duration: 0.6, delay: 0 }}
+              transition={{ duration: 0.7, delay: 0 }}
               className="relative z-10 group"
             >
-              <div className="bg-white/[0.03] backdrop-blur-md border border-white/[0.08] rounded-2xl p-8 transition-all duration-300 hover:border-white/[0.15] hover:bg-white/[0.05]">
-                <div className="w-12 h-12 rounded-xl bg-[#F97C00]/10 border border-[#F97C00]/20 flex items-center justify-center mb-6 group-hover:bg-[#F97C00]/15 transition-colors">
-                  <ArrowDownToLine className="w-5 h-5 text-[#F97C00]" />
+              <div className="p-8 sm:p-10 rounded-[2rem] transition-all duration-500 hover:bg-white/[0.03] border border-transparent hover:border-white/[0.06]" style={{ minHeight: "320px" }}>
+                {/* Step number - large */}
+                <div className="flex items-center gap-5 mb-8">
+                  <div className="w-[72px] h-[72px] rounded-2xl flex items-center justify-center relative overflow-hidden" style={{
+                    background: "linear-gradient(135deg, rgba(249,124,0,0.15), rgba(249,124,0,0.05))",
+                    border: "1px solid rgba(249,124,0,0.2)"
+                  }}>
+                    <span className="text-[#F97C00] text-2xl font-bold">01</span>
+                    {/* Subtle inner glow */}
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{
+                      background: "radial-gradient(circle at 50% 50%, rgba(249,124,0,0.2), transparent 70%)"
+                    }} />
+                  </div>
+                  {/* Arrow connector on mobile */}
+                  <div className="hidden md:block flex-1 h-px bg-gradient-to-r from-[#F97C00]/30 to-transparent" />
                 </div>
-                <div className="text-white/20 text-xs font-mono mb-3">01</div>
-                <h3 className="text-white text-lg font-semibold mb-3">Deposit</h3>
-                <p className="text-white/40 text-sm leading-relaxed">Send sBTC into the shielded pool. Your deposit is mixed with others, breaking the on-chain link.</p>
+
+                <h3 className="text-white text-xl sm:text-2xl font-semibold mb-4 tracking-tight">Deposit sBTC</h3>
+                <p className="text-white/35 text-sm sm:text-base leading-relaxed mb-6">
+                  Send sBTC into the shielded pool through a stealth address. Your deposit mixes with hundreds of others.
+                </p>
+
+                {/* Visual detail - mini progress indicator */}
+                <div className="flex items-center gap-3">
+                  <div className="flex gap-1">
+                    <div className="w-8 h-1 rounded-full bg-[#F97C00]" />
+                    <div className="w-8 h-1 rounded-full bg-white/[0.06]" />
+                    <div className="w-8 h-1 rounded-full bg-white/[0.06]" />
+                  </div>
+                  <span className="text-[10px] text-white/20 uppercase tracking-widest">Step 1 of 3</span>
+                </div>
               </div>
             </motion.div>
 
-            {/* Step 2: Shield */}
+            {/* Step 2 */}
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
-              transition={{ duration: 0.6, delay: 0.15 }}
+              transition={{ duration: 0.7, delay: 0.15 }}
               className="relative z-10 group"
             >
-              <div className="bg-white/[0.03] backdrop-blur-md border border-white/[0.08] rounded-2xl p-8 transition-all duration-300 hover:border-white/[0.15] hover:bg-white/[0.05]">
-                <div className="w-12 h-12 rounded-xl bg-[#F97C00]/10 border border-[#F97C00]/20 flex items-center justify-center mb-6 group-hover:bg-[#F97C00]/15 transition-colors">
-                  <ShieldCheck className="w-5 h-5 text-[#F97C00]" />
+              <div className="p-8 sm:p-10 rounded-[2rem] transition-all duration-500 hover:bg-white/[0.03] border border-transparent hover:border-white/[0.06] md:border-l md:border-l-white/[0.04] md:border-r md:border-r-white/[0.04]" style={{ minHeight: "320px" }}>
+                <div className="flex items-center gap-5 mb-8">
+                  <div className="w-[72px] h-[72px] rounded-2xl flex items-center justify-center relative overflow-hidden" style={{
+                    background: "linear-gradient(135deg, rgba(249,124,0,0.15), rgba(249,124,0,0.05))",
+                    border: "1px solid rgba(249,124,0,0.2)"
+                  }}>
+                    <span className="text-[#F97C00] text-2xl font-bold">02</span>
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{
+                      background: "radial-gradient(circle at 50% 50%, rgba(249,124,0,0.2), transparent 70%)"
+                    }} />
+                  </div>
+                  <div className="hidden md:block flex-1 h-px bg-gradient-to-r from-[#F97C00]/30 to-transparent" />
                 </div>
-                <div className="text-white/20 text-xs font-mono mb-3">02</div>
-                <h3 className="text-white text-lg font-semibold mb-3">Shield</h3>
-                <p className="text-white/40 text-sm leading-relaxed">Zero-knowledge proofs verify your deposit without revealing your identity. Your funds are shielded.</p>
+
+                <h3 className="text-white text-xl sm:text-2xl font-semibold mb-4 tracking-tight">Generate Proof</h3>
+                <p className="text-white/35 text-sm sm:text-base leading-relaxed mb-6">
+                  A zero-knowledge STARK proof is generated in your browser. It proves ownership without revealing your identity.
+                </p>
+
+                <div className="flex items-center gap-3">
+                  <div className="flex gap-1">
+                    <div className="w-8 h-1 rounded-full bg-[#F97C00]" />
+                    <div className="w-8 h-1 rounded-full bg-[#F97C00]" />
+                    <div className="w-8 h-1 rounded-full bg-white/[0.06]" />
+                  </div>
+                  <span className="text-[10px] text-white/20 uppercase tracking-widest">Step 2 of 3</span>
+                </div>
               </div>
             </motion.div>
 
-            {/* Step 3: Withdraw */}
+            {/* Step 3 */}
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
-              transition={{ duration: 0.6, delay: 0.3 }}
+              transition={{ duration: 0.7, delay: 0.3 }}
               className="relative z-10 group"
             >
-              <div className="bg-white/[0.03] backdrop-blur-md border border-white/[0.08] rounded-2xl p-8 transition-all duration-300 hover:border-white/[0.15] hover:bg-white/[0.05]">
-                <div className="w-12 h-12 rounded-xl bg-[#F97C00]/10 border border-[#F97C00]/20 flex items-center justify-center mb-6 group-hover:bg-[#F97C00]/15 transition-colors">
-                  <Wallet className="w-5 h-5 text-[#F97C00]" />
+              <div className="p-8 sm:p-10 rounded-[2rem] transition-all duration-500 hover:bg-white/[0.03] border border-transparent hover:border-white/[0.06]" style={{ minHeight: "320px" }}>
+                <div className="flex items-center gap-5 mb-8">
+                  <div className="w-[72px] h-[72px] rounded-2xl flex items-center justify-center relative overflow-hidden" style={{
+                    background: "linear-gradient(135deg, rgba(249,124,0,0.15), rgba(249,124,0,0.05))",
+                    border: "1px solid rgba(249,124,0,0.2)"
+                  }}>
+                    <span className="text-[#F97C00] text-2xl font-bold">03</span>
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{
+                      background: "radial-gradient(circle at 50% 50%, rgba(249,124,0,0.2), transparent 70%)"
+                    }} />
+                  </div>
                 </div>
-                <div className="text-white/20 text-xs font-mono mb-3">03</div>
-                <h3 className="text-white text-lg font-semibold mb-3">Withdraw</h3>
-                <p className="text-white/40 text-sm leading-relaxed">Withdraw to any stealth address. No one can link the withdrawal to your original deposit.</p>
+
+                <h3 className="text-white text-xl sm:text-2xl font-semibold mb-4 tracking-tight">Withdraw Privately</h3>
+                <p className="text-white/35 text-sm sm:text-base leading-relaxed mb-6">
+                  Withdraw to any stealth address through the relayer. No one can link the withdrawal to your deposit.
+                </p>
+
+                <div className="flex items-center gap-3">
+                  <div className="flex gap-1">
+                    <div className="w-8 h-1 rounded-full bg-[#F97C00]" />
+                    <div className="w-8 h-1 rounded-full bg-[#F97C00]" />
+                    <div className="w-8 h-1 rounded-full bg-[#F97C00]" />
+                  </div>
+                  <span className="text-[10px] text-white/20 uppercase tracking-widest">Complete</span>
+                </div>
               </div>
             </motion.div>
           </div>
-
-          {/* Dotted connector lines (desktop) */}
-          <div className="hidden md:flex justify-center items-center -mt-[calc(50%+1rem)] pointer-events-none absolute inset-x-0" />
         </div>
       </section>
 
