@@ -156,51 +156,50 @@ export default function Home() {
               <div className="absolute inset-0 rounded-[1.25rem] p-7 sm:p-8 flex flex-col justify-between z-10">
                 {/* Top: chip + contactless */}
                 <div className="flex justify-between items-start">
-                  {/* EMV Chip - realistic golden */}
-                  <div className="w-11 h-14 rounded-lg relative overflow-hidden" style={{
-                    background: "linear-gradient(150deg, #E8D5A3 0%, #D4B878 20%, #C9A96E 40%, #A08040 70%, #8B7340 100%)",
-                    boxShadow: "inset 0 1px 3px rgba(255,255,255,0.5), inset 0 -1px 2px rgba(0,0,0,0.15), 0 2px 8px rgba(0,0,0,0.3)",
-                    border: "1px solid rgba(180,150,80,0.4)"
+                  {/* EMV Chip - golden, visible */}
+                  <div className="w-12 h-[3.75rem] rounded-lg relative overflow-hidden" style={{
+                    background: "linear-gradient(150deg, #F0DBA8 0%, #D4B878 25%, #C4A060 50%, #A08040 75%, #8B7340 100%)",
+                    boxShadow: "inset 0 2px 4px rgba(255,255,255,0.5), inset 0 -2px 3px rgba(0,0,0,0.2), 0 3px 10px rgba(0,0,0,0.4)",
+                    border: "1px solid rgba(200,170,90,0.5)"
                   }}>
-                    {/* Chip circuit pattern */}
-                    <div className="absolute inset-0 flex flex-col justify-center items-center gap-[3px] p-1.5">
-                      <div className="w-full h-[1px] bg-black/10" />
-                      <div className="w-[80%] h-[1px] bg-black/10" />
-                      <div className="w-full h-[1px] bg-black/10" />
-                      <div className="w-[60%] h-[1px] bg-black/10" />
-                      <div className="w-full h-[1px] bg-black/10" />
+                    {/* Chip circuit lines */}
+                    <div className="absolute inset-0 flex flex-col justify-center items-center gap-[3px] p-2">
+                      <div className="w-full h-[1px] bg-black/20" />
+                      <div className="w-[75%] h-[1px] bg-black/20" />
+                      <div className="w-full h-[1px] bg-black/20" />
+                      <div className="w-[55%] h-[1px] bg-black/20" />
+                      <div className="w-full h-[1px] bg-black/20" />
                     </div>
-                    {/* Center pad */}
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-5 h-4 rounded-sm border border-black/10 bg-gradient-to-br from-white/20 to-transparent" />
+                    {/* Center contact pad */}
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-5 h-4 rounded-sm border border-black/15 bg-gradient-to-br from-white/30 to-transparent" />
                   </div>
 
-                  {/* Contactless icon */}
-                  <svg className="w-7 h-7 text-black/[0.12]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  {/* Contactless icon - more visible */}
+                  <svg className="w-8 h-8 text-black/30 drop-shadow-[0_1px_1px_rgba(255,255,255,0.1)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M8.5 16.5S6 14 6 12s2.5-4.5 2.5-4.5M12 18s-4-3-4-6 4-6 4-6M15.5 19.5S10 16 10 12s5.5-7.5 5.5-7.5" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                 </div>
 
-                {/* Center: large SATSU embossed */}
+                {/* Center: large SATSU embossed - more visible */}
                 <div className="flex-1 flex items-center">
-                  <span className="text-[2.2rem] font-black tracking-[0.3em] uppercase select-none" style={{
-                    color: "transparent",
-                    WebkitTextStroke: "1px rgba(0,0,0,0.08)",
-                    textShadow: "1px 1px 0px rgba(255,255,255,0.06), -1px -1px 0px rgba(0,0,0,0.1)"
+                  <span className="text-[2.4rem] font-black tracking-[0.3em] uppercase select-none" style={{
+                    color: "rgba(0,0,0,0.15)",
+                    textShadow: "1px 1px 0px rgba(255,255,255,0.12), -1px -1px 0px rgba(0,0,0,0.15)"
                   }}>SATSU</span>
                 </div>
 
                 {/* Bottom: card number + brand circle */}
                 <div className="flex justify-between items-end">
                   <div>
-                    <span className="text-[9px] text-black/[0.12] tracking-[0.15em] uppercase block mb-1.5">Privacy Card</span>
-                    <span className="text-black/[0.15] text-[13px] font-mono tracking-[0.25em]">4821 **** **** 0917</span>
+                    <span className="text-[10px] text-black/25 tracking-[0.15em] uppercase block mb-1.5 drop-shadow-[0_1px_0px_rgba(255,255,255,0.08)]">Privacy Card</span>
+                    <span className="text-black/30 text-sm font-mono tracking-[0.2em] drop-shadow-[0_1px_0px_rgba(255,255,255,0.06)]">4821 **** **** 0917</span>
                   </div>
-                  <div className="w-9 h-9 rounded-full relative" style={{
+                  <div className="w-10 h-10 rounded-full relative" style={{
                     background: "linear-gradient(135deg, #F97C00 0%, #FACC15 100%)",
-                    boxShadow: "0 2px 12px rgba(249,124,0,0.2), inset 0 1px 2px rgba(255,255,255,0.3)"
+                    boxShadow: "0 3px 15px rgba(249,124,0,0.35), inset 0 1px 3px rgba(255,255,255,0.3)"
                   }}>
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-[8px] font-black text-black/40 tracking-wider">ZK</span>
+                      <span className="text-[9px] font-black text-black/50 tracking-wider">ZK</span>
                     </div>
                   </div>
                 </div>
