@@ -153,32 +153,56 @@ export default function Home() {
               <div className="absolute inset-0 opacity-[0.08] mix-blend-overlay pointer-events-none rounded-[1.25rem]" style={{ backgroundImage: "url('https://grainy-gradients.vercel.app/noise.svg')" }} />
 
               {/* Card content */}
-              <div className="absolute inset-0 rounded-[1.25rem] p-8 flex flex-col justify-between z-10">
-                {/* Top: branding */}
+              <div className="absolute inset-0 rounded-[1.25rem] p-7 sm:p-8 flex flex-col justify-between z-10">
+                {/* Top: chip + contactless */}
                 <div className="flex justify-between items-start">
-                  <span className="text-2xl font-black tracking-[0.25em] text-black/[0.12] uppercase">SATSU</span>
-                  {/* EMV Chip */}
-                  <div className="w-10 h-12 rounded-md flex flex-col justify-center items-center gap-1" style={{
-                    background: "linear-gradient(150deg, #D4B878 0%, #C9A96E 30%, #A08040 70%, #8B7340 100%)",
-                    boxShadow: "inset 0 1px 3px rgba(255,255,255,0.4), inset 0 -1px 2px rgba(0,0,0,0.15), 0 2px 6px rgba(0,0,0,0.25)",
-                    border: "1px solid rgba(160,128,64,0.4)"
+                  {/* EMV Chip - realistic golden */}
+                  <div className="w-11 h-14 rounded-lg relative overflow-hidden" style={{
+                    background: "linear-gradient(150deg, #E8D5A3 0%, #D4B878 20%, #C9A96E 40%, #A08040 70%, #8B7340 100%)",
+                    boxShadow: "inset 0 1px 3px rgba(255,255,255,0.5), inset 0 -1px 2px rgba(0,0,0,0.15), 0 2px 8px rgba(0,0,0,0.3)",
+                    border: "1px solid rgba(180,150,80,0.4)"
                   }}>
-                    <div className="w-6 h-[1px] bg-black/15" />
-                    <div className="w-7 h-[1px] bg-black/15" />
-                    <div className="w-6 h-[1px] bg-black/15" />
-                    <div className="w-7 h-[1px] bg-black/15" />
+                    {/* Chip circuit pattern */}
+                    <div className="absolute inset-0 flex flex-col justify-center items-center gap-[3px] p-1.5">
+                      <div className="w-full h-[1px] bg-black/10" />
+                      <div className="w-[80%] h-[1px] bg-black/10" />
+                      <div className="w-full h-[1px] bg-black/10" />
+                      <div className="w-[60%] h-[1px] bg-black/10" />
+                      <div className="w-full h-[1px] bg-black/10" />
+                    </div>
+                    {/* Center pad */}
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-5 h-4 rounded-sm border border-black/10 bg-gradient-to-br from-white/20 to-transparent" />
                   </div>
-                </div>
 
-                {/* Bottom: contactless icon */}
-                <div className="flex justify-between items-end">
-                  <svg className="w-8 h-8 text-black/15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  {/* Contactless icon */}
+                  <svg className="w-7 h-7 text-black/[0.12]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                     <path d="M8.5 16.5S6 14 6 12s2.5-4.5 2.5-4.5M12 18s-4-3-4-6 4-6 4-6M15.5 19.5S10 16 10 12s5.5-7.5 5.5-7.5" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
-                  <div className="w-8 h-8 rounded-full" style={{
+                </div>
+
+                {/* Center: large SATSU embossed */}
+                <div className="flex-1 flex items-center">
+                  <span className="text-[2.2rem] font-black tracking-[0.3em] uppercase select-none" style={{
+                    color: "transparent",
+                    WebkitTextStroke: "1px rgba(0,0,0,0.08)",
+                    textShadow: "1px 1px 0px rgba(255,255,255,0.06), -1px -1px 0px rgba(0,0,0,0.1)"
+                  }}>SATSU</span>
+                </div>
+
+                {/* Bottom: card number + brand circle */}
+                <div className="flex justify-between items-end">
+                  <div>
+                    <span className="text-[9px] text-black/[0.12] tracking-[0.15em] uppercase block mb-1.5">Privacy Card</span>
+                    <span className="text-black/[0.15] text-[13px] font-mono tracking-[0.25em]">4821 **** **** 0917</span>
+                  </div>
+                  <div className="w-9 h-9 rounded-full relative" style={{
                     background: "linear-gradient(135deg, #F97C00 0%, #FACC15 100%)",
-                    boxShadow: "0 2px 10px rgba(249,124,0,0.25)"
-                  }} />
+                    boxShadow: "0 2px 12px rgba(249,124,0,0.2), inset 0 1px 2px rgba(255,255,255,0.3)"
+                  }}>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span className="text-[8px] font-black text-black/40 tracking-wider">ZK</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </motion.div>
@@ -458,49 +482,28 @@ export default function Home() {
       </section>
 
 
-      {/* ================= TRUSTED NUMBERS SECTION ================= */}
-      <section className="relative w-full py-24 px-6 z-10">
-        {/* Top rule */}
+      {/* ================= POWERED BY STRIP ================= */}
+      <section className="relative w-full py-16 px-6 z-10">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
-        <div className="max-w-[1200px] mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-16"
-          >
-            <span className="text-white/40 text-[11px] tracking-[0.2em] font-medium uppercase mb-4 block">Trusted Numbers</span>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: 0.8 }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-4"
-          >
-            <div className="text-center">
-              <div className="text-4xl sm:text-5xl md:text-6xl font-bold text-white tabular-nums mb-3">892</div>
-              <div className="text-white/30 text-sm">Shielded Deposits</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl sm:text-5xl md:text-6xl font-bold text-white tabular-nums mb-3">42.85</div>
-              <div className="text-white/30 text-sm">sBTC in Pool</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl sm:text-5xl md:text-6xl font-bold text-white tabular-nums mb-3">0</div>
-              <div className="text-white/30 text-sm">Breaches</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl sm:text-5xl md:text-6xl font-bold text-white tabular-nums mb-3">100%</div>
-              <div className="text-white/30 text-sm">On-chain Verified</div>
-            </div>
-          </motion.div>
+        <div className="max-w-[1000px] mx-auto">
+          <p className="text-center text-white/20 text-[11px] tracking-[0.25em] uppercase font-medium mb-10">Built on</p>
+          <div className="flex items-center justify-center gap-10 sm:gap-16 flex-wrap">
+            {[
+              { name: "Bitcoin", sub: "Settlement" },
+              { name: "Stacks", sub: "Smart Contracts" },
+              { name: "sBTC", sub: "Peg" },
+              { name: "Winterfell", sub: "ZK Proofs" },
+              { name: "Chainhook", sub: "Indexing" },
+            ].map((tech) => (
+              <div key={tech.name} className="flex flex-col items-center gap-1.5 group cursor-default">
+                <span className="text-lg sm:text-xl font-bold text-white/20 group-hover:text-white/50 transition-colors duration-500 tracking-wide">{tech.name}</span>
+                <span className="text-[9px] text-white/10 group-hover:text-white/25 transition-colors duration-500 tracking-[0.15em] uppercase">{tech.sub}</span>
+              </div>
+            ))}
+          </div>
         </div>
 
-        {/* Bottom rule */}
         <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
       </section>
 
