@@ -86,14 +86,14 @@ export function DepositForm() {
         <label className="block text-[10px] font-semibold text-white/35 uppercase tracking-widest mb-3">
           Amount
         </label>
-        <div className="flex gap-3">
+        <div className="flex gap-4">
           {DENOMINATIONS.map((amount) => (
             <button
               key={amount}
               onClick={() => setSelectedAmount(amount)}
               className={`flex-1 h-12 rounded-full text-sm font-semibold border transition-all duration-300 ${
                 selectedAmount === amount
-                  ? "border-[#F97C00] bg-[#F97C00]/10 text-[#F97C00]"
+                  ? "border-[#F97C00] bg-[#F97C00]/10 text-[#F97C00] shadow-[0_0_12px_rgba(249,124,0,0.15)]"
                   : "border-white/[0.1] bg-white/[0.04] text-white/60 hover:border-[#F97C00]/50 hover:text-white"
               }`}
             >

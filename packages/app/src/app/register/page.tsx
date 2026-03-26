@@ -151,12 +151,12 @@ export default function RegisterPage() {
             >
               <div className="flex flex-col items-center">
                 <div
-                  className={`h-10 w-10 rounded-full flex items-center justify-center text-xs font-semibold transition-all duration-300 ${
+                  className={`h-12 w-12 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300 ${
                     isCompleted
                       ? "bg-[#4ADE80] text-white"
                       : isCurrent
-                        ? "text-white shadow-[0_5px_20px_rgba(249,124,0,0.3)]"
-                        : "border border-white/[0.12] bg-white/[0.04] text-white/35"
+                        ? "text-white shadow-[0_0_20px_rgba(249,124,0,0.35)] border-2 border-[#F97C00]/30"
+                        : "border-2 border-white/[0.12] bg-white/[0.04] text-white/35"
                   }`}
                   style={isCurrent ? { background: "linear-gradient(135deg, #F97C00, #E84D00)" } : undefined}
                 >

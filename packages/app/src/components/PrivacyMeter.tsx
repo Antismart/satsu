@@ -24,9 +24,14 @@ export function PrivacyMeter({
   const label = getScoreLabel(score);
 
   // Semi-circular gauge matching the Behance "Total Expenses" design
-  // Arc from left to right (half circle)
-  const arcLength = 251.2; // approx pi * 80 (semicircle)
+  const arcLength = 251.2;
   const filledLength = (score / 100) * arcLength;
+
+  // Calculate indicator position (triangle at end of arc)
+  const angle = Math.PI - (score / 100) * Math.PI;
+  const indicatorX = 100 + 80 * Math.cos(angle);
+  const indicatorY = 100 - 80 * Math.sin(angle);
+  const indicatorAngle = -(score / 100) * 180;
 
   return (
     <div className="glass-card p-6 sm:p-8">
@@ -55,19 +60,19 @@ export function PrivacyMeter({
         </div>
       </div>
 
-      {/* Semi-circular gauge */}
-      <div className="flex flex-col items-center my-4">
-        <div className="relative w-44 h-24 overflow-hidden">
-          <svg className="w-44 h-44" viewBox="0 0 200 200" style={{ marginTop: "-4px" }}>
-            {/* Background track */}
+      {/* Semi-circular gauge - thicker arc, larger center text */}
+      <div className="flex flex-col items-center my-6">
+        <div className="relative w-48 h-28 overflow-hidden">
+          <svg className="w-48 h-48" viewBox="0 0 200 200" style={{ marginTop: "-4px" }}>
+            {/* Background track - thicker */}
             <path
               d="M 20 100 A 80 80 0 0 1 180 100"
               fill="none"
               stroke="rgba(255,255,255,0.06)"
-              strokeWidth="10"
+              strokeWidth="14"
               strokeLinecap="round"
             />
-            {/* Gradient arc */}
+            {/* Gradient arc - thicker */}
             <defs>
               <linearGradient id="privacyGaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
                 <stop offset="0%" stopColor="#F97C00" />
@@ -79,19 +84,27 @@ export function PrivacyMeter({
               d="M 20 100 A 80 80 0 0 1 180 100"
               fill="none"
               stroke="url(#privacyGaugeGrad)"
-              strokeWidth="10"
+              strokeWidth="14"
               strokeLinecap="round"
               strokeDasharray={`${filledLength} ${arcLength}`}
               style={{ transition: "stroke-dasharray 1s ease-out" }}
             />
+            {/* Triangle indicator at current position */}
+            <g transform={`translate(${indicatorX}, ${indicatorY}) rotate(${indicatorAngle})`}>
+              <polygon
+                points="0,-6 5,4 -5,4"
+                fill="#FACC15"
+                stroke="none"
+              />
+            </g>
           </svg>
         </div>
 
-        {/* Center text */}
+        {/* Center text - larger */}
         <div className="text-center -mt-2">
-          <p className="text-xs text-white/35 mb-0.5">Privacy score</p>
-          <p className="text-3xl font-bold text-white tracking-tight tabular-nums">
-            {score}<span className="text-sm font-semibold text-white/35">/100</span>
+          <p className="text-xs text-white/35 mb-1">Privacy score</p>
+          <p className="text-4xl font-bold text-white tracking-tight tabular-nums">
+            {score}<span className="text-base font-semibold text-white/35 ml-0.5">/100</span>
           </p>
         </div>
       </div>
@@ -109,7 +122,7 @@ export function PrivacyMeter({
       </div>
 
       {/* Progress bar */}
-      <div className="progress-track mb-4">
+      <div className="progress-track mb-5">
         <div
           className="progress-fill"
           style={{ width: `${score}%` }}

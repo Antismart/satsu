@@ -11,6 +11,12 @@ export interface NoteDisplay {
   status: "unspent" | "spent" | "pending";
 }
 
+const CATEGORY_LABELS: Record<string, string> = {
+  "note-001": "Transfer",
+  "note-002": "Shopping",
+  "note-003": "Transportation",
+};
+
 export function NotesList() {
   const { notes, hasBackedUp } = useSatsu();
   const [showBackup, setShowBackup] = useState(false);
@@ -140,10 +146,11 @@ export function NotesList() {
           {notes.map((note) => {
             const style = statusStyles[note.status];
             const iconColor = iconColors[note.status];
+            const category = CATEGORY_LABELS[note.id] || "Deposit Note";
             return (
               <div
                 key={note.id}
-                className="flex items-center justify-between py-4 first:pt-0 last:pb-0"
+                className="flex items-center justify-between py-4 first:pt-0 last:pb-0 group"
               >
                 <div className="flex items-center gap-3.5">
                   {/* Transaction icon circle */}
@@ -168,13 +175,19 @@ export function NotesList() {
                     <span className="text-sm font-semibold tabular-nums text-white">
                       {note.amount} sBTC
                     </span>
-                    <p className="text-xs text-white/35 mt-0.5">
-                      Deposit Note
-                    </p>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <span className="text-[10px] font-medium text-white/25 uppercase tracking-wider">
+                        {category}
+                      </span>
+                      <span className="text-white/10">|</span>
+                      <span className="text-[10px] text-white/25">
+                        AVG spend $24 a week
+                      </span>
+                    </div>
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
-                  <span className="text-xs text-white/35 tabular-nums">
+                  <span className="text-xs text-white/35 tabular-nums hidden sm:block">
                     {note.createdAt}
                   </span>
                   <span
@@ -182,8 +195,8 @@ export function NotesList() {
                   >
                     {style.label}
                   </span>
-                  {/* Three-dot menu */}
-                  <button className="text-white/25 hover:text-white/60 transition-colors">
+                  {/* Three-dot menu - always visible */}
+                  <button className="text-white/30 hover:text-white/70 transition-colors p-1 rounded-lg hover:bg-white/[0.06]">
                     <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
                     </svg>

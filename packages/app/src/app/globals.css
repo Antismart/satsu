@@ -255,3 +255,128 @@ body {
 .font-heading {
   font-family: "Georgia", "Times New Roman", serif;
 }
+
+/* ----------------------------------------------------------------
+   DARK BUTTON (Behance "View More Activity" style)
+   ---------------------------------------------------------------- */
+.btn-dark {
+  background: #1a1a1a;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  color: #FFFFFF;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+.btn-dark:hover {
+  background: #222222;
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+/* ----------------------------------------------------------------
+   WARM GRADIENT TEXT (orange -> yellow)
+   ---------------------------------------------------------------- */
+.text-gradient-warm {
+  background: linear-gradient(135deg, #F97C00, #FACC15);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ----------------------------------------------------------------
+   PLACEHOLDER STYLING
+   ---------------------------------------------------------------- */
+::placeholder {
+  color: rgba(255, 255, 255, 0.2);
+  opacity: 1;
+  transition: color 0.3s ease;
+}
+input:focus::placeholder,
+textarea:focus::placeholder {
+  color: rgba(255, 255, 255, 0.12);
+}
+
+/* ----------------------------------------------------------------
+   HEADER / FOOTER GLOW LINES
+   ---------------------------------------------------------------- */
+.glow-line-bottom::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.1), transparent);
+  pointer-events: none;
+}
+.glow-line-top::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.1), transparent);
+  pointer-events: none;
+}
+
+/* ----------------------------------------------------------------
+   CARD HOVER LIFT
+   ---------------------------------------------------------------- */
+.hover-lift {
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s ease;
+}
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+}
+
+/* ----------------------------------------------------------------
+   CROSSHAIR DECORATION (static, no animation)
+   ---------------------------------------------------------------- */
+.crosshair {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  pointer-events: none;
+  opacity: 0.08;
+}
+.crosshair::before,
+.crosshair::after {
+  content: "";
+  position: absolute;
+  background: white;
+}
+.crosshair::before {
+  top: 0;
+  left: 50%;
+  width: 1px;
+  height: 100%;
+  transform: translateX(-50%);
+}
+.crosshair::after {
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  transform: translateY(-50%);
+}
+
+/* ----------------------------------------------------------------
+   SMOOTH FOCUS RING
+   ---------------------------------------------------------------- */
+input:focus-visible,
+textarea:focus-visible,
+button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(249, 124, 0, 0.25);
+}
+
+/* ----------------------------------------------------------------
+   TRANSITION POLISH
+   ---------------------------------------------------------------- */
+@keyframes gaugeReveal {
+  from { stroke-dasharray: 0 251.2; }
+}
+.animate-gauge {
+  animation: gaugeReveal 1.2s ease-out forwards;
+}
