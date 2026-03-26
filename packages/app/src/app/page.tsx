@@ -269,24 +269,6 @@ export default function Home() {
                   </p>
                 </div>
 
-                {/* Floating balance widget */}
-                <div className="hidden lg:block bg-[#0a0a0a]/80 border border-white/[0.08] rounded-2xl p-6 backdrop-blur-xl" style={{
-                  boxShadow: "0 20px 50px rgba(0,0,0,0.5)"
-                }}>
-                  <div className="flex items-center gap-2 mb-3">
-                    <div className="w-2 h-2 rounded-full bg-[#4ADE80]" />
-                    <p className="text-[10px] text-white/40 uppercase tracking-widest">Pool TVL</p>
-                  </div>
-                  <p className="text-3xl font-bold text-white tabular-nums mb-1">42.85</p>
-                  <p className="text-xs text-white/30 mb-4">sBTC shielded</p>
-                  <div className="progress-track w-40">
-                    <div className="progress-fill" style={{ width: "68%" }} />
-                  </div>
-                  <div className="flex justify-between mt-2">
-                    <span className="text-[9px] text-white/20">0</span>
-                    <span className="text-[9px] text-white/20">100 sBTC</span>
-                  </div>
-                </div>
               </div>
 
               {/* Bottom row: three feature pills + mini card */}
