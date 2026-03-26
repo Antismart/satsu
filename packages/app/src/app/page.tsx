@@ -457,108 +457,142 @@ export default function Home() {
 
 
       {/* ================= BROWSER MOCKUP SECTION ================= */}
-      <section className="relative w-full py-24 px-6 overflow-hidden z-10">
+      <section className="relative w-full py-32 px-6 overflow-hidden z-10">
         <div className="max-w-[1100px] mx-auto relative flex flex-col items-center">
 
-          <div className="text-center mb-14">
-            <h2 className="text-white text-3xl sm:text-4xl font-medium tracking-tight mb-4">Your <span className="text-gradient-warm">Privacy Dashboard</span></h2>
-            <p className="text-white/40 text-sm max-w-md mx-auto leading-relaxed">Monitor your shielded deposits, withdrawals, and privacy score. Everything stays between you and the blockchain.</p>
-          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-16"
+          >
+            <span className="text-[#F97C00] text-[11px] tracking-[0.25em] font-semibold uppercase block mb-4">Dashboard Preview</span>
+            <h2 className="font-heading text-4xl sm:text-5xl font-bold text-white tracking-tight mb-4">Your <span className="text-gradient-warm">Privacy Dashboard</span></h2>
+            <p className="text-white/35 text-base max-w-lg mx-auto leading-relaxed">Full control over your shielded assets, deposits, and withdrawal history — all in one place.</p>
+          </motion.div>
 
           {/* Warm glow behind the monitor */}
-          <div className="absolute top-[40%] left-1/2 -translate-x-1/2 w-[900px] h-[500px] bg-[#F97C00]/[0.04] blur-[100px] rounded-full pointer-events-none" />
+          <div className="absolute top-[45%] left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-[#F97C00]/[0.04] blur-[120px] rounded-full pointer-events-none" />
 
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, scale: 0.95, y: 30 }}
+            whileInView={{ opacity: 1, scale: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 1, ease: "easeOut" }}
-            className="w-full rounded-[2rem] p-2 bg-[#121212] border border-white/[0.08] shadow-[0_30px_100px_rgba(0,0,0,1)] relative"
+            className="w-full rounded-[2rem] p-2 bg-[#111] border border-white/[0.08] relative" style={{
+              boxShadow: "0 40px 120px rgba(0,0,0,0.9), 0 0 1px rgba(255,255,255,0.1)"
+            }}
           >
             {/* Monitor stand */}
-            <div className="absolute -bottom-16 left-1/2 -translate-x-1/2 w-48 h-16 bg-gradient-to-t from-black to-[#222] rounded-t-xl z-[-1]" />
-            <div className="absolute -bottom-20 left-1/2 -translate-x-1/2 w-64 h-4 bg-[#111] rounded-full z-[-1] shadow-[0_10px_20px_black]" />
+            <div className="absolute -bottom-14 left-1/2 -translate-x-1/2 w-40 h-14 bg-gradient-to-t from-[#0a0a0a] to-[#1a1a1a] rounded-t-lg z-[-1]" />
+            <div className="absolute -bottom-[68px] left-1/2 -translate-x-1/2 w-56 h-3 bg-[#111] rounded-full z-[-1]" style={{
+              boxShadow: "0 4px 20px rgba(0,0,0,0.8)"
+            }} />
 
-            {/* Dark inner wrapper */}
-            <div className="bg-[#050505] rounded-[1.5rem] overflow-hidden relative min-h-[550px] border border-black flex flex-col">
+            {/* Screen */}
+            <div className="bg-[#0A0A0A] rounded-[1.5rem] overflow-hidden relative flex flex-col" style={{ minHeight: "520px" }}>
 
-              {/* Browser Header */}
-              <div className="h-[52px] border-b border-white/5 flex items-center px-6 gap-2 bg-[#0a0a0a]">
-                <div className="flex gap-2">
-                  <div className="w-3 h-3 rounded-full bg-[#FF5F56] border border-black/20" />
-                  <div className="w-3 h-3 rounded-full bg-[#FFBD2E] border border-black/20" />
-                  <div className="w-3 h-3 rounded-full bg-[#27C93F] border border-black/20" />
+              {/* Browser chrome */}
+              <div className="h-11 border-b border-white/[0.04] flex items-center px-5 gap-2 bg-[#0e0e0e] flex-shrink-0">
+                <div className="flex gap-1.5">
+                  <div className="w-2.5 h-2.5 rounded-full bg-[#FF5F56]" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-[#FFBD2E]" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-[#27C93F]" />
                 </div>
-                <div className="mx-auto bg-black/50 border border-white/5 px-20 sm:px-40 py-1.5 rounded-lg text-[11px] text-white/30 font-mono tracking-wider flex items-center justify-between gap-4">
-                  <Lock className="w-3 h-3" />
-                  satsu.network
-                </div>
-                <div className="flex gap-4 items-center">
-                  <div className="w-6 h-6 rounded-md bg-white/5" />
-                  <div className="w-6 h-6 rounded-md bg-white/5" />
+                <div className="mx-auto bg-black/40 border border-white/[0.04] px-16 sm:px-32 py-1 rounded-md text-[10px] text-white/25 font-mono tracking-wider flex items-center gap-3">
+                  <Lock className="w-2.5 h-2.5" />
+                  satsu.network/dashboard
                 </div>
               </div>
 
-              {/* Browser Inner Workspace */}
-              <div className="relative flex-1 flex flex-col items-center justify-center p-8 sm:p-12 overflow-hidden bg-[#0A0A0A]">
+              {/* Dashboard content inside browser */}
+              <div className="flex-1 p-5 sm:p-8 overflow-hidden relative">
 
-                {/* Glowing Orb - more vibrant */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] bg-gradient-to-r from-[#F97C00]/30 to-[#FACC15]/20 blur-[100px] rounded-[100%] mix-blend-screen pointer-events-none" />
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[300px] bg-[#F97C00]/15 blur-[60px] rounded-full pointer-events-none" />
-
-                {/* Desktop Inner NavBar */}
-                <div className="absolute top-6 left-8 right-8 sm:left-12 sm:right-12 flex justify-between items-center z-10 text-white/60 text-xs">
-                  <div className="font-bold text-white tracking-widest">SATSU</div>
-                  <div className="hidden sm:flex gap-6">
-                    <span className="hover:text-white cursor-pointer transition-colors">Protocol</span>
-                    <span className="hover:text-white cursor-pointer transition-colors">How It Works</span>
-                    <span className="hover:text-white cursor-pointer transition-colors">Privacy</span>
-                    <span className="hover:text-white cursor-pointer transition-colors">Docs</span>
+                {/* Top nav inside dashboard */}
+                <div className="flex justify-between items-center mb-6">
+                  <span className="text-sm font-black tracking-[0.2em] text-white/80">SATSU</span>
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.04] border border-white/[0.06]">
+                      <div className="w-1.5 h-1.5 rounded-full bg-[#4ADE80]" />
+                      <span className="text-[9px] text-white/40">Online</span>
+                    </div>
+                    <div className="px-3 py-1 rounded-full bg-white/[0.06] text-[9px] text-white/50 font-mono">SP1A...8Z9</div>
                   </div>
-                  <div className="px-4 py-1.5 bg-white text-black rounded-full font-semibold cursor-pointer text-[11px]">Log In</div>
                 </div>
 
-                {/* Dashboard illustration */}
-                <div className="relative z-10 w-full max-w-2xl mt-12 flex flex-col items-center">
-                  <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-white tracking-tight mb-8 text-center leading-tight">
-                    Seamless Privacy.<br/> Absolute Control.
-                  </h1>
+                {/* Two-column dashboard layout */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
-                  {/* Action Buttons */}
-                  <div className="flex gap-4 mb-16">
-                    <div className="bg-white text-black px-6 py-2.5 rounded-full text-sm font-semibold flex items-center gap-2 hover:scale-105 transition-transform cursor-pointer">
-                      Get Started
+                  {/* Left: Mini credit card (matching our metallic card style) */}
+                  <div className="rounded-xl p-5 flex flex-col justify-between relative overflow-hidden" style={{
+                    background: "linear-gradient(145deg, #d4d4d4 0%, #a0a0a0 25%, #666 50%, #2a2a2a 80%, #1a1a1a 100%)",
+                    minHeight: "180px"
+                  }}>
+                    {/* Brushed texture */}
+                    <div className="absolute inset-0 rounded-xl opacity-[0.06]" style={{
+                      backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(255,255,255,0.1) 1px, rgba(255,255,255,0.1) 2px)",
+                      backgroundSize: "100% 3px"
+                    }} />
+                    {/* Specular */}
+                    <div className="absolute inset-0 rounded-xl overflow-hidden pointer-events-none">
+                      <div className="absolute w-[200%] h-[40px] bg-gradient-to-r from-transparent via-white/15 to-transparent" style={{
+                        top: "25%", left: "-50%", transform: "rotate(-30deg)", filter: "blur(6px)"
+                      }} />
                     </div>
-                    <div className="bg-transparent border border-white/20 text-white px-6 py-2.5 rounded-full text-sm font-semibold hover:bg-white/10 transition-colors cursor-pointer">
-                      Learn More
+                    <div className="relative z-10 flex justify-between items-start">
+                      <span className="text-[10px] font-black tracking-[0.2em] text-white/15">SATSU</span>
+                      {/* Mini chip */}
+                      <div className="w-7 h-5 rounded-sm" style={{
+                        background: "linear-gradient(150deg, #E8D5A3, #A08040)",
+                        boxShadow: "inset 0 1px 2px rgba(255,255,255,0.4)"
+                      }} />
                     </div>
-                  </div>
-
-                  {/* Inner Dark Floating Card Widget */}
-                  <div className="w-full max-w-[480px] h-[260px] rounded-[1.5rem] bg-[#141414] border border-white/5 p-6 flex flex-col shadow-2xl">
-                    <div className="flex justify-between items-center mb-8">
-                       <span className="text-white/60 font-medium text-sm">Shielded Wallet</span>
-                       <span className="text-white/80 font-mono text-sm tracking-wider">**** 4784</span>
-                    </div>
-
-                    <div className="flex-1 bg-gradient-to-tr from-[#1a1a1a] to-[#222] rounded-xl border border-white/5 p-5 relative overflow-hidden flex flex-col justify-between">
-                       <div className="absolute inset-0 opacity-10 mix-blend-overlay" style={{ backgroundImage: "url('https://grainy-gradients.vercel.app/noise.svg')" }} />
-
-                       <div className="relative z-10 flex justify-between">
-                         <div className="text-2xl font-black text-white/20 tracking-widest">SATSU</div>
-                         <Shield className="w-5 h-5 text-white/40" />
-                       </div>
-
-                       <div className="relative z-10 flex gap-3 mt-auto">
-                         <div className="flex-1 bg-white/5 border border-white/10 rounded-lg py-2.5 text-center text-xs text-white/90 hover:bg-white/10 cursor-pointer transition-colors backdrop-blur-sm">
-                           Deposit
-                         </div>
-                         <div className="flex-1 bg-white text-black rounded-lg py-2.5 text-center text-xs font-bold hover:bg-white/90 cursor-pointer transition-colors flex justify-center items-center gap-2">
-                           Withdraw <ArrowUpRight className="w-3 h-3" />
-                         </div>
-                       </div>
+                    <div className="relative z-10">
+                      <p className="text-[9px] text-white/30 uppercase tracking-widest mb-0.5">Available</p>
+                      <p className="text-xl font-bold text-white/70 tabular-nums drop-shadow-[0_1px_3px_rgba(0,0,0,0.5)]">749.87 <span className="text-[10px] text-white/30">sBTC</span></p>
                     </div>
                   </div>
+
+                  {/* Right: Stats grid */}
+                  <div className="grid grid-cols-2 gap-3">
+                    {[
+                      { label: "Deposits", value: "892", color: "#F97C00" },
+                      { label: "Score", value: "89%", color: "#4ADE80" },
+                      { label: "Notes", value: "3", color: "#FACC15" },
+                      { label: "Pool TVL", value: "42.8", color: "#F97C00" },
+                    ].map((s) => (
+                      <div key={s.label} className="rounded-xl bg-white/[0.03] border border-white/[0.05] p-3 flex flex-col justify-between">
+                        <span className="text-[8px] text-white/25 uppercase tracking-widest">{s.label}</span>
+                        <span className="text-lg font-bold text-white tabular-nums mt-1">{s.value}</span>
+                        <div className="h-1 rounded-full bg-white/[0.04] mt-2">
+                          <div className="h-full rounded-full" style={{ width: "65%", background: s.color }} />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Transaction rows */}
+                <div className="mt-4 rounded-xl bg-white/[0.02] border border-white/[0.04] overflow-hidden">
+                  {[
+                    { title: "Stealth Deposit", time: "2m ago", amount: "-0.1 sBTC", positive: false },
+                    { title: "Shielded Withdrawal", time: "1h ago", amount: "+0.1 sBTC", positive: true },
+                    { title: "Pool Contribution", time: "3h ago", amount: "-0.05 sBTC", positive: false },
+                  ].map((tx, i) => (
+                    <div key={i} className="flex items-center justify-between px-4 py-3 border-b border-white/[0.03] last:border-0">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${tx.positive ? "bg-[#4ADE80]/10" : "bg-[#F97C00]/10"}`}>
+                          <div className={`w-1.5 h-1.5 rounded-full ${tx.positive ? "bg-[#4ADE80]" : "bg-[#F97C00]"}`} />
+                        </div>
+                        <div>
+                          <p className="text-[11px] text-white/70 font-medium">{tx.title}</p>
+                          <p className="text-[9px] text-white/20">{tx.time}</p>
+                        </div>
+                      </div>
+                      <span className={`text-[11px] font-semibold tabular-nums ${tx.positive ? "text-[#4ADE80]" : "text-white/40"}`}>{tx.amount}</span>
+                    </div>
+                  ))}
                 </div>
 
               </div>
