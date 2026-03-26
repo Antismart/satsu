@@ -31,10 +31,10 @@ export default function Home() {
 
 
       {/* ================= HERO SECTION ================= */}
-      <section className="relative w-full pt-28 sm:pt-36 pb-24 px-6 max-w-[1400px] mx-auto z-10">
+      <section className="relative w-full pt-32 sm:pt-44 pb-32 px-6 max-w-[1400px] mx-auto z-10">
 
-        {/* Top-right pill tags (Behance-style) */}
-        <div className="hidden lg:flex absolute top-32 right-6 gap-3 z-20">
+        {/* Pill tags - top right */}
+        <div className="hidden lg:flex absolute top-36 right-6 gap-3 z-20">
           <span className="px-4 py-1.5 rounded-full border border-white/[0.12] bg-white/[0.03] text-[11px] text-white/50 font-medium tracking-wide backdrop-blur-sm">
             Privacy Protocol
           </span>
@@ -43,191 +43,123 @@ export default function Home() {
           </span>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+        {/* Full-width heading - text dominates */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+          className="max-w-[900px] mb-10"
+        >
+          <h1
+            className="font-heading text-5xl sm:text-7xl md:text-8xl lg:text-[7rem] font-bold text-white"
+            style={{ lineHeight: "1.05", letterSpacing: "-0.03em" }}
+          >
+            Private payments on Bitcoin,{" "}
+            <span className="text-gradient-warm">shielded</span> by zero knowledge.
+          </h1>
+        </motion.div>
 
-          {/* Left: Floating Metal Card Component & Abstract Elements */}
-          <div className="relative w-full h-[600px] flex items-center justify-center order-2 lg:order-1">
+        {/* Subtitle + CTAs */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.3 }}
+          className="flex flex-col sm:flex-row sm:items-end justify-between gap-8 mb-32"
+        >
+          <p className="text-white/45 text-lg sm:text-xl leading-relaxed max-w-md">
+            Deposit sBTC into a shielded pool. Withdraw to stealth addresses.
+            No one sees who sent what to whom.
+          </p>
+          <div className="flex gap-4 flex-shrink-0">
+            <Link href="/dashboard" className="btn-accent h-12 px-8 text-sm flex items-center gap-2">
+              Launch App
+              <ArrowUpRight className="w-4 h-4" />
+            </Link>
+            <Link href="/register" className="btn-glass h-12 px-8 text-sm flex items-center">
+              Get Started
+            </Link>
+          </div>
+        </motion.div>
 
-            {/* Ambient Backlight for Card - warmer, bigger */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] bg-[#F97C00]/[0.06] blur-[100px] rounded-full" />
+        {/* Card showcase - centered below text with floating stats */}
+        <div className="relative flex justify-center items-center">
 
-            {/* Floating Mini Orbs - slightly smaller, more subtle */}
-            <motion.div
-              animate={{ y: [0, -12, 0], rotate: [0, 8, 0] }}
-              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute top-[15%] right-[20%] w-12 h-12 rounded-full bg-gradient-to-br from-[#F97C00] to-[#FACC15] blur-[1px] opacity-70 shadow-[0_0_24px_rgba(249,124,0,0.4)] border border-white/20 z-20 flex items-center justify-center"
-            >
-              <Fingerprint className="text-black/40 w-6 h-6" />
-            </motion.div>
+          {/* Ambient warm glow behind card */}
+          <div className="absolute w-[500px] h-[400px] bg-[#F97C00]/[0.08] blur-[120px] rounded-full pointer-events-none" />
 
-            <motion.div
-              animate={{ y: [0, 16, 0], rotate: [0, -12, 0] }}
-              transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute bottom-[15%] left-[15%] w-14 h-14 rounded-full bg-gradient-to-br from-[#111] to-[#333] border border-white/10 z-20 flex items-center justify-center shadow-2xl"
-            >
-              <Shield className="text-[#F97C00] w-6 h-6" />
-            </motion.div>
+          {/* The 3D card */}
+          <motion.div
+            initial={{ opacity: 0, y: 60, rotateX: 20, rotateY: -15 }}
+            animate={{ opacity: 1, y: 0, rotateX: 20, rotateY: -15 }}
+            transition={{ duration: 1.2, delay: 0.5, ease: "easeOut" }}
+            whileHover={{ rotateX: 10, rotateY: -8, scale: 1.03 }}
+            className="relative w-[360px] h-[230px] rounded-[1.5rem] p-7 flex flex-col justify-between cursor-pointer z-10"
+            style={{
+              background: "linear-gradient(145deg, #2a2a2a 0%, #1c1c1c 30%, #111 60%, #0a0a0a 100%)",
+              boxShadow: "-20px 30px 70px rgba(0,0,0,0.9), inset 1px 1px 8px rgba(255,255,255,0.1), inset -1px -1px 8px rgba(0,0,0,0.7)",
+              border: "1px solid rgba(255,255,255,0.08)"
+            }}
+          >
+            {/* Noise + sheen */}
+            <div className="absolute inset-0 opacity-[0.04] mix-blend-overlay pointer-events-none rounded-[1.5rem]" style={{ backgroundImage: "url('https://grainy-gradients.vercel.app/noise.svg')" }} />
+            <div className="absolute inset-0 rounded-[1.5rem] pointer-events-none" style={{
+              background: "linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.04) 25%, transparent 50%, rgba(255,255,255,0.02) 75%, transparent 100%)"
+            }} />
 
-            {/* Main Card - stronger 3D perspective and shadows */}
-            <motion.div
-              initial={{ opacity: 0, y: 50, rotateX: 20, rotateY: -20 }}
-              animate={{ opacity: 1, y: 0, rotateX: 28, rotateY: -28 }}
-              transition={{ duration: 1.5, ease: "easeOut" }}
-              whileHover={{ rotateX: 15, rotateY: -15, scale: 1.05 }}
-              className="relative w-[340px] h-[520px] rounded-[2rem] p-8 flex flex-col justify-between shadow-2xl cursor-pointer z-10"
-              style={{
-                background: "linear-gradient(145deg, #2a2a2a 0%, #1c1c1c 30%, #111 60%, #0a0a0a 100%)",
-                boxShadow: "-35px 45px 90px rgba(0,0,0,0.95), inset 2px 2px 10px rgba(255,255,255,0.12), inset -2px -2px 10px rgba(0,0,0,0.8), 0 0 60px rgba(0,0,0,0.6)",
-                border: "1px solid rgba(255,255,255,0.08)"
-              }}
-            >
-              {/* Card Grain Overlay */}
-              <div className="absolute inset-0 opacity-[0.04] mix-blend-overlay pointer-events-none rounded-[2rem]" style={{ backgroundImage: "url('https://grainy-gradients.vercel.app/noise.svg')" }} />
-
-              {/* Brushed metal sheen effect */}
-              <div className="absolute inset-0 rounded-[2rem] pointer-events-none" style={{
-                background: "linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.04) 25%, transparent 50%, rgba(255,255,255,0.02) 75%, transparent 100%)"
-              }} />
-
-              {/* Top Card Elements */}
-              <div className="relative z-10 flex justify-between items-start">
-                {/* SATSU text rotated vertically */}
-                <span className="text-3xl font-black tracking-[0.25em] text-white/[0.07]" style={{
-                  transform: "rotate(-90deg)",
-                  transformOrigin: "top left",
-                  position: "absolute",
-                  top: "160px",
-                  left: "-6px"
-                }}>
-                  SATSU
-                </span>
-                <div className="ml-auto flex flex-col items-end gap-4">
-                  <div className="w-14 h-16 border border-white/15 rounded-lg bg-gradient-to-br from-white/10 to-transparent flex flex-col justify-center items-center gap-1.5 shadow-inner">
-                    <div className="w-10 h-[1px] bg-white/25" />
-                    <div className="w-12 h-[1px] bg-white/25" />
-                    <div className="w-10 h-[1px] bg-white/25" />
-                  </div>
-                  {/* Contactless icon */}
-                  <svg className="w-8 h-8 text-white/30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M12 2v20M17 5S21 8 21 12s-4 7-4 7M7 5S3 8 3 12s4 7 4 7" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </div>
+            {/* Top: chip + contactless */}
+            <div className="relative z-10 flex justify-between items-start">
+              <div className="w-11 h-8 rounded-md border border-white/15 bg-gradient-to-br from-white/10 to-transparent flex flex-col justify-center items-center gap-0.5">
+                <div className="w-7 h-[1px] bg-white/25" />
+                <div className="w-8 h-[1px] bg-white/25" />
+                <div className="w-7 h-[1px] bg-white/25" />
               </div>
-
-              {/* Bottom Card Elements */}
-              <div className="relative z-10 flex justify-between items-end pb-2">
-                <div className="flex flex-col">
-                  <span className="text-white/30 text-xs tracking-[0.2em] uppercase mb-2">Zero Knowledge</span>
-                  <span className="text-white/80 text-2xl font-mono tracking-widest drop-shadow-md">**** 8921</span>
-                </div>
-                <div className="w-12 h-12 rounded-full border border-white/15 bg-white/5 flex items-center justify-center backdrop-blur-md">
-                  <div className="w-6 h-6 rounded-full bg-gradient-to-r from-[#F97C00] to-[#FACC15]" />
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Pedestal / Shadow Base */}
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-[60%] h-12 bg-black/90 rounded-[100%] blur-2xl flex items-center justify-center z-0">
-               <div className="w-[80%] h-8 bg-[#F97C00]/15 rounded-[100%] blur-xl" />
+              <svg className="w-6 h-6 text-white/25" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <path d="M8.5 16.5S6 14 6 12s2.5-4.5 2.5-4.5M12 18s-4-3-4-6 4-6 4-6M15.5 19.5S10 16 10 12s5.5-7.5 5.5-7.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
             </div>
-          </div>
 
-          {/* Right: Hero Text + Widgets */}
-          <div className="flex flex-col gap-8 w-full max-w-lg mx-auto lg:mx-0 order-1 lg:order-2">
-
-            {/* Editorial Hero Text - BIGGER, more luxurious */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-            >
-              <h1
-                className="font-heading text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-white mb-8"
-                style={{
-                  lineHeight: "1.08",
-                  letterSpacing: "-0.02em"
-                }}
-              >
-                Private payments on Bitcoin,{" "}
-                <span className="text-gradient-warm">shielded</span> by zero knowledge.
-              </h1>
-              <p className="text-white/50 text-base sm:text-lg leading-relaxed max-w-md">
-                Deposit sBTC into a shielded pool. Withdraw to stealth addresses.
-                No one sees who sent what to whom.
-              </p>
-            </motion.div>
-
-            {/* Network Shield Widget */}
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="bg-[#0f0f0f] border border-white/[0.08] rounded-[2rem] p-8 relative overflow-hidden group shadow-2xl"
-            >
-              <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/15 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              <div className="flex justify-between items-start mb-8">
-                <div>
-                  <h3 className="text-white text-lg font-medium">Shielded Pool</h3>
-                  <p className="text-white/40 text-xs mt-1">Total value locked in pool</p>
-                </div>
-                <div className="w-10 h-10 rounded-xl bg-[#1a1a1a] border border-white/5 flex items-center justify-center">
-                  <Activity className="w-5 h-5 text-white/70" />
-                </div>
+            {/* Bottom: branding + number */}
+            <div className="relative z-10 flex justify-between items-end">
+              <div>
+                <span className="text-white/25 text-[9px] tracking-[0.2em] uppercase block mb-1">Zero Knowledge</span>
+                <span className="text-white/70 text-lg font-mono tracking-widest">**** **** 8921</span>
               </div>
+              <span className="text-xl font-black tracking-[0.2em] text-white/[0.08]">SATSU</span>
+            </div>
+          </motion.div>
 
-              {/* Advanced Gauge Chart */}
-              <div className="relative w-full h-[160px] flex items-end justify-center overflow-hidden mb-8">
-                <svg className="absolute w-[280px] h-[280px] bottom-[-140px] opacity-20" viewBox="0 0 100 100">
-                  <path d="M 10 50 A 40 40 0 0 1 90 50" fill="none" stroke="white" strokeWidth="2" strokeDasharray="2 4" strokeLinecap="round" />
-                </svg>
-                <div className="absolute w-[260px] h-[260px] rounded-full border-[18px] border-[#1a1a1a] bottom-[-130px]" />
-                <div className="absolute w-[260px] h-[260px] rounded-full border-[18px] border-t-transparent border-r-transparent border-b-[#F97C00] border-l-[#FACC15] bottom-[-130px] rotate-45 transform transition-transform duration-1000 group-hover:rotate-[75deg]" />
+          {/* Floating stat widget - top right of card */}
+          <motion.div
+            initial={{ opacity: 0, x: 40 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.9 }}
+            className="absolute top-[-30px] right-[5%] lg:right-[15%] bg-[#0f0f0f]/90 border border-white/[0.08] rounded-2xl p-5 backdrop-blur-md z-20 hidden md:block"
+          >
+            <p className="text-[10px] text-white/40 uppercase tracking-widest mb-2">Pool TVL</p>
+            <p className="text-2xl font-bold text-white tabular-nums mb-3">42.85 <span className="text-sm text-white/40">sBTC</span></p>
+            <div className="progress-track w-40">
+              <div className="progress-fill" style={{ width: "68%" }} />
+            </div>
+          </motion.div>
 
-                <div className="relative z-10 flex flex-col items-center">
-                  <span className="text-white/40 text-[10px] uppercase tracking-widest mb-1">Pool TVL</span>
-                  <span className="text-white font-bold text-5xl tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-white to-white/60">42.85 <span className="text-2xl text-white/40">sBTC</span></span>
-                </div>
-              </div>
+          {/* Floating stat widget - bottom left of card */}
+          <motion.div
+            initial={{ opacity: 0, x: -40 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 1.1 }}
+            className="absolute bottom-[-20px] left-[5%] lg:left-[15%] bg-[#0f0f0f]/90 border border-white/[0.08] rounded-2xl p-4 backdrop-blur-md z-20 hidden md:flex items-center gap-3"
+          >
+            <div className="w-10 h-10 rounded-xl bg-[#1a1a1a] border border-white/5 flex items-center justify-center">
+              <Shield className="w-5 h-5 text-[#F97C00]" />
+            </div>
+            <div>
+              <p className="text-white text-sm font-semibold">892 deposits</p>
+              <p className="text-white/35 text-[10px]">Anonymity set</p>
+            </div>
+          </motion.div>
 
-              {/* View More Activity - btn-dark style (rounded-xl, not rounded-full) */}
-              <Link href="/dashboard" className="w-full flex items-center justify-center gap-2.5 btn-dark py-4 text-sm hover:bg-[#222] transition-all duration-300">
-                <RefreshCw className="w-4 h-4 text-white/60" />
-                <span>View Pool Activity</span>
-              </Link>
-            </motion.div>
-
-            {/* List Widgets */}
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-              className="flex flex-col gap-3"
-            >
-              {[
-                { label: "Anonymity Set", max: "1,000", value: "892", percent: 89, icon: <Shield className="w-4 h-4" /> },
-                { label: "Shielded Transfers", max: "5,000", value: "1,247", percent: 25, icon: <ArrowUpRight className="w-4 h-4" /> }
-              ].map((stat, i) => (
-                <div key={i} className="bg-[#0f0f0f] border border-white/5 rounded-[1.5rem] p-4 flex items-center gap-4 hover:border-white/10 transition-all duration-300 shadow-lg hover-lift">
-                  <div className="w-12 h-12 rounded-2xl bg-[#1a1a1a] border border-white/5 flex items-center justify-center text-white/70">
-                    {stat.icon}
-                  </div>
-                  <div className="flex-1">
-                    <h4 className="text-white text-sm font-medium">{stat.label}</h4>
-                    <p className="text-white/40 text-[10px] font-mono mt-0.5">{stat.value} of {stat.max}</p>
-                  </div>
-                  <div className="relative w-14 h-14 flex items-center justify-center">
-                    <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
-                      <path className="text-[#1a1a1a]" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" strokeWidth="4" />
-                      <path className="text-[#e5e5e5]" strokeDasharray={`${stat.percent}, 100`} d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
-                    </svg>
-                    <span className="absolute text-[10px] text-white/90 font-medium">{stat.percent}%</span>
-                  </div>
-                </div>
-              ))}
-            </motion.div>
-
-          </div>
-
+          {/* Pedestal shadow */}
+          <div className="absolute bottom-[-30px] w-[40%] h-8 bg-black/80 rounded-[100%] blur-2xl z-0" />
         </div>
       </section>
 
