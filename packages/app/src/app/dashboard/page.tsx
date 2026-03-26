@@ -103,55 +103,66 @@ export default function DashboardPage() {
           BALANCE CARD + EXPENSES GAUGE
           ================================================================ */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-5">
-        {/* Statistics / Balance Card */}
-        <div className="glass-card p-6 sm:p-8">
-          <div className="flex items-center justify-between mb-1">
-            <p className="text-xs text-white/50 uppercase tracking-wider font-semibold">
-              Available Balance
-            </p>
-            <p className="text-sm text-white/50 font-mono">
-              {truncatedAddr}
-            </p>
-          </div>
-          <p className="text-4xl sm:text-5xl font-bold text-white tracking-tight mb-1">
-            ${leftBalance.toFixed(2)}
-          </p>
-          <p className="text-xs text-white/35 mb-6">
-            Deposited <span className="text-[#4ADE80]">${spentAmount.toFixed(2)}</span>
-          </p>
+        {/* Credit Card Style Balance */}
+        <div className="relative rounded-[1.5rem] overflow-hidden p-8 min-h-[320px] flex flex-col justify-between"
+          style={{
+            background: "linear-gradient(145deg, #2a2a2a 0%, #1c1c1c 30%, #111 60%, #0a0a0a 100%)",
+            boxShadow: "0 20px 60px rgba(0,0,0,0.8), inset 1px 1px 6px rgba(255,255,255,0.08), inset -1px -1px 6px rgba(0,0,0,0.6)",
+            border: "1px solid rgba(255,255,255,0.06)"
+          }}
+        >
+          {/* Brushed metal sheen */}
+          <div className="absolute inset-0 pointer-events-none rounded-[1.5rem]" style={{
+            background: "linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.03) 20%, transparent 45%, rgba(255,255,255,0.02) 70%, transparent 100%)"
+          }} />
+          {/* Noise texture */}
+          <div className="absolute inset-0 opacity-[0.04] mix-blend-overlay pointer-events-none rounded-[1.5rem]" style={{ backgroundImage: "url('https://grainy-gradients.vercel.app/noise.svg')" }} />
 
-          {/* Orange-yellow progress bar with triangle indicator */}
-          <div className="relative">
-            <div className="progress-track">
-              <div
-                className="progress-fill"
-                style={{ width: `${spendRatio * 100}%` }}
-              />
+          {/* Top row: label + contactless */}
+          <div className="relative z-10 flex justify-between items-start">
+            <div>
+              <p className="text-[10px] text-white/40 uppercase tracking-[0.2em] font-semibold mb-1">Available Balance</p>
+              <p className="text-4xl sm:text-5xl font-bold text-white tracking-tight">
+                {leftBalance.toFixed(2)} <span className="text-lg font-semibold text-white/40">sBTC</span>
+              </p>
+              <p className="text-xs mt-2">
+                <span className="text-white/35">Deposited </span>
+                <span className="text-[#4ADE80] font-semibold">{spentAmount.toFixed(2)} sBTC</span>
+              </p>
             </div>
-            {/* Triangle indicator */}
-            <div
-              className="absolute -top-2.5 w-0 h-0"
-              style={{
-                left: `${spendRatio * 100}%`,
-                transform: "translateX(-50%)",
-                borderLeft: "5px solid transparent",
-                borderRight: "5px solid transparent",
-                borderTop: "6px solid #FACC15"
-              }}
-            />
+            {/* Contactless icon */}
+            <svg className="w-8 h-8 text-white/20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <path d="M8.5 16.5S6 14 6 12s2.5-4.5 2.5-4.5M12 18s-4-3-4-6 4-6 4-6M15.5 19.5S10 16 10 12s5.5-7.5 5.5-7.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
           </div>
 
-          {/* Pool balance below */}
-          <div className="mt-6 pt-5 border-t border-white/[0.06]">
-            <div className="flex items-end justify-between">
-              <div>
-                <p className="text-[10px] uppercase tracking-widest font-semibold text-white/35 mb-1">
-                  Pool TVL
-                </p>
-                <p className="text-2xl font-bold text-white tracking-tight">
-                  {poolBalance} <span className="text-sm font-semibold text-white/50">sBTC</span>
-                </p>
+          {/* Progress bar */}
+          <div className="relative z-10 my-5">
+            <div className="progress-track">
+              <div className="progress-fill" style={{ width: `${spendRatio * 100}%` }} />
+            </div>
+            <div className="absolute -top-2.5 w-0 h-0" style={{
+              left: `${spendRatio * 100}%`, transform: "translateX(-50%)",
+              borderLeft: "5px solid transparent", borderRight: "5px solid transparent", borderTop: "6px solid #FACC15"
+            }} />
+          </div>
+
+          {/* Bottom row: chip + branding + address */}
+          <div className="relative z-10 flex justify-between items-end">
+            <div className="flex items-center gap-4">
+              {/* Chip */}
+              <div className="w-12 h-9 rounded-md border border-white/15 bg-gradient-to-br from-white/10 to-transparent flex flex-col justify-center items-center gap-1">
+                <div className="w-8 h-[1px] bg-white/25" />
+                <div className="w-9 h-[1px] bg-white/25" />
+                <div className="w-8 h-[1px] bg-white/25" />
               </div>
+              <div>
+                <p className="text-white/30 text-[10px] uppercase tracking-[0.15em]">Stealth Address</p>
+                <p className="text-white/70 text-sm font-mono tracking-wider">{truncatedAddr}</p>
+              </div>
+            </div>
+            <div className="flex flex-col items-end gap-2">
+              <span className="text-2xl font-black tracking-[0.2em] text-white/[0.06]">SATSU</span>
               <div className="flex items-center gap-1.5 text-[#4ADE80] text-xs font-semibold">
                 <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
