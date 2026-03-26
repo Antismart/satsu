@@ -36,10 +36,10 @@ export default function Home() {
         {/* Top-right pill tags (Behance-style) */}
         <div className="hidden lg:flex absolute top-32 right-6 gap-3 z-20">
           <span className="px-4 py-1.5 rounded-full border border-white/[0.12] bg-white/[0.03] text-[11px] text-white/50 font-medium tracking-wide backdrop-blur-sm">
-            Digital Banking
+            Privacy Protocol
           </span>
           <span className="px-4 py-1.5 rounded-full border border-white/[0.12] bg-white/[0.03] text-[11px] text-white/50 font-medium tracking-wide backdrop-blur-sm">
-            Secure Finances
+            Zero Knowledge
           </span>
         </div>
 
@@ -148,12 +148,12 @@ export default function Home() {
                   letterSpacing: "-0.02em"
                 }}
               >
-                Smarter card control for{" "}
-                <span className="text-gradient-warm">secure</span>, effortless management.
+                Private payments on Bitcoin,{" "}
+                <span className="text-gradient-warm">shielded</span> by zero knowledge.
               </h1>
               <p className="text-white/50 text-base sm:text-lg leading-relaxed max-w-md">
-                Privacy-first financial tools powered by zero-knowledge proofs on Bitcoin.
-                Take control of every transaction.
+                Deposit sBTC into a shielded pool. Withdraw to stealth addresses.
+                No one sees who sent what to whom.
               </p>
             </motion.div>
 
@@ -167,8 +167,8 @@ export default function Home() {
               <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/15 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <div className="flex justify-between items-start mb-8">
                 <div>
-                  <h3 className="text-white text-lg font-medium">Network Shield</h3>
-                  <p className="text-white/40 text-xs mt-1">Total anonymized assets</p>
+                  <h3 className="text-white text-lg font-medium">Shielded Pool</h3>
+                  <p className="text-white/40 text-xs mt-1">Total value locked in pool</p>
                 </div>
                 <div className="w-10 h-10 rounded-xl bg-[#1a1a1a] border border-white/5 flex items-center justify-center">
                   <Activity className="w-5 h-5 text-white/70" />
@@ -184,7 +184,7 @@ export default function Home() {
                 <div className="absolute w-[260px] h-[260px] rounded-full border-[18px] border-t-transparent border-r-transparent border-b-[#F97C00] border-l-[#FACC15] bottom-[-130px] rotate-45 transform transition-transform duration-1000 group-hover:rotate-[75deg]" />
 
                 <div className="relative z-10 flex flex-col items-center">
-                  <span className="text-white/40 text-[10px] uppercase tracking-widest mb-1">Left Balance</span>
+                  <span className="text-white/40 text-[10px] uppercase tracking-widest mb-1">Pool TVL</span>
                   <span className="text-white font-bold text-5xl tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-white to-white/60">42.85 <span className="text-2xl text-white/40">sBTC</span></span>
                 </div>
               </div>
@@ -192,7 +192,7 @@ export default function Home() {
               {/* View More Activity - btn-dark style (rounded-xl, not rounded-full) */}
               <Link href="/dashboard" className="w-full flex items-center justify-center gap-2.5 btn-dark py-4 text-sm hover:bg-[#222] transition-all duration-300">
                 <RefreshCw className="w-4 h-4 text-white/60" />
-                <span>Sync Shielded Activity</span>
+                <span>View Pool Activity</span>
               </Link>
             </motion.div>
 
@@ -205,7 +205,7 @@ export default function Home() {
             >
               {[
                 { label: "Anonymity Set", max: "1,000", value: "892", percent: 89, icon: <Shield className="w-4 h-4" /> },
-                { label: "Daily Transfers", max: "5,000", value: "1,247", percent: 25, icon: <ArrowUpRight className="w-4 h-4" /> }
+                { label: "Shielded Transfers", max: "5,000", value: "1,247", percent: 25, icon: <ArrowUpRight className="w-4 h-4" /> }
               ].map((stat, i) => (
                 <div key={i} className="bg-[#0f0f0f] border border-white/5 rounded-[1.5rem] p-4 flex items-center gap-4 hover:border-white/10 transition-all duration-300 shadow-lg hover-lift">
                   <div className="w-12 h-12 rounded-2xl bg-[#1a1a1a] border border-white/5 flex items-center justify-center text-white/70">
@@ -252,7 +252,7 @@ export default function Home() {
             <div className="relative z-10 flex flex-col justify-between h-full min-h-[320px]">
               <div className="max-w-lg">
                 <h2 className="font-heading text-4xl sm:text-5xl md:text-6xl font-bold text-white tracking-tight mb-6" style={{ lineHeight: "1.1" }}>
-                  Next-Gen Credit Management
+                  Stealth Payments, Zero Trace
                 </h2>
               </div>
 
@@ -261,18 +261,18 @@ export default function Home() {
                   <p className="text-white font-bold text-2xl tracking-tight tabular-nums mb-1">$748,42.87</p>
                   <div className="flex items-center gap-2">
                     <div className="w-8 h-5 rounded bg-gradient-to-r from-[#1a1a1a] to-[#2a2a2a] border border-white/10" />
-                    <span className="text-xs text-white/40">Card - **** 2774</span>
+                    <span className="text-xs text-white/40">Stealth Address</span>
                   </div>
                 </div>
                 <p className="hidden md:block text-white/35 text-sm max-w-[280px] text-right leading-relaxed">
-                  Manage your credit card securely with smart controls
+                  Send and receive sBTC privately. No one sees who paid whom.
                 </p>
               </div>
             </div>
 
             {/* Floating widget card (top-right) */}
             <div className="absolute top-8 right-8 bg-[#0f0f0f]/90 border border-white/[0.08] rounded-2xl p-5 backdrop-blur-md hidden md:block">
-              <p className="text-[10px] text-white/40 uppercase tracking-widest mb-2">Left balance</p>
+              <p className="text-[10px] text-white/40 uppercase tracking-widest mb-2">Pool TVL</p>
               <p className="text-2xl font-bold text-white tabular-nums mb-3">$749.87</p>
               <div className="progress-track w-36">
                 <div className="progress-fill" style={{ width: "46%" }} />
@@ -287,8 +287,8 @@ export default function Home() {
         <div className="max-w-[1100px] mx-auto relative flex flex-col items-center">
 
           <div className="text-center mb-14">
-            <h2 className="text-white text-3xl sm:text-4xl font-medium tracking-tight mb-4">Maximize Your <span className="text-gradient-warm">Financial Potential</span></h2>
-            <p className="text-white/40 text-sm max-w-md mx-auto leading-relaxed">With our zero-knowledge proofs, you can track spending, optimize savings, and make data-driven decisions effortlessly.</p>
+            <h2 className="text-white text-3xl sm:text-4xl font-medium tracking-tight mb-4">Your <span className="text-gradient-warm">Privacy Dashboard</span></h2>
+            <p className="text-white/40 text-sm max-w-md mx-auto leading-relaxed">Monitor your shielded deposits, withdrawals, and privacy score. Everything stays between you and the blockchain.</p>
           </div>
 
           <motion.div
@@ -332,10 +332,10 @@ export default function Home() {
                 <div className="absolute top-6 left-8 right-8 sm:left-12 sm:right-12 flex justify-between items-center z-10 text-white/60 text-xs">
                   <div className="font-bold text-white tracking-widest">SATSU</div>
                   <div className="hidden sm:flex gap-6">
-                    <span className="hover:text-white cursor-pointer transition-colors">Features</span>
-                    <span className="hover:text-white cursor-pointer transition-colors">How it Works</span>
-                    <span className="hover:text-white cursor-pointer transition-colors">Pricing</span>
-                    <span className="hover:text-white cursor-pointer transition-colors">Security</span>
+                    <span className="hover:text-white cursor-pointer transition-colors">Protocol</span>
+                    <span className="hover:text-white cursor-pointer transition-colors">How It Works</span>
+                    <span className="hover:text-white cursor-pointer transition-colors">Privacy</span>
+                    <span className="hover:text-white cursor-pointer transition-colors">Docs</span>
                   </div>
                   <div className="px-4 py-1.5 bg-white text-black rounded-full font-semibold cursor-pointer text-[11px]">Log In</div>
                 </div>
@@ -359,7 +359,7 @@ export default function Home() {
                   {/* Inner Dark Floating Card Widget */}
                   <div className="w-full max-w-[480px] h-[260px] rounded-[1.5rem] bg-[#141414] border border-white/5 p-6 flex flex-col shadow-2xl">
                     <div className="flex justify-between items-center mb-8">
-                       <span className="text-white/60 font-medium text-sm">Main Account</span>
+                       <span className="text-white/60 font-medium text-sm">Shielded Wallet</span>
                        <span className="text-white/80 font-mono text-sm tracking-wider">**** 4784</span>
                     </div>
 
@@ -374,10 +374,10 @@ export default function Home() {
 
                        <div className="relative z-10 flex gap-3 mt-auto">
                          <div className="flex-1 bg-white/5 border border-white/10 rounded-lg py-2.5 text-center text-xs text-white/90 hover:bg-white/10 cursor-pointer transition-colors backdrop-blur-sm">
-                           Manage Card
+                           Deposit
                          </div>
                          <div className="flex-1 bg-white text-black rounded-lg py-2.5 text-center text-xs font-bold hover:bg-white/90 cursor-pointer transition-colors flex justify-center items-center gap-2">
-                           Transfer <ArrowUpRight className="w-3 h-3" />
+                           Withdraw <ArrowUpRight className="w-3 h-3" />
                          </div>
                        </div>
                     </div>
@@ -399,19 +399,19 @@ export default function Home() {
         <div className="max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-12 gap-12 items-center text-white">
 
           <div className="md:col-span-3 text-white/30 text-[13px] font-medium tracking-wide uppercase space-y-2 border-l border-white/10 pl-6 h-full flex flex-col justify-center">
-            <p>Effortless</p>
-            <p className="text-white/60">Spending</p>
-            <p>Limits And</p>
-            <p>Protection</p>
+            <p>Stealth</p>
+            <p className="text-white/60">Deposits</p>
+            <p>Shielded</p>
+            <p>Withdrawals</p>
           </div>
 
           <div className="md:col-span-6 flex flex-col items-center text-center">
-            <span className="text-white/40 text-[11px] tracking-[0.2em] font-medium uppercase mb-5">Real-Time Alerts For Safety</span>
+            <span className="text-white/40 text-[11px] tracking-[0.2em] font-medium uppercase mb-5">Privacy By Default</span>
             <h2
               className="font-heading text-5xl sm:text-6xl md:text-7xl font-bold tracking-tighter mb-12"
               style={{ lineHeight: "1.05" }}
             >
-              Instant Control <br/>For Every Card
+              Untraceable Payments <br/>For Everyone
             </h2>
 
             <div className="flex items-center justify-center pr-4">
@@ -446,7 +446,7 @@ export default function Home() {
               <div className="w-10 h-10 rounded-full bg-[#111] border border-white/10 flex items-center justify-center mb-4 md:order-1 order-2 cursor-pointer hover:bg-white/10 transition-colors duration-300">
                 <Wallet className="w-4 h-4 text-white/80" />
               </div>
-              <p className="text-white/60 text-sm font-medium order-1 md:order-2">Easy Management</p>
+              <p className="text-white/60 text-sm font-medium order-1 md:order-2">Full Privacy</p>
             </div>
           </div>
 

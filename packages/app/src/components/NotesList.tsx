@@ -12,9 +12,9 @@ export interface NoteDisplay {
 }
 
 const CATEGORY_LABELS: Record<string, string> = {
-  "note-001": "Transfer",
-  "note-002": "Shopping",
-  "note-003": "Transportation",
+  "note-001": "Shielded Deposit",
+  "note-002": "Shielded Deposit",
+  "note-003": "Shielded Deposit",
 };
 
 export function NotesList() {
@@ -67,7 +67,7 @@ export function NotesList() {
           </div>
           <div>
             <h2 className="text-xl font-semibold tracking-tight text-white">
-              Your Notes
+              Deposit Notes
             </h2>
             <p className="text-xs text-white/35">
               {notes.length} note{notes.length !== 1 ? "s" : ""} total
@@ -181,7 +181,7 @@ export function NotesList() {
                       </span>
                       <span className="text-white/10">|</span>
                       <span className="text-[10px] text-white/25">
-                        AVG spend $24 a week
+                        via relayer
                       </span>
                     </div>
                   </div>

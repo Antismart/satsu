@@ -15,9 +15,9 @@ const dashboardStats = [
 ];
 
 const recentTransactions = [
-  { icon: "shield", title: "Shielded Transfer", subtitle: "AVG spend $24 a week", amount: "-0.05 sBTC", time: "2m ago" },
-  { icon: "deposit", title: "Pool Deposit", subtitle: "AVG spend $18 a week", amount: "+0.10 sBTC", time: "1h ago" },
-  { icon: "withdraw", title: "Private Withdrawal", subtitle: "AVG spend $32 a week", amount: "-0.01 sBTC", time: "3h ago" },
+  { icon: "shield", title: "Stealth Deposit", subtitle: "via relayer", amount: "-0.05 sBTC", time: "2m ago" },
+  { icon: "deposit", title: "Shielded Withdrawal", subtitle: "to stealth address", amount: "+0.10 sBTC", time: "1h ago" },
+  { icon: "withdraw", title: "Pool Contribution", subtitle: "0.1 sBTC denomination", amount: "-0.01 sBTC", time: "3h ago" },
 ];
 
 export default function DashboardPage() {
@@ -83,7 +83,7 @@ export default function DashboardPage() {
           ================================================================ */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <h1 className="text-2xl font-bold tracking-tight text-white">Statistics</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-white">Privacy Dashboard</h1>
         </div>
         <div className="flex items-center gap-2.5 px-4 py-2 rounded-full glass-card">
           <span
@@ -107,7 +107,7 @@ export default function DashboardPage() {
         <div className="glass-card p-6 sm:p-8">
           <div className="flex items-center justify-between mb-1">
             <p className="text-xs text-white/50 uppercase tracking-wider font-semibold">
-              Left balance
+              Available Balance
             </p>
             <p className="text-sm text-white/50 font-mono">
               {truncatedAddr}
@@ -117,7 +117,7 @@ export default function DashboardPage() {
             ${leftBalance.toFixed(2)}
           </p>
           <p className="text-xs text-white/35 mb-6">
-            Spent of <span className="text-[#4ADE80]">${spentAmount.toFixed(2)}</span>
+            Deposited <span className="text-[#4ADE80]">${spentAmount.toFixed(2)}</span>
           </p>
 
           {/* Orange-yellow progress bar with triangle indicator */}
@@ -146,7 +146,7 @@ export default function DashboardPage() {
             <div className="flex items-end justify-between">
               <div>
                 <p className="text-[10px] uppercase tracking-widest font-semibold text-white/35 mb-1">
-                  Pool Balance
+                  Pool TVL
                 </p>
                 <p className="text-2xl font-bold text-white tracking-tight">
                   {poolBalance} <span className="text-sm font-semibold text-white/50">sBTC</span>
@@ -165,10 +165,10 @@ export default function DashboardPage() {
         {/* Total Expenses - Semi-circular gauge (Behance style) */}
         <div className="glass-card p-6 sm:p-8">
           <h2 className="text-lg font-semibold tracking-tight text-white mb-1">
-            Total Expenses
+            Privacy Shield
           </h2>
           <p className="text-xs text-white/35 mb-6">
-            Tracks all your spending in detail
+            Your anonymity strength over time
           </p>
 
           {/* Semi-circular gauge - thicker arc, vibrant gradient, triangle indicator */}
@@ -212,7 +212,7 @@ export default function DashboardPage() {
             </div>
             {/* Center text below gauge - larger */}
             <div className="text-center -mt-4">
-              <p className="text-xs text-white/35 mb-1">Left balance</p>
+              <p className="text-xs text-white/35 mb-1">Shielded Balance</p>
               <p className="text-3xl font-bold text-white tracking-tight">${leftBalance.toFixed(2)}</p>
             </div>
           </div>
@@ -255,7 +255,7 @@ export default function DashboardPage() {
         <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
         </svg>
-        View More Activity
+        View Transaction History
       </button>
 
       {/* ================================================================

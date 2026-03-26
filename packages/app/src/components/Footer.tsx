@@ -2,26 +2,29 @@ import Link from "next/link";
 
 const footerSections = [
   {
-    title: "Product",
+    title: "Protocol",
     links: [
-      { href: "/dashboard", label: "Dashboard" },
-      { href: "/register", label: "Register" },
-      { href: "#features", label: "Features" },
+      { href: "#", label: "How It Works" },
+      { href: "#", label: "Privacy Model" },
+      { href: "#", label: "Stealth Addresses" },
+      { href: "/docs", label: "Documentation" },
     ],
   },
   {
     title: "Resources",
     links: [
-      { href: "/docs", label: "Documentation" },
+      { href: "#", label: "Stacks Network" },
+      { href: "#", label: "sBTC Bridge" },
       { href: "https://github.com/satsu-privacy", label: "GitHub" },
-      { href: "#", label: "FAQ" },
+      { href: "#", label: "Status" },
     ],
   },
   {
     title: "Legal",
     links: [
-      { href: "#", label: "Privacy Policy" },
       { href: "#", label: "Terms of Service" },
+      { href: "#", label: "Privacy Policy" },
+      { href: "#", label: "Security" },
     ],
   },
 ];

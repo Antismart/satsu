@@ -72,7 +72,7 @@ export function DepositForm() {
           <h2 className="text-xl font-semibold tracking-tight text-white">
             Deposit sBTC
           </h2>
-          <p className="text-xs text-white/35">Into the privacy pool</p>
+          <p className="text-xs text-white/35">Into the shielded pool</p>
         </div>
       </div>
 

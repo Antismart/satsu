@@ -5,7 +5,7 @@ import { useWallet } from "@/hooks/useWallet";
 
 type RegistrationStep = "generate" | "register" | "link-bns" | "done";
 
-const STEP_LABELS = ["Generate Keys", "Register", "Link BNS", "Complete"];
+const STEP_LABELS = ["Generate Stealth Keys", "Register Meta-Address", "Link BNS", "Complete"];
 
 export default function RegisterPage() {
   const { isConnected, connect } = useWallet();
@@ -346,8 +346,8 @@ export default function RegisterPage() {
             </span>
           </div>
           <p className="text-sm text-white/50 mb-6 leading-relaxed">
-            Link a BNS name to your stealth meta-address. This lets others look
-            up your address by name instead of the full key.
+            Link your .btc name so others can find your stealth address
+            without needing the full meta-address key.
           </p>
 
           <div className="mb-8">
@@ -434,7 +434,7 @@ export default function RegisterPage() {
           {/* Address display */}
           <div className="mb-6">
             <label className="block text-[10px] font-semibold text-white/35 uppercase tracking-widest mb-3">
-              Share this address to receive private payments
+              Share this meta-address with anyone who wants to pay you privately
             </label>
             <div className="flex gap-2">
               <div className="flex-1 h-12 px-4 rounded-xl bg-white/[0.04] border border-white/[0.08] overflow-hidden flex items-center">
