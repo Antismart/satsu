@@ -480,14 +480,19 @@ export default function Home() {
             whileInView={{ opacity: 1, scale: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 1, ease: "easeOut" }}
-            className="w-full rounded-[2rem] p-2 bg-[#111] border border-white/[0.08] relative" style={{
-              boxShadow: "0 40px 120px rgba(0,0,0,0.9), 0 0 1px rgba(255,255,255,0.1)"
+            className="w-full rounded-[2rem] p-2.5 relative" style={{
+              background: "linear-gradient(180deg, #2a2a2a 0%, #1e1e1e 50%, #181818 100%)",
+              boxShadow: "0 40px 120px rgba(0,0,0,0.9), 0 0 0 1px rgba(255,255,255,0.1), inset 0 1px 0 rgba(255,255,255,0.08)",
             }}
           >
-            {/* Monitor stand */}
-            <div className="absolute -bottom-14 left-1/2 -translate-x-1/2 w-40 h-14 bg-gradient-to-t from-[#0a0a0a] to-[#1a1a1a] rounded-t-lg z-[-1]" />
-            <div className="absolute -bottom-[68px] left-1/2 -translate-x-1/2 w-56 h-3 bg-[#111] rounded-full z-[-1]" style={{
-              boxShadow: "0 4px 20px rgba(0,0,0,0.8)"
+            {/* Monitor stand - lighter */}
+            <div className="absolute -bottom-14 left-1/2 -translate-x-1/2 w-36 h-14 rounded-t-lg z-[-1]" style={{
+              background: "linear-gradient(180deg, #222 0%, #181818 100%)",
+              boxShadow: "inset 1px 0 0 rgba(255,255,255,0.05), inset -1px 0 0 rgba(255,255,255,0.05)"
+            }} />
+            <div className="absolute -bottom-[68px] left-1/2 -translate-x-1/2 w-52 h-3 rounded-full z-[-1]" style={{
+              background: "linear-gradient(180deg, #222 0%, #1a1a1a 100%)",
+              boxShadow: "0 4px 20px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06)"
             }} />
 
             {/* Screen */}
