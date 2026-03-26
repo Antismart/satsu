@@ -235,51 +235,96 @@ export default function Home() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.8 }}
-            className="relative rounded-[2rem] overflow-hidden min-h-[400px] p-10 sm:p-14 diamond-grid"
+            className="relative rounded-[2.5rem] overflow-hidden min-h-[520px] diamond-grid"
             style={{
-              background: "linear-gradient(135deg, rgba(249, 124, 0, 0.15) 0%, rgba(200, 60, 0, 0.1) 40%, rgba(10, 10, 10, 0.95) 100%)",
+              background: "linear-gradient(145deg, #111 0%, #0d0d0d 100%)",
               border: "1px solid rgba(255, 255, 255, 0.06)"
             }}
           >
-            {/* Animated gradient overlay */}
-            <div className="absolute inset-0 pointer-events-none rounded-[2rem] overflow-hidden">
-              <div className="absolute inset-0 animate-shimmer" style={{
-                background: "linear-gradient(135deg, rgba(249, 124, 0, 0.12) 0%, rgba(200, 40, 0, 0.08) 50%, rgba(249, 124, 0, 0.06) 100%)"
-              }} />
-            </div>
+            {/* Layered warm glow - left side dominant */}
+            <div className="absolute top-[-20%] left-[-10%] w-[70%] h-[140%] pointer-events-none" style={{
+              background: "radial-gradient(ellipse at 40% 50%, rgba(249,124,0,0.25) 0%, rgba(232,77,0,0.12) 35%, transparent 70%)",
+            }} />
+            {/* Secondary glow - center top */}
+            <div className="absolute top-[-30%] left-[30%] w-[50%] h-[80%] pointer-events-none" style={{
+              background: "radial-gradient(ellipse at 50% 50%, rgba(249,124,0,0.1) 0%, transparent 60%)",
+              filter: "blur(40px)"
+            }} />
+            {/* Noise */}
+            <div className="absolute inset-0 opacity-[0.03] mix-blend-overlay pointer-events-none rounded-[2.5rem]" style={{ backgroundImage: "url('https://grainy-gradients.vercel.app/noise.svg')" }} />
 
-            {/* Warm photographic blur */}
-            <div className="absolute top-0 left-0 w-[60%] h-full bg-gradient-to-r from-[#F97C00]/20 via-[#E84D00]/10 to-transparent blur-[60px] pointer-events-none" />
+            {/* Content grid */}
+            <div className="relative z-10 p-10 sm:p-14 flex flex-col min-h-[520px]">
 
-            {/* Content */}
-            <div className="relative z-10 flex flex-col justify-between h-full min-h-[320px]">
-              <div className="max-w-lg">
-                <h2 className="font-heading text-4xl sm:text-5xl md:text-6xl font-bold text-white tracking-tight mb-6" style={{ lineHeight: "1.1" }}>
-                  Stealth Payments, Zero Trace
-                </h2>
-              </div>
+              {/* Top row: heading + floating card */}
+              <div className="flex justify-between items-start mb-auto">
+                <div className="max-w-[550px]">
+                  <span className="text-[10px] text-white/30 uppercase tracking-[0.25em] font-semibold block mb-5">Privacy Infrastructure</span>
+                  <h2 className="font-heading text-4xl sm:text-5xl md:text-6xl font-bold text-white tracking-tight mb-6" style={{ lineHeight: "1.08" }}>
+                    Stealth Payments,{" "}
+                    <span className="text-gradient-warm">Zero Trace</span>
+                  </h2>
+                  <p className="text-white/40 text-base sm:text-lg leading-relaxed max-w-md">
+                    Send and receive sBTC privately through stealth addresses and zero-knowledge proofs. The transaction graph stays hidden.
+                  </p>
+                </div>
 
-              <div className="flex items-end justify-between mt-auto">
-                <div className="bg-[#0f0f0f]/90 border border-white/[0.08] rounded-2xl p-5 backdrop-blur-md max-w-[240px]">
-                  <p className="text-white font-bold text-2xl tracking-tight tabular-nums mb-1">$748,42.87</p>
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-5 rounded bg-gradient-to-r from-[#1a1a1a] to-[#2a2a2a] border border-white/10" />
-                    <span className="text-xs text-white/40">Stealth Address</span>
+                {/* Floating balance widget */}
+                <div className="hidden lg:block bg-[#0a0a0a]/80 border border-white/[0.08] rounded-2xl p-6 backdrop-blur-xl" style={{
+                  boxShadow: "0 20px 50px rgba(0,0,0,0.5)"
+                }}>
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="w-2 h-2 rounded-full bg-[#4ADE80]" />
+                    <p className="text-[10px] text-white/40 uppercase tracking-widest">Pool TVL</p>
+                  </div>
+                  <p className="text-3xl font-bold text-white tabular-nums mb-1">42.85</p>
+                  <p className="text-xs text-white/30 mb-4">sBTC shielded</p>
+                  <div className="progress-track w-40">
+                    <div className="progress-fill" style={{ width: "68%" }} />
+                  </div>
+                  <div className="flex justify-between mt-2">
+                    <span className="text-[9px] text-white/20">0</span>
+                    <span className="text-[9px] text-white/20">100 sBTC</span>
                   </div>
                 </div>
-                <p className="hidden md:block text-white/40 text-base max-w-[300px] text-right leading-relaxed">
-                  Send and receive sBTC privately. No one sees who paid whom.
-                </p>
               </div>
-            </div>
 
-            {/* Floating widget card (top-right) */}
-            <div className="absolute top-8 right-8 bg-[#0f0f0f]/90 border border-white/[0.08] rounded-2xl p-5 backdrop-blur-md hidden md:block">
-              <p className="text-[10px] text-white/40 uppercase tracking-widest mb-2">Pool TVL</p>
-              <p className="text-2xl font-bold text-white tabular-nums mb-3">$749.87</p>
-              <div className="progress-track w-36">
-                <div className="progress-fill" style={{ width: "46%" }} />
+              {/* Bottom row: three feature pills + mini card */}
+              <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-8 mt-auto pt-10">
+
+                {/* Three feature highlights */}
+                <div className="flex flex-wrap gap-3">
+                  {[
+                    { label: "Stealth Addresses", desc: "Unlinkable recipients" },
+                    { label: "ZK-STARK Proofs", desc: "Hidden transaction graph" },
+                    { label: "Relayer Network", desc: "Anonymous submission" },
+                  ].map((f) => (
+                    <div key={f.label} className="bg-white/[0.04] border border-white/[0.06] rounded-2xl px-5 py-4 backdrop-blur-sm hover:border-white/[0.12] transition-colors duration-300">
+                      <p className="text-white text-sm font-medium mb-0.5">{f.label}</p>
+                      <p className="text-white/30 text-[11px]">{f.desc}</p>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Mini card preview */}
+                <div className="bg-[#0a0a0a]/80 border border-white/[0.08] rounded-2xl p-4 backdrop-blur-xl flex items-center gap-4 flex-shrink-0" style={{
+                  boxShadow: "0 10px 30px rgba(0,0,0,0.4)"
+                }}>
+                  {/* Tiny card icon */}
+                  <div className="w-14 h-9 rounded-lg relative overflow-hidden flex-shrink-0" style={{
+                    background: "linear-gradient(145deg, #888 0%, #444 50%, #1a1a1a 100%)",
+                    border: "1px solid rgba(255,255,255,0.1)"
+                  }}>
+                    <div className="absolute inset-0 opacity-[0.06]" style={{ backgroundImage: "url('https://grainy-gradients.vercel.app/noise.svg')" }} />
+                    <div className="absolute bottom-1 right-1.5 w-3 h-2 rounded-sm border border-white/15 bg-gradient-to-br from-white/10 to-transparent" />
+                  </div>
+                  <div>
+                    <p className="text-white font-bold text-lg tabular-nums tracking-tight">748.42 <span className="text-xs text-white/30">sBTC</span></p>
+                    <p className="text-white/30 text-[10px] tracking-wider">SP1A2B...X7Y8</p>
+                  </div>
+                </div>
               </div>
+
             </div>
           </motion.div>
         </div>
