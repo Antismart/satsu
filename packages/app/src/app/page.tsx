@@ -90,96 +90,121 @@ export default function Home() {
         </motion.div>
 
         {/* ====== CARD SHOWCASE ====== */}
-        <div className="relative flex flex-col items-center" style={{ perspective: "1200px" }}>
+        <div className="relative flex flex-col items-center min-h-[500px] sm:min-h-[600px]">
 
-          {/* Ambient warm glow behind card */}
-          <div className="absolute w-[600px] h-[450px] bg-[#F97C00]/[0.06] blur-[140px] rounded-full pointer-events-none top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+          {/* Subtle ambient light from above */}
+          <div className="absolute top-[-100px] left-1/2 -translate-x-1/2 w-[400px] h-[300px] bg-white/[0.04] blur-[100px] rounded-full pointer-events-none" />
 
-          {/* The 3D Premium Card */}
-          <motion.div
-            initial={{ opacity: 0, y: 60 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.2, delay: 0.5, ease: "easeOut" }}
-            whileHover={{ rotateX: 10, rotateY: -10, scale: 1.04 }}
-            className="relative w-[340px] sm:w-[420px] h-[215px] sm:h-[265px] rounded-[1.25rem] p-6 sm:p-8 flex flex-col justify-between cursor-pointer z-10"
-            style={{
-              transform: "rotateY(-25deg) rotateX(15deg)",
-              transformStyle: "preserve-3d",
-              background: "linear-gradient(155deg, #666 0%, #555 15%, #444 35%, #2a2a2a 55%, #1a1a1a 80%, #111 100%)",
-              boxShadow: `-25px 35px 80px rgba(0,0,0,0.9),
-                          -15px 20px 40px rgba(0,0,0,0.6),
-                          inset 1px 1px 0 rgba(255,255,255,0.15),
-                          inset -1px -1px 0 rgba(0,0,0,0.4)`,
-              border: "1px solid rgba(255,255,255,0.12)"
-            }}
-          >
-            {/* Noise texture layer */}
-            <div className="absolute inset-0 opacity-[0.06] mix-blend-overlay pointer-events-none rounded-[1.25rem]" style={{ backgroundImage: "url('https://grainy-gradients.vercel.app/noise.svg')" }} />
+          {/* Card + ledge container */}
+          <div className="relative flex items-end justify-center w-full h-[500px] sm:h-[580px]" style={{ perspective: "1400px" }}>
 
-            {/* Specular highlight streak */}
-            <div className="absolute inset-0 rounded-[1.25rem] pointer-events-none overflow-hidden">
-              <div className="absolute w-[200%] h-[60px] bg-gradient-to-r from-transparent via-white/20 to-transparent" style={{
-                top: "20%",
-                left: "-50%",
-                transform: "rotate(-35deg)",
-                filter: "blur(8px)"
+            {/* The Card - PORTRAIT orientation, standing upright, tilted back */}
+            <motion.div
+              initial={{ opacity: 0, y: 80 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1.4, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+              whileHover={{ rotateY: -8, rotateX: 3, scale: 1.02 }}
+              className="absolute bottom-[90px] sm:bottom-[100px] z-10 cursor-pointer"
+              style={{
+                width: "280px",
+                height: "420px",
+                transformStyle: "preserve-3d",
+                transform: "rotateY(-18deg) rotateX(8deg)",
+              }}
+            >
+              {/* Card surface */}
+              <div className="absolute inset-0 rounded-[1.25rem] overflow-hidden" style={{
+                background: `linear-gradient(165deg,
+                  #d4d4d4 0%,
+                  #c0c0c0 8%,
+                  #b0b0b0 15%,
+                  #a0a0a0 25%,
+                  #888 40%,
+                  #666 55%,
+                  #444 70%,
+                  #2a2a2a 85%,
+                  #1a1a1a 100%)`,
+                boxShadow: `-30px 40px 80px rgba(0,0,0,0.85),
+                            -10px 15px 30px rgba(0,0,0,0.5),
+                            inset 0 1px 0 rgba(255,255,255,0.25),
+                            inset 0 -1px 0 rgba(0,0,0,0.3)`,
+                border: "1px solid rgba(255,255,255,0.15)"
               }} />
-            </div>
 
-            {/* Secondary subtle sheen */}
-            <div className="absolute inset-0 rounded-[1.25rem] pointer-events-none" style={{
-              background: "linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.06) 20%, transparent 40%, rgba(255,255,255,0.03) 65%, transparent 100%)"
-            }} />
+              {/* Brushed metal texture - horizontal lines */}
+              <div className="absolute inset-0 rounded-[1.25rem] pointer-events-none opacity-[0.08]" style={{
+                backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(255,255,255,0.1) 1px, rgba(255,255,255,0.1) 2px)",
+                backgroundSize: "100% 3px"
+              }} />
 
-            {/* Large "S" watermark */}
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none rounded-[1.25rem] overflow-hidden">
-              <span className="text-[180px] sm:text-[220px] font-heading font-bold text-white/[0.03] select-none leading-none" style={{ letterSpacing: "-0.05em" }}>S</span>
-            </div>
-
-            {/* Top row: SATSU wordmark + EMV chip */}
-            <div className="relative z-10 flex justify-between items-start">
-              <span className="text-lg sm:text-xl font-black tracking-[0.3em] text-white/10 uppercase">SATSU</span>
-              {/* EMV Chip with golden tint */}
-              <div className="w-10 sm:w-12 h-7 sm:h-9 rounded-md flex flex-col justify-center items-center gap-0.5" style={{
-                background: "linear-gradient(145deg, #C9A96E 0%, #B8944F 40%, #8B7340 100%)",
-                boxShadow: "inset 0 1px 2px rgba(255,255,255,0.3), inset 0 -1px 2px rgba(0,0,0,0.2), 0 2px 4px rgba(0,0,0,0.3)",
-                border: "1px solid rgba(139,115,64,0.5)"
-              }}>
-                <div className="w-6 sm:w-8 h-[1px] bg-black/20" />
-                <div className="w-7 sm:w-9 h-[1px] bg-black/20" />
-                <div className="w-6 sm:w-8 h-[1px] bg-black/20" />
+              {/* Strong specular hotspot - top left area */}
+              <div className="absolute rounded-[1.25rem] pointer-events-none overflow-hidden inset-0">
+                <div className="absolute w-[250px] h-[300px] top-[-50px] left-[-30px]" style={{
+                  background: "radial-gradient(ellipse at 40% 30%, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0.1) 30%, transparent 65%)",
+                }} />
               </div>
-            </div>
 
-            {/* Bottom row: Contactless icon + brand circle */}
-            <div className="relative z-10 flex justify-between items-end">
-              {/* Contactless waves icon */}
-              <svg className="w-6 sm:w-7 h-6 sm:h-7 text-white/25" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <path d="M8.5 16.5S6 14 6 12s2.5-4.5 2.5-4.5M12 18s-4-3-4-6 4-6 4-6M15.5 19.5S10 16 10 12s5.5-7.5 5.5-7.5" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-
-              {/* Brand mark - small gradient circle */}
-              <div className="w-7 sm:w-8 h-7 sm:h-8 rounded-full" style={{
-                background: "linear-gradient(135deg, #F97C00 0%, #FACC15 100%)",
-                boxShadow: "0 2px 8px rgba(249,124,0,0.3)"
+              {/* Edge light - catches the right edge */}
+              <div className="absolute top-0 right-0 w-[2px] h-full rounded-r-[1.25rem] pointer-events-none" style={{
+                background: "linear-gradient(to bottom, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.05) 50%, transparent 100%)"
               }} />
-            </div>
-          </motion.div>
 
-          {/* Card reflection effect */}
-          <div className="relative w-[340px] sm:w-[420px] h-[130px] sm:h-[160px] mt-2 z-0 pointer-events-none overflow-hidden" style={{
-            transform: "rotateY(-25deg) rotateX(-15deg) scaleY(-1)",
-            transformStyle: "preserve-3d",
-            maskImage: "linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, transparent 70%)",
-            WebkitMaskImage: "linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, transparent 70%)",
-            filter: "blur(4px)",
-            opacity: 0.3
-          }}>
-            <div className="w-full h-[265px] rounded-[1.25rem]" style={{
-              background: "linear-gradient(155deg, #666 0%, #555 15%, #444 35%, #2a2a2a 55%, #1a1a1a 80%, #111 100%)"
-            }} />
+              {/* Noise grain */}
+              <div className="absolute inset-0 opacity-[0.08] mix-blend-overlay pointer-events-none rounded-[1.25rem]" style={{ backgroundImage: "url('https://grainy-gradients.vercel.app/noise.svg')" }} />
+
+              {/* Card content */}
+              <div className="absolute inset-0 rounded-[1.25rem] p-8 flex flex-col justify-between z-10">
+                {/* Top: branding */}
+                <div className="flex justify-between items-start">
+                  <span className="text-2xl font-black tracking-[0.25em] text-black/[0.12] uppercase">SATSU</span>
+                  {/* EMV Chip */}
+                  <div className="w-10 h-12 rounded-md flex flex-col justify-center items-center gap-1" style={{
+                    background: "linear-gradient(150deg, #D4B878 0%, #C9A96E 30%, #A08040 70%, #8B7340 100%)",
+                    boxShadow: "inset 0 1px 3px rgba(255,255,255,0.4), inset 0 -1px 2px rgba(0,0,0,0.15), 0 2px 6px rgba(0,0,0,0.25)",
+                    border: "1px solid rgba(160,128,64,0.4)"
+                  }}>
+                    <div className="w-6 h-[1px] bg-black/15" />
+                    <div className="w-7 h-[1px] bg-black/15" />
+                    <div className="w-6 h-[1px] bg-black/15" />
+                    <div className="w-7 h-[1px] bg-black/15" />
+                  </div>
+                </div>
+
+                {/* Bottom: contactless icon */}
+                <div className="flex justify-between items-end">
+                  <svg className="w-8 h-8 text-black/15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <path d="M8.5 16.5S6 14 6 12s2.5-4.5 2.5-4.5M12 18s-4-3-4-6 4-6 4-6M15.5 19.5S10 16 10 12s5.5-7.5 5.5-7.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                  <div className="w-8 h-8 rounded-full" style={{
+                    background: "linear-gradient(135deg, #F97C00 0%, #FACC15 100%)",
+                    boxShadow: "0 2px 10px rgba(249,124,0,0.25)"
+                  }} />
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Dark stone ledge / surface */}
+            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[700px] sm:w-[800px] h-[100px] z-0">
+              {/* Ledge top surface */}
+              <div className="absolute top-0 left-0 right-0 h-[50px] rounded-t-lg" style={{
+                background: "linear-gradient(180deg, #1a1a1a 0%, #111 60%, #0d0d0d 100%)",
+                boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06)"
+              }} />
+              {/* Ledge front face */}
+              <div className="absolute top-[50px] left-0 right-0 h-[50px]" style={{
+                background: "linear-gradient(180deg, #0d0d0d 0%, #080808 100%)"
+              }} />
+              {/* Subtle texture on ledge */}
+              <div className="absolute inset-0 opacity-[0.04] mix-blend-overlay pointer-events-none" style={{ backgroundImage: "url('https://grainy-gradients.vercel.app/noise.svg')" }} />
+              {/* Shadow below card on the ledge */}
+              <div className="absolute top-[10px] left-1/2 -translate-x-1/2 w-[200px] h-[30px] bg-black/60 blur-[20px] rounded-full" />
+            </div>
+
+            {/* Soft shadow on the floor beneath ledge */}
+            <div className="absolute bottom-[-20px] left-1/2 -translate-x-1/2 w-[500px] h-[40px] bg-black/50 blur-[30px] rounded-full z-0" />
           </div>
         </div>
+
       </section>
 
 
