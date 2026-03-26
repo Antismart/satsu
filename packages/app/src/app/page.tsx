@@ -76,18 +76,7 @@ export default function Home() {
         </motion.div>
 
         {/* Stats row below CTAs */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
-          className="flex items-center gap-6 text-white/30 text-sm mb-32"
-        >
-          <span className="tabular-nums">892 <span className="text-white/20">deposits</span></span>
-          <span className="w-px h-4 bg-white/10" />
-          <span className="tabular-nums">42.85 <span className="text-white/20">sBTC TVL</span></span>
-          <span className="w-px h-4 bg-white/10" />
-          <span className="tabular-nums">99.9% <span className="text-white/20">uptime</span></span>
-        </motion.div>
+        <div className="mb-32" />
 
         {/* ====== CARD SHOWCASE ====== */}
         <div className="relative flex flex-col items-center min-h-[500px] sm:min-h-[600px]">
