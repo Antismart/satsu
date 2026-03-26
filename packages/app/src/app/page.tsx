@@ -524,24 +524,19 @@ export default function Home() {
                 {/* Two-column dashboard layout */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
-                  {/* Left: Mini credit card (matching our metallic card style) */}
+                  {/* Left: Mini credit card - dark style for readability */}
                   <div className="rounded-xl p-5 flex flex-col justify-between relative overflow-hidden" style={{
-                    background: "linear-gradient(145deg, #d4d4d4 0%, #a0a0a0 25%, #666 50%, #2a2a2a 80%, #1a1a1a 100%)",
+                    background: "linear-gradient(145deg, #1e1e1e 0%, #161616 40%, #111 100%)",
+                    border: "1px solid rgba(255,255,255,0.08)",
                     minHeight: "180px"
                   }}>
-                    {/* Brushed texture */}
-                    <div className="absolute inset-0 rounded-xl opacity-[0.06]" style={{
-                      backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(255,255,255,0.1) 1px, rgba(255,255,255,0.1) 2px)",
-                      backgroundSize: "100% 3px"
-                    }} />
-                    {/* Specular */}
-                    <div className="absolute inset-0 rounded-xl overflow-hidden pointer-events-none">
-                      <div className="absolute w-[200%] h-[40px] bg-gradient-to-r from-transparent via-white/15 to-transparent" style={{
-                        top: "25%", left: "-50%", transform: "rotate(-30deg)", filter: "blur(6px)"
-                      }} />
-                    </div>
+                    {/* Subtle noise */}
+                    <div className="absolute inset-0 rounded-xl opacity-[0.04] mix-blend-overlay pointer-events-none" style={{ backgroundImage: "url('https://grainy-gradients.vercel.app/noise.svg')" }} />
+                    {/* Top highlight line */}
+                    <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+
                     <div className="relative z-10 flex justify-between items-start">
-                      <span className="text-[10px] font-black tracking-[0.2em] text-white/15">SATSU</span>
+                      <span className="text-xs font-black tracking-[0.2em] text-white/50">SATSU</span>
                       {/* Mini chip */}
                       <div className="w-7 h-5 rounded-sm" style={{
                         background: "linear-gradient(150deg, #E8D5A3, #A08040)",
@@ -549,8 +544,11 @@ export default function Home() {
                       }} />
                     </div>
                     <div className="relative z-10">
-                      <p className="text-[9px] text-white/30 uppercase tracking-widest mb-0.5">Available</p>
-                      <p className="text-xl font-bold text-white/70 tabular-nums drop-shadow-[0_1px_3px_rgba(0,0,0,0.5)]">749.87 <span className="text-[10px] text-white/30">sBTC</span></p>
+                      <p className="text-[9px] text-white/40 uppercase tracking-widest mb-1">Available Balance</p>
+                      <p className="text-2xl font-bold text-white tabular-nums">749.87 <span className="text-xs text-white/40">sBTC</span></p>
+                      <div className="progress-track mt-3 h-1.5">
+                        <div className="progress-fill" style={{ width: "46%" }} />
+                      </div>
                     </div>
                   </div>
 
