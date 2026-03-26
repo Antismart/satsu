@@ -36,14 +36,8 @@ export function Footer() {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-12 mb-16">
           {/* Brand column */}
           <div className="col-span-2 sm:col-span-1">
-            <div className="flex items-center gap-2.5 mb-5">
-              <div
-                className="h-9 w-9 rounded-lg flex items-center justify-center shadow-[0_0_20px_rgba(249,124,0,0.15)]"
-                style={{ background: "linear-gradient(135deg, #F97C00, #E84D00)" }}
-              >
-                <span className="text-sm font-bold text-white">S</span>
-              </div>
-              <span className="text-lg font-semibold text-white tracking-tight">Satsu</span>
+            <div className="mb-5">
+              <span className="text-xl font-black tracking-[0.25em] text-white/90">SATSU</span>
             </div>
             <p className="text-sm text-white/35 leading-relaxed max-w-[220px] mb-6">
               Private payments on Bitcoin through zero-knowledge proofs and stealth addresses.

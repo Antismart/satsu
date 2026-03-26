@@ -4,27 +4,26 @@ import { useState } from "react";
 import { useWallet } from "@/hooks/useWallet";
 import { useSatsu } from "@/hooks/useSatsu";
 
-const DENOMINATIONS = [0.01, 0.1, 1.0];
-
 type DepositStatus = "idle" | "approving" | "depositing" | "success" | "error";
 
 export function DepositForm() {
   const { isConnected } = useWallet();
   const { deposit } = useSatsu();
-  const [selectedAmount, setSelectedAmount] = useState<number>(
-    DENOMINATIONS[0]
-  );
+  const [amount, setAmount] = useState<string>("");
   const [status, setStatus] = useState<DepositStatus>("idle");
   const [errorMsg, setErrorMsg] = useState<string>("");
 
+  const parsedAmount = parseFloat(amount);
+  const isValidAmount = !isNaN(parsedAmount) && parsedAmount > 0;
+
   async function handleDeposit() {
-    if (!isConnected) return;
+    if (!isConnected || !isValidAmount) return;
     setStatus("approving");
     setErrorMsg("");
 
     try {
       setStatus("depositing");
-      await deposit(selectedAmount);
+      await deposit(parsedAmount);
       setStatus("success");
     } catch (err) {
       setStatus("error");
@@ -77,28 +76,46 @@ export function DepositForm() {
       </div>
 
       <p className="text-sm text-white/50 mb-5 leading-relaxed">
-        Select a fixed denomination to deposit. Your funds become part of the
-        anonymity set, indistinguishable from all other deposits.
+        Enter the amount of sBTC to deposit. Your funds join the anonymity set,
+        indistinguishable from all other deposits.
       </p>
 
-      {/* Denomination selector */}
+      {/* Amount input */}
       <div className="mb-6">
-        <label className="block text-[10px] font-semibold text-white/35 uppercase tracking-widest mb-3">
-          Amount
+        <label
+          htmlFor="deposit-amount"
+          className="block text-[10px] font-semibold text-white/35 uppercase tracking-widest mb-3"
+        >
+          Amount (sBTC)
         </label>
-        <div className="flex gap-4">
-          {DENOMINATIONS.map((amount) => (
+        <div className="relative">
+          <input
+            id="deposit-amount"
+            type="number"
+            step="0.001"
+            min="0"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            placeholder="0.00"
+            className="w-full h-14 px-5 pr-20 rounded-xl bg-white/[0.04] border border-white/[0.1] text-white text-2xl font-bold tabular-nums placeholder:text-white/15 focus:border-[#F97C00]/50 focus:ring-1 focus:ring-[#F97C00]/30 focus:outline-none transition-all duration-300"
+          />
+          <span className="absolute right-5 top-1/2 -translate-y-1/2 text-sm font-semibold text-white/30">
+            sBTC
+          </span>
+        </div>
+        {/* Quick amount buttons */}
+        <div className="flex gap-2 mt-3">
+          {[0.01, 0.05, 0.1, 0.5, 1.0].map((preset) => (
             <button
-              key={amount}
-              onClick={() => setSelectedAmount(amount)}
-              className={`flex-1 h-12 rounded-full text-sm font-semibold border transition-all duration-300 ${
-                selectedAmount === amount
-                  ? "border-[#F97C00] bg-[#F97C00]/10 text-[#F97C00] shadow-[0_0_12px_rgba(249,124,0,0.15)]"
-                  : "border-white/[0.1] bg-white/[0.04] text-white/60 hover:border-[#F97C00]/50 hover:text-white"
+              key={preset}
+              onClick={() => setAmount(String(preset))}
+              className={`flex-1 h-8 rounded-full text-xs font-semibold border transition-all duration-300 ${
+                amount === String(preset)
+                  ? "border-[#F97C00]/50 bg-[#F97C00]/10 text-[#F97C00]"
+                  : "border-white/[0.08] bg-white/[0.02] text-white/40 hover:border-white/15 hover:text-white/60"
               }`}
             >
-              <span className="tabular-nums">{amount}</span>
-              <span className="ml-1 text-xs opacity-70">sBTC</span>
+              {preset}
             </button>
           ))}
         </div>
@@ -108,7 +125,7 @@ export function DepositForm() {
       <button
         onClick={handleDeposit}
         disabled={
-          !isConnected || status === "depositing" || status === "approving"
+          !isConnected || !isValidAmount || status === "depositing" || status === "approving"
         }
         className="w-full h-12 btn-accent text-sm"
       >
@@ -136,7 +153,7 @@ export function DepositForm() {
             Processing...
           </span>
         ) : (
-          `Deposit ${selectedAmount} sBTC`
+          `Deposit${isValidAmount ? ` ${parsedAmount} sBTC` : ""}`
         )}
       </button>
 
@@ -153,33 +170,13 @@ export function DepositForm() {
           className={`mt-4 flex items-center gap-2 text-sm ${statusConfig[status]!.color}`}
         >
           {status === "success" && (
-            <svg
-              className="h-4 w-4 flex-shrink-0"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M5 13l4 4L19 7"
-              />
+            <svg className="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
             </svg>
           )}
           {status === "error" && (
-            <svg
-              className="h-4 w-4 flex-shrink-0"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M12 9v2m0 4h.01M12 3a9 9 0 100 18 9 9 0 000-18z"
-              />
+            <svg className="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M12 3a9 9 0 100 18 9 9 0 000-18z" />
             </svg>
           )}
           {statusConfig[status]!.label}
