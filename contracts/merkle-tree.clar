@@ -60,6 +60,28 @@
 (define-constant LEVEL-INDICES (list u0 u1 u2 u3 u4 u5 u6 u7 u8 u9 u10 u11 u12 u13 u14 u15 u16 u17 u18 u19))
 
 ;; ============================================================================
+;; Access control
+;; ============================================================================
+
+;; The deployer principal - used for admin operations.
+(define-constant CONTRACT-OWNER tx-sender)
+
+;; Map of authorized callers that may append leaves.
+;; The pool contract is pre-authorized at deployment.
+(define-map authorized-callers { caller: principal } { authorized: bool })
+
+;; Error for unauthorized callers
+(define-constant ERR-NOT-AUTHORIZED (err u3002))
+
+;; Private helper: check if a caller is authorized
+(define-private (is-authorized (caller principal))
+  (or
+    (is-eq caller CONTRACT-OWNER)
+    (default-to false (get authorized (map-get? authorized-callers { caller: caller })))
+  )
+)
+
+;; ============================================================================
 ;; State
 ;; ============================================================================
 
@@ -215,13 +237,27 @@
 ;; Public functions
 ;; ============================================================================
 
+;; set-authorized-caller: allow the deployer to authorize or revoke a caller.
+;; Used to authorize pool contracts to append leaves.
+(define-public (set-authorized-caller (caller principal) (authorized bool))
+  (begin
+    (asserts! (and (is-eq tx-sender CONTRACT-OWNER) (is-eq contract-caller CONTRACT-OWNER))
+              ERR-NOT-AUTHORIZED)
+    (map-set authorized-callers { caller: caller } { authorized: authorized })
+    (ok true)
+  )
+)
+
 ;; append-leaf: add a commitment to the tree
 ;; Returns the new root and the leaf index where it was inserted.
+;; Only authorized callers (pool contract or deployer) can append.
 (define-public (append-leaf (leaf (buff 32)))
   (let
     (
       (leaf-index (var-get next-leaf-index))
     )
+    ;; Access control: only authorized callers
+    (asserts! (is-authorized contract-caller) ERR-NOT-AUTHORIZED)
     ;; Precondition: tree must not be full
     (asserts! (< leaf-index MAX-LEAVES) ERR-TREE-FULL)
 

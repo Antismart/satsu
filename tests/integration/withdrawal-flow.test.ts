@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, beforeEach } from "vitest";
 import { Cl, ClarityType } from "@stacks/transactions";
 import { buildValidProof } from "../helpers/proof-builder";
 
@@ -44,6 +44,15 @@ const relayer = accounts.get("wallet_3")!;
 // ============================================================================
 // Helpers
 // ============================================================================
+
+function authorizePoolOnMerkleTree() {
+  simnet.callPublicFn(
+    "merkle-tree",
+    "set-authorized-caller",
+    [Cl.contractPrincipal(deployer, "pool-v1"), Cl.bool(true)],
+    deployer,
+  );
+}
 
 function bufferCvToHex(cv: any): string {
   if (cv && cv.type === ClarityType.Buffer) {
@@ -102,6 +111,9 @@ function getCurrentRootHex(): string {
 // ============================================================================
 
 describe("integration: withdrawal flow", () => {
+  beforeEach(() => {
+    authorizePoolOnMerkleTree();
+  });
   it("should complete a full deposit -> withdrawal cycle", () => {
     // -----------------------------------------------------------------------
     // Phase 1: Setup - mint sBTC and register stealth meta-address

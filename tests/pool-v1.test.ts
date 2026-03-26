@@ -68,8 +68,10 @@ function approvePool(owner: string, amount: number) {
   );
 }
 
-/** Make a deposit into the pool */
+/** Make a deposit into the pool.
+ *  Ensures the merkle tree has pool-v1 authorized as its caller. */
 function deposit(commitment: string, source: string, caller?: string) {
+  authorizeMerkleTree();
   return simnet.callPublicFn(
     "pool-v1",
     "deposit",
@@ -138,6 +140,16 @@ function authorizePool() {
   );
 }
 
+/** Set pool-v1 as an authorized caller on the merkle tree */
+function authorizeMerkleTree() {
+  return simnet.callPublicFn(
+    "merkle-tree",
+    "set-authorized-caller",
+    [Cl.contractPrincipal(deployer, "pool-v1"), Cl.bool(true)],
+    deployer,
+  );
+}
+
 /** Get the current merkle tree root as a hex string */
 function getCurrentRootHex(): string {
   const result = simnet.callReadOnlyFn(
@@ -197,6 +209,7 @@ function setupDeposit(
   commitment: string,
   source: string,
 ): { root: string; leafIndex: number } {
+  authorizeMerkleTree();
   mintSbtc(MINT_AMOUNT, source);
   approvePool(source, POOL_DENOMINATION);
   const result = deposit(commitment, source);
@@ -393,13 +406,11 @@ describe("pool-v1 contract", () => {
       expect(printEvent).toBeDefined();
     });
 
-    it("should allow a relayer to deposit on behalf of a source", () => {
-      // Mint to wallet1 (the source), but wallet2 (the relayer) calls deposit
+    it("should reject a relayer depositing on behalf of another source (security hardening)", () => {
+      // Security audit C-03: deposit now requires source == tx-sender or source == contract-caller
+      authorizeMerkleTree();
       mintSbtc(MINT_AMOUNT, wallet1);
 
-      // wallet1 must approve the relayer (wallet2), because in sbtc-token.transfer
-      // tx-sender is the original caller (wallet2) and allowance is checked
-      // for {owner: source, spender: tx-sender}
       simnet.callPublicFn(
         "sbtc-token",
         "approve",
@@ -407,7 +418,7 @@ describe("pool-v1 contract", () => {
         wallet1,
       );
 
-      // wallet2 calls deposit with wallet1 as the source
+      // wallet2 calls deposit with wallet1 as source - should be rejected
       const result = simnet.callPublicFn(
         "pool-v1",
         "deposit",
@@ -417,11 +428,7 @@ describe("pool-v1 contract", () => {
         ],
         wallet2,
       );
-      expect(result.result).toHaveClarityType(ClarityType.ResponseOk);
-
-      // Verify wallet1's balance decreased
-      const balance = getBalance(wallet1);
-      expect(balance).toBe(BigInt(MINT_AMOUNT - POOL_DENOMINATION));
+      expect(result.result).toBeErr(Cl.uint(1007));
     });
   });
 

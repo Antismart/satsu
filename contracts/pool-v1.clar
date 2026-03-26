@@ -79,6 +79,13 @@
       (pool-address (as-contract tx-sender))
     )
 
+    ;; 0. Source validation: the source must be the tx-sender. This prevents
+    ;;    an attacker from exploiting a victim's sBTC allowance to force
+    ;;    deposits with attacker-controlled commitments, effectively stealing
+    ;;    funds. Relayers should use Stacks sponsor transactions instead of
+    ;;    a delegated source parameter.
+    (asserts! (is-eq source tx-sender) ERR-TRANSFER-FAILED)
+
     ;; 1. Reject the zero commitment -- it is trivially guessable and would
     ;;    allow an attacker to withdraw without knowing a real secret.
     (asserts! (not (is-eq commitment ZERO-COMMITMENT)) ERR-INVALID-COMMITMENT)
@@ -223,6 +230,87 @@
 
       ;; 8. Return the spent nullifier
       (ok { nullifier: nullifier })
+    )
+  )
+)
+
+;; withdraw-optimistic - Submit a withdrawal through the optimistic escrow
+;;
+;; Instead of verifying the ZK-STARK proof synchronously on-chain, this path
+;; routes through the withdrawal-escrow contract. A bond is posted and the
+;; withdrawal enters a challenge period. Off-chain watchers verify the full
+;; STARK proof and can challenge invalid submissions.
+;;
+;; This solves the hash bridge problem: the STARK prover uses Rescue-Prime
+;; internally, but the on-chain Merkle tree uses SHA-256. The optimistic
+;; pattern delegates proof verification to off-chain watchers who can use
+;; both hash functions, with economic security from the bond mechanism.
+;;
+;; Parameters:
+;;   proof-hash       - sha256 of the full off-chain proof
+;;   nullifier        - 32-byte nullifier hash (prevents double-spend)
+;;   root             - 32-byte Merkle root the proof was generated against
+;;   recipient        - principal to receive the sBTC after finalization
+;;   ephemeral-pubkey - 33-byte compressed public key R for stealth detection
+;;   relayer-fee      - fee amount deducted for the relayer
+;;   bond             - bond amount in sBTC (must be >= escrow MIN-BOND)
+;;
+;; Returns: { withdrawal-id: uint }
+;; Errors:  ERR-INVALID-AMOUNT (u1002) if relayer-fee >= denomination
+;;          ERR-TRANSFER-FAILED (u1007) if sBTC transfer to escrow fails
+;;          (plus errors from withdrawal-escrow.submit-withdrawal)
+(define-public (withdraw-optimistic
+    (proof-hash (buff 32))
+    (nullifier (buff 32))
+    (root (buff 32))
+    (recipient principal)
+    (ephemeral-pubkey (buff 33))
+    (relayer-fee uint)
+    (bond uint))
+  (begin
+    ;; 1. Validate relayer fee
+    (asserts! (< relayer-fee POOL-DENOMINATION) ERR-INVALID-AMOUNT)
+
+    ;; 2. Transfer POOL-DENOMINATION from pool to escrow.
+    ;;    The escrow will hold these funds until finalization or slashing.
+    (unwrap! (as-contract (contract-call? .sbtc-token transfer
+               POOL-DENOMINATION
+               tx-sender
+               .withdrawal-escrow
+               none))
+             ERR-TRANSFER-FAILED)
+
+    ;; 3. Submit to the escrow contract. The escrow handles:
+    ;;    - Root validation
+    ;;    - Nullifier reservation
+    ;;    - Bond collection from the relayer (tx-sender)
+    ;;    - Challenge period management
+    (let
+      (
+        (escrow-result
+          (unwrap! (contract-call? .withdrawal-escrow submit-withdrawal
+                     proof-hash
+                     nullifier
+                     root
+                     recipient
+                     ephemeral-pubkey
+                     relayer-fee
+                     bond)
+                   ERR-TRANSFER-FAILED))
+      )
+
+      ;; 4. Emit event
+      (print {
+        event: "optimistic-withdrawal-submitted",
+        withdrawal-id: (get withdrawal-id escrow-result),
+        nullifier: nullifier,
+        recipient: recipient,
+        relayer: tx-sender,
+        relayer-fee: relayer-fee,
+        bond: bond
+      })
+
+      (ok { withdrawal-id: (get withdrawal-id escrow-result) })
     )
   )
 )

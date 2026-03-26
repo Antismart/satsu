@@ -532,6 +532,14 @@ describe("merkle-tree contract", () => {
         }),
       );
 
+      // Authorize wallet_1 to append
+      simnet.callPublicFn(
+        contractName,
+        "set-authorized-caller",
+        [Cl.standardPrincipal(wallet1), Cl.bool(true)],
+        deployer,
+      );
+
       // wallet_1 appends leaf 2 -- the caller does not affect the root
       const result2 = simnet.callPublicFn(
         contractName,

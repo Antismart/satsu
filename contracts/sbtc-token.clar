@@ -1,13 +1,18 @@
 ;; sbtc-token - Mock SIP-010 compliant sBTC token for devnet testing
 ;; This contract simulates the sBTC token for local development and testing.
 ;; On testnet/mainnet, the real sBTC contract address is used instead.
+;;
+;; Implements the SIP-010 fungible token standard trait defined in
+;; contracts/traits/sip010-trait.clar.
+
+(impl-trait .sip010-trait.sip010-ft-trait)
 
 (define-constant CONTRACT-OWNER tx-sender)
 
 ;; Error codes
 (define-constant ERR-NOT-AUTHORIZED (err u5001))
 
-;; SIP-010 trait implementation
+;; SIP-010 token definition
 (define-fungible-token sbtc)
 
 ;; Token metadata
@@ -25,13 +30,16 @@
 ;; SIP-010 functions
 
 (define-public (transfer (amount uint) (sender principal) (recipient principal) (memo (optional (buff 34))))
-  (begin
+  (let
+    (
+      (current-allowance (get-allowance sender tx-sender))
+    )
     (asserts! (or (is-eq tx-sender sender) (is-eq contract-caller sender)
-                  (>= (get-allowance sender tx-sender) amount))
+                  (>= current-allowance amount))
               ERR-NOT-AUTHORIZED)
     ;; Deduct allowance if spending on behalf
     (if (and (not (is-eq tx-sender sender)) (not (is-eq contract-caller sender)))
-      (set-allowance sender tx-sender (- (get-allowance sender tx-sender) amount))
+      (set-allowance sender tx-sender (- current-allowance amount))
       true
     )
     (try! (ft-transfer? sbtc amount sender recipient))

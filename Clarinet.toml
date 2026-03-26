@@ -20,6 +20,11 @@ path = "contracts/stealth-v1.clar"
 epoch = "3.0"
 clarity_version = 3
 
+[contracts.sip010-trait]
+path = "contracts/traits/sip010-trait.clar"
+epoch = "3.0"
+clarity_version = 3
+
 [contracts.pool-trait]
 path = "contracts/traits/pool-trait.clar"
 epoch = "3.0"
@@ -37,6 +42,11 @@ clarity_version = 3
 
 [contracts.sbtc-token]
 path = "contracts/sbtc-token.clar"
+epoch = "3.0"
+clarity_version = 3
+
+[contracts.withdrawal-escrow]
+path = "contracts/withdrawal-escrow.clar"
 epoch = "3.0"
 clarity_version = 3
 

@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, beforeEach } from "vitest";
 import { Cl, ClarityType } from "@stacks/transactions";
 
 // ============================================================================
@@ -36,6 +36,15 @@ const wallet2 = accounts.get("wallet_2")!;
 // ============================================================================
 // Helpers
 // ============================================================================
+
+function authorizePoolOnMerkleTree() {
+  simnet.callPublicFn(
+    "merkle-tree",
+    "set-authorized-caller",
+    [Cl.contractPrincipal(deployer, "pool-v1"), Cl.bool(true)],
+    deployer,
+  );
+}
 
 function bufferCvToHex(cv: any): string {
   if (cv && cv.type === ClarityType.Buffer) {
@@ -84,6 +93,10 @@ function getContractBalance(
 // ============================================================================
 
 describe("integration: deposit flow", () => {
+  // Authorize pool-v1 to call merkle-tree.append-leaf (security audit added access control)
+  beforeEach(() => {
+    authorizePoolOnMerkleTree();
+  });
   it("should complete a full deposit: mint -> register meta-address -> approve -> deposit -> verify", () => {
     // -----------------------------------------------------------------------
     // Step 1: Setup - mint sBTC to the depositor
