@@ -191,13 +191,12 @@ export default function Home() {
                     <span className="text-[10px] text-white/35 tracking-[0.15em] uppercase block mb-1.5 drop-shadow-[0_1px_3px_rgba(0,0,0,0.6)]">Stealth Address</span>
                     <span className="text-white/50 text-[12px] font-mono tracking-[0.12em] drop-shadow-[0_1px_3px_rgba(0,0,0,0.6)]">SP1A2B...X7Y8Z9</span>
                   </div>
-                  <div className="w-10 h-10 rounded-full relative" style={{
-                    background: "linear-gradient(135deg, #F97C00 0%, #FACC15 100%)",
-                    boxShadow: "0 4px 20px rgba(249,124,0,0.4), inset 0 1px 3px rgba(255,255,255,0.3)"
-                  }}>
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-[9px] font-black text-black/60 tracking-wider">ZK</span>
-                    </div>
+                  {/* Embossed shield mark */}
+                  <div className="w-10 h-10 flex items-center justify-center">
+                    <svg className="w-9 h-9 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1">
+                      <path d="M12 2l7 4v5c0 5.25-3.5 9.74-7 11-3.5-1.26-7-5.75-7-11V6l7-4z" fill="white" fillOpacity="0.08" strokeOpacity="0.3" />
+                      <path d="M9 12l2 2 4-4" stroke="white" strokeOpacity="0.35" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
                   </div>
                 </div>
               </div>
