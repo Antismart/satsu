@@ -1,85 +1,33 @@
 import Link from "next/link";
 
-const footerSections = [
-  {
-    title: "Protocol",
-    links: [
-      { href: "#", label: "How It Works" },
-      { href: "#", label: "Privacy Model" },
-      { href: "#", label: "Stealth Addresses" },
-      { href: "/docs", label: "Documentation" },
-    ],
-  },
-  {
-    title: "Resources",
-    links: [
-      { href: "#", label: "Stacks Network" },
-      { href: "#", label: "sBTC Bridge" },
-      { href: "https://github.com/satsu-privacy", label: "GitHub" },
-      { href: "#", label: "Status" },
-    ],
-  },
-  {
-    title: "Legal",
-    links: [
-      { href: "#", label: "Terms of Service" },
-      { href: "#", label: "Privacy Policy" },
-      { href: "#", label: "Security" },
-    ],
-  },
-];
-
 export function Footer() {
   return (
     <footer className="bg-[#0A0A0A] mt-auto border-t border-white/[0.06] relative glow-line-top">
-      <div className="mx-auto max-w-[1200px] px-4 sm:px-6 pt-12 sm:pt-20 pb-10 sm:pb-16">
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-12 mb-10 sm:mb-16">
-          {/* Brand column */}
-          <div className="col-span-2 sm:col-span-1">
-            <div className="mb-5">
+      <div className="mx-auto max-w-[1200px] px-4 sm:px-6 py-10 sm:py-16">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 mb-10">
+          <div>
+            <Link href="/">
               <span className="text-xl font-black tracking-[0.25em] text-white/90">SATSU</span>
-            </div>
-            <p className="text-sm text-white/35 leading-relaxed max-w-[220px] mb-6">
+            </Link>
+            <p className="text-sm text-white/35 leading-relaxed max-w-[280px] mt-3">
               Private payments on Bitcoin through zero-knowledge proofs and stealth addresses.
             </p>
-            {/* Satsu wordmark */}
-            <span className="text-3xl font-heading font-bold text-white/[0.04] tracking-tight select-none">
-              SATSU
-            </span>
           </div>
-
-          {/* Link columns */}
-          {footerSections.map((section) => (
-            <div key={section.title}>
-              <h4 className="text-[10px] uppercase tracking-widest font-semibold text-white/35 mb-5">
-                {section.title}
-              </h4>
-              <ul className="space-y-3.5">
-                {section.links.map((link) => (
-                  <li key={link.label}>
-                    <Link
-                      href={link.href}
-                      className="text-sm text-white/50 hover:text-white transition-colors duration-300"
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+          <div className="flex items-center gap-5">
+            <Link href="/" className="text-sm text-white/50 hover:text-white transition-colors duration-300">Home</Link>
+            <Link href="/dashboard" className="text-sm text-white/50 hover:text-white transition-colors duration-300">Dashboard</Link>
+            <Link href="/register" className="text-sm text-white/50 hover:text-white transition-colors duration-300">Register</Link>
+            <a href="https://github.com/satsu-privacy" target="_blank" rel="noopener noreferrer" className="text-sm text-white/50 hover:text-white transition-colors duration-300">GitHub</a>
+          </div>
         </div>
 
-        {/* Bottom bar */}
         <div className="pt-8 border-t border-white/[0.06] flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-white/25">
             Built on Stacks. Secured by Bitcoin.
           </p>
-          <div className="flex items-center gap-6">
-            <p className="text-xs text-white/25">
-              Satsu Protocol. All rights reserved.
-            </p>
-          </div>
+          <p className="text-xs text-white/25">
+            Satsu Protocol. All rights reserved.
+          </p>
         </div>
       </div>
     </footer>
