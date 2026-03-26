@@ -17,24 +17,24 @@ function getScoreLabel(score: number): string {
 }
 
 function getScoreColor(score: number): string {
-  if (score >= 80) return "text-accent-green";
-  if (score >= 50) return "text-primary";
-  if (score >= 20) return "text-accent-amber";
-  return "text-accent-red";
-}
-
-function getGradientStops(score: number): string {
-  if (score >= 80) return "from-accent-green to-accent-green/60";
-  if (score >= 50) return "from-primary to-secondary";
-  if (score >= 20) return "from-accent-amber to-accent-amber/60";
-  return "from-accent-red to-accent-red/60";
+  if (score >= 80) return "text-[#22c55e]";
+  if (score >= 50) return "text-[#0057ff]";
+  if (score >= 20) return "text-[#f59e0b]";
+  return "text-[#ef4444]";
 }
 
 function getGlowColor(score: number): string {
   if (score >= 80) return "rgba(34, 197, 94, 0.15)";
-  if (score >= 50) return "rgba(59, 130, 246, 0.15)";
+  if (score >= 50) return "rgba(0, 87, 255, 0.15)";
   if (score >= 20) return "rgba(245, 158, 11, 0.15)";
   return "rgba(239, 68, 68, 0.15)";
+}
+
+function getBarColor(score: number): string {
+  if (score >= 80) return "from-[#22c55e] to-[#22c55e]/70";
+  if (score >= 50) return "from-[#0057ff] to-[#4f8aff]";
+  if (score >= 20) return "from-[#f59e0b] to-[#f59e0b]/70";
+  return "from-[#ef4444] to-[#ef4444]/70";
 }
 
 export function PrivacyMeter({
@@ -44,8 +44,8 @@ export function PrivacyMeter({
   const score = getPrivacyScore(anonymitySetSize, maxSetSize);
   const label = getScoreLabel(score);
   const scoreColor = getScoreColor(score);
-  const gradientStops = getGradientStops(score);
   const glowColor = getGlowColor(score);
+  const barColor = getBarColor(score);
 
   // Calculate circumference for circular gauge
   const radius = 52;
@@ -53,12 +53,12 @@ export function PrivacyMeter({
   const strokeDashoffset = circumference - (score / 100) * circumference;
 
   return (
-    <div className="rounded-2xl bg-white/[0.03] backdrop-blur-xl border border-white/[0.06] p-6 sm:p-8 transition-all duration-300 hover:border-white/[0.1]">
+    <div className="bg-white rounded-2xl border border-[#e8e8e8] p-6 sm:p-8 shadow-sm transition-all duration-300 hover:shadow-[0_4px_12px_rgba(0,0,0,0.08)]">
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
-        <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-primary/15 to-secondary/10 flex items-center justify-center">
+        <div className="h-10 w-10 rounded-full bg-[#0057ff]/[0.08] flex items-center justify-center">
           <svg
-            className="h-5 w-5 text-primary"
+            className="h-5 w-5 text-[#0057ff]"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -72,10 +72,10 @@ export function PrivacyMeter({
           </svg>
         </div>
         <div>
-          <h2 className="text-lg font-semibold tracking-tight">
+          <h2 className="text-lg font-semibold tracking-tight text-[#191919]">
             Privacy Score
           </h2>
-          <p className="text-xs text-muted-dim">Anonymity set strength</p>
+          <p className="text-xs text-[#9ca3af]">Anonymity set strength</p>
         </div>
       </div>
 
@@ -92,7 +92,7 @@ export function PrivacyMeter({
               cy="60"
               r={radius}
               fill="none"
-              stroke="rgba(255,255,255,0.04)"
+              stroke="#e8e8e8"
               strokeWidth="8"
             />
             {/* Score ring */}
@@ -119,8 +119,8 @@ export function PrivacyMeter({
                 x2="100%"
                 y2="100%"
               >
-                <stop offset="0%" stopColor={score >= 50 ? "#3b82f6" : score >= 20 ? "#f59e0b" : "#ef4444"} />
-                <stop offset="100%" stopColor={score >= 80 ? "#22c55e" : score >= 50 ? "#6366f1" : score >= 20 ? "#f59e0b" : "#ef4444"} />
+                <stop offset="0%" stopColor="#0057ff" />
+                <stop offset="100%" stopColor="#4f8aff" />
               </linearGradient>
             </defs>
           </svg>
@@ -131,7 +131,7 @@ export function PrivacyMeter({
             >
               {score}
             </span>
-            <span className="text-xs text-muted-dim mt-0.5">/ 100</span>
+            <span className="text-xs text-[#9ca3af] mt-0.5">/ 100</span>
           </div>
         </div>
       </div>
@@ -139,20 +139,20 @@ export function PrivacyMeter({
       {/* Label and set size */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <span className={`h-2 w-2 rounded-full bg-gradient-to-r ${gradientStops}`} />
+          <span className={`h-2 w-2 rounded-full bg-gradient-to-r ${barColor}`} />
           <span className={`text-sm font-semibold ${scoreColor}`}>
             {label}
           </span>
         </div>
-        <span className="text-xs text-muted-dim font-mono tabular-nums">
+        <span className="text-xs text-[#9ca3af] font-mono tabular-nums">
           {anonymitySetSize.toLocaleString()} deposits
         </span>
       </div>
 
       {/* Progress bar */}
-      <div className="w-full h-1.5 rounded-full bg-white/[0.04] mb-4">
+      <div className="w-full h-1.5 rounded-full bg-[#e8e8e8] mb-4">
         <div
-          className={`h-full rounded-full bg-gradient-to-r ${gradientStops} transition-all duration-700`}
+          className={`h-full rounded-full bg-gradient-to-r ${barColor} transition-all duration-700`}
           style={{
             width: `${score}%`,
             boxShadow: `0 0 12px ${glowColor}`,
@@ -161,7 +161,7 @@ export function PrivacyMeter({
       </div>
 
       {/* Explanation */}
-      <p className="text-xs text-muted-dim leading-relaxed">
+      <p className="text-xs text-[#9ca3af] leading-relaxed">
         A larger anonymity set makes it harder for observers to link your
         deposits and withdrawals. The score reflects the relative size of the
         current pool.
