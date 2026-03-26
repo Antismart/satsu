@@ -1,18 +1,13 @@
 "use client";
 
+import { useState } from "react";
 import { DepositForm } from "@/components/DepositForm";
 import { WithdrawForm } from "@/components/WithdrawForm";
 import { NotesList } from "@/components/NotesList";
 import { PrivacyMeter } from "@/components/PrivacyMeter";
 import { useWallet } from "@/hooks/useWallet";
 import { useRelayer } from "@/hooks/useRelayer";
-
-const dashboardStats = [
-  { label: "Anonymity Set", value: "892", trend: "+12%" },
-  { label: "Total Deposits", value: "1,247", trend: "+8%" },
-  { label: "Your Notes", value: "3", trend: null },
-  { label: "Privacy Score", value: "89%", trend: "+3%" },
-];
+import { useSatsu } from "@/hooks/useSatsu";
 
 const recentTransactions = [
   { icon: "shield", title: "Stealth Deposit", subtitle: "via relayer", amount: "-0.05 sBTC", time: "2m ago" },
@@ -23,6 +18,8 @@ const recentTransactions = [
 export default function DashboardPage() {
   const { isConnected, address, connect } = useWallet();
   const { status: relayerStatus } = useRelayer();
+  const { notes, hasBackedUp } = useSatsu();
+  const [activeTab, setActiveTab] = useState<"deposit" | "withdraw" | "activity">("deposit");
 
   if (!isConnected) {
     return (
@@ -70,10 +67,66 @@ export default function DashboardPage() {
   const leftBalance = 749.87;
   const spendRatio = leftBalance / (leftBalance + spentAmount);
 
+  // Computed values for sidebar
+  const activeNotes = notes.filter((n) => n.status === "unspent");
+  const totalNoteValue = activeNotes.reduce((sum, n) => sum + n.amount, 0);
+
+  // Stats data with icons and accents
+  const dashboardStats = [
+    {
+      label: "Anonymity Set",
+      value: "892",
+      trend: "+12%",
+      accent: "#F97C00",
+      progress: 89,
+      icon: (
+        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
+        </svg>
+      ),
+    },
+    {
+      label: "Total Deposits",
+      value: "1,247",
+      trend: "+8%",
+      accent: "#4ADE80",
+      progress: 72,
+      icon: (
+        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941" />
+        </svg>
+      ),
+    },
+    {
+      label: "Your Notes",
+      value: String(notes.length),
+      trend: null,
+      accent: "#FFFFFF",
+      progress: (activeNotes.length / Math.max(notes.length, 1)) * 100,
+      icon: (
+        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+        </svg>
+      ),
+    },
+    {
+      label: "Privacy Score",
+      value: "89%",
+      trend: "+3%",
+      accent: "#F97C00",
+      progress: 89,
+      icon: (
+        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+        </svg>
+      ),
+    },
+  ];
+
   return (
     <div className="mx-auto max-w-[1200px] px-6 py-8 sm:py-10">
       {/* ================================================================
-          TOP HEADER
+          ROW 1: TOP HEADER
           ================================================================ */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
@@ -94,7 +147,7 @@ export default function DashboardPage() {
       </div>
 
       {/* ================================================================
-          BALANCE CARD + EXPENSES GAUGE
+          ROW 2: CARD DUO (credit card front + back) - KEPT AS-IS
           ================================================================ */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-5">
         {/* Credit Card Style Balance */}
@@ -279,7 +332,143 @@ export default function DashboardPage() {
       </div>
 
       {/* ================================================================
-          STATS STRIP
+          ROW 3: QUICK ACTIONS + POOL ACTIVITY + STATS (3 columns)
+          ================================================================ */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-5">
+        {/* Left: Quick Action Buttons */}
+        <div className="flex flex-col gap-3">
+          <button
+            onClick={() => setActiveTab("deposit")}
+            className={`flex-1 h-14 rounded-2xl flex items-center justify-center gap-3 text-sm font-semibold transition-all duration-300 ${
+              activeTab === "deposit"
+                ? "bg-[#F97C00]/15 border border-[#F97C00]/40 text-[#F97C00] shadow-[0_0_20px_rgba(249,124,0,0.1)]"
+                : "bg-[#1a1a1a] border border-white/[0.08] text-white/70 hover:border-white/[0.15] hover:text-white"
+            }`}
+          >
+            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+            Deposit sBTC
+          </button>
+          <button
+            onClick={() => setActiveTab("withdraw")}
+            className={`flex-1 h-14 rounded-2xl flex items-center justify-center gap-3 text-sm font-semibold transition-all duration-300 ${
+              activeTab === "withdraw"
+                ? "bg-[#F97C00]/15 border border-[#F97C00]/40 text-[#F97C00] shadow-[0_0_20px_rgba(249,124,0,0.1)]"
+                : "bg-[#1a1a1a] border border-white/[0.08] text-white/70 hover:border-white/[0.15] hover:text-white"
+            }`}
+          >
+            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M7 11l5-5m0 0l5 5m-5-5v12" />
+            </svg>
+            Withdraw sBTC
+          </button>
+        </div>
+
+        {/* Center: Pool Activity mini chart */}
+        <div className="glass-card p-5 flex flex-col justify-between">
+          <div className="flex items-center justify-between mb-3">
+            <p className="text-[10px] text-white/35 uppercase tracking-[0.2em] font-semibold">Pool Activity</p>
+            <span className="text-[10px] text-[#4ADE80] font-semibold">+24h</span>
+          </div>
+          {/* Decorative sparkline SVG */}
+          <div className="flex-1 flex items-end">
+            <svg className="w-full h-16" viewBox="0 0 200 60" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="sparkFill" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#F97C00" stopOpacity="0.3" />
+                  <stop offset="100%" stopColor="#F97C00" stopOpacity="0" />
+                </linearGradient>
+                <linearGradient id="sparkStroke" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stopColor="#F97C00" />
+                  <stop offset="100%" stopColor="#FACC15" />
+                </linearGradient>
+              </defs>
+              {/* Area fill */}
+              <path
+                d="M0,45 L15,40 L30,42 L50,30 L70,35 L90,20 L110,25 L130,15 L150,22 L170,10 L185,18 L200,12 L200,60 L0,60 Z"
+                fill="url(#sparkFill)"
+              />
+              {/* Line */}
+              <path
+                d="M0,45 L15,40 L30,42 L50,30 L70,35 L90,20 L110,25 L130,15 L150,22 L170,10 L185,18 L200,12"
+                fill="none"
+                stroke="url(#sparkStroke)"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              {/* End dot */}
+              <circle cx="200" cy="12" r="3" fill="#FACC15" />
+            </svg>
+          </div>
+          <div className="flex items-center justify-between mt-3 pt-3 border-t border-white/[0.06]">
+            <span className="text-white font-bold text-lg tabular-nums">{poolBalance} sBTC</span>
+            <span className="text-[10px] text-white/30 uppercase tracking-wider">Pool TVL</span>
+          </div>
+        </div>
+
+        {/* Right: Two stacked mini stat cards with circular progress rings */}
+        <div className="flex flex-col gap-3">
+          {/* Anonymity Set ring */}
+          <div className="glass-card p-4 flex items-center gap-4 flex-1">
+            <div className="relative w-12 h-12 flex-shrink-0">
+              <svg className="w-12 h-12 -rotate-90" viewBox="0 0 48 48">
+                <circle cx="24" cy="24" r="18" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="4" />
+                <circle cx="24" cy="24" r="18" fill="none" stroke="#F97C00" strokeWidth="4" strokeLinecap="round"
+                  strokeDasharray={`${89 * 1.131} ${113.1}`}
+                  style={{ transition: "stroke-dasharray 1s ease-out" }}
+                />
+              </svg>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className="text-[10px] font-bold text-white tabular-nums">89%</span>
+              </div>
+            </div>
+            <div>
+              <p className="text-white font-bold text-lg tracking-tight tabular-nums">892</p>
+              <p className="text-[10px] text-white/35 uppercase tracking-wider font-semibold">Anonymity Set</p>
+            </div>
+            <div className="ml-auto">
+              <span className="inline-flex items-center gap-0.5 text-xs font-semibold text-[#4ADE80]">
+                <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+                </svg>
+                +12%
+              </span>
+            </div>
+          </div>
+          {/* Privacy Score ring */}
+          <div className="glass-card p-4 flex items-center gap-4 flex-1">
+            <div className="relative w-12 h-12 flex-shrink-0">
+              <svg className="w-12 h-12 -rotate-90" viewBox="0 0 48 48">
+                <circle cx="24" cy="24" r="18" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="4" />
+                <circle cx="24" cy="24" r="18" fill="none" stroke="#4ADE80" strokeWidth="4" strokeLinecap="round"
+                  strokeDasharray={`${89 * 1.131} ${113.1}`}
+                  style={{ transition: "stroke-dasharray 1s ease-out" }}
+                />
+              </svg>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className="text-[10px] font-bold text-[#4ADE80] tabular-nums">89</span>
+              </div>
+            </div>
+            <div>
+              <p className="text-white font-bold text-lg tracking-tight">Strong</p>
+              <p className="text-[10px] text-white/35 uppercase tracking-wider font-semibold">Privacy Score</p>
+            </div>
+            <div className="ml-auto">
+              <span className="inline-flex items-center gap-0.5 text-xs font-semibold text-[#4ADE80]">
+                <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+                </svg>
+                +3%
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ================================================================
+          ROW 3b: STATS STRIP (4-column enhanced cards)
           ================================================================ */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-5">
         {dashboardStats.map((stat) => (
@@ -287,11 +476,18 @@ export default function DashboardPage() {
             key={stat.label}
             className="glass-card p-5 hover-lift"
           >
-            <p className="text-2xl font-bold text-white tracking-tight">
+            {/* Icon circle */}
+            <div
+              className="h-8 w-8 rounded-full flex items-center justify-center mb-3"
+              style={{ background: `${stat.accent}15`, color: stat.accent }}
+            >
+              {stat.icon}
+            </div>
+            <p className="text-2xl font-bold text-white tracking-tight tabular-nums">
               {stat.value}
             </p>
             <div className="flex items-center justify-between mt-2">
-              <p className="text-xs text-white/35 uppercase tracking-wider font-semibold">
+              <p className="text-[10px] text-white/35 uppercase tracking-wider font-semibold">
                 {stat.label}
               </p>
               {stat.trend && (
@@ -303,94 +499,256 @@ export default function DashboardPage() {
                 </span>
               )}
             </div>
+            {/* Mini progress bar */}
+            <div className="mt-3 h-1 rounded-full bg-white/[0.06] overflow-hidden">
+              <div
+                className="h-full rounded-full transition-all duration-700"
+                style={{
+                  width: `${stat.progress}%`,
+                  background: stat.accent === "#FFFFFF" ? "rgba(255,255,255,0.4)" : stat.accent,
+                }}
+              />
+            </div>
           </div>
         ))}
       </div>
 
       {/* ================================================================
-          VIEW MORE ACTIVITY BUTTON - btn-dark style (rounded-xl)
-          ================================================================ */}
-      <button className="w-full mb-5 btn-dark h-12 flex items-center justify-center gap-2.5 text-sm font-semibold text-white/70 hover:text-white transition-colors">
-        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-        </svg>
-        View Transaction History
-      </button>
-
-      {/* ================================================================
-          TRANSACTION LIST (Behance-style)
-          ================================================================ */}
-      <div className="glass-card p-6 sm:p-8 mb-5">
-        <div className="flex items-center justify-between mb-5">
-          <h2 className="text-lg font-semibold tracking-tight text-white">Transaction</h2>
-          <button className="text-xs text-white/40 hover:text-white transition-colors font-medium">See All</button>
-        </div>
-        <div className="divide-y divide-white/[0.06]">
-          {recentTransactions.map((tx, i) => (
-            <div key={i} className="flex items-center justify-between py-4 first:pt-0 last:pb-0">
-              <div className="flex items-center gap-3.5">
-                <div className={`h-10 w-10 rounded-full flex items-center justify-center ${
-                  tx.icon === "deposit" ? "bg-[#4ADE80]/10 text-[#4ADE80]" :
-                  tx.icon === "shield" ? "bg-[#F97C00]/10 text-[#F97C00]" :
-                  "bg-white/[0.06] text-white/50"
-                }`}>
-                  {tx.icon === "shield" && (
-                    <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
-                    </svg>
-                  )}
-                  {tx.icon === "deposit" && (
-                    <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                    </svg>
-                  )}
-                  {tx.icon === "withdraw" && (
-                    <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M7 11l5-5m0 0l5 5m-5-5v12" />
-                    </svg>
-                  )}
-                </div>
-                <div>
-                  <span className="text-sm font-semibold text-white">{tx.title}</span>
-                  <p className="text-[10px] text-white/25 mt-0.5">{tx.subtitle}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-4">
-                <div className="text-right">
-                  <span className={`text-sm font-semibold tabular-nums ${tx.amount.startsWith("+") ? "text-[#4ADE80]" : "text-white/70"}`}>
-                    {tx.amount}
-                  </span>
-                  <p className="text-[10px] text-white/25 mt-0.5">{tx.time}</p>
-                </div>
-                {/* Three-dot menu */}
-                <button className="text-white/25 hover:text-white/60 transition-colors p-1 rounded-lg hover:bg-white/[0.06]">
-                  <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* ================================================================
-          MAIN GRID - Deposit + Withdraw side by side
-          ================================================================ */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-5">
-        <DepositForm />
-        <WithdrawForm />
-      </div>
-
-      {/* ================================================================
-          NOTES + PRIVACY METER
+          ROW 4: MAIN CONTENT (2 columns) - Tabbed card + Sidebar
           ================================================================ */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-        <div className="lg:col-span-2">
-          <NotesList />
+
+        {/* LEFT: Tabbed content card (wider) */}
+        <div className="lg:col-span-2 glass-card p-6 sm:p-8">
+          {/* Tab navigation */}
+          <div className="flex gap-1 p-1 rounded-full bg-white/[0.04] border border-white/[0.06] mb-6">
+            <button
+              onClick={() => setActiveTab("deposit")}
+              className={`flex-1 h-10 rounded-full text-sm font-semibold transition-all duration-300 flex items-center justify-center gap-2 ${
+                activeTab === "deposit"
+                  ? "bg-white/[0.1] text-white shadow-sm"
+                  : "text-white/40 hover:text-white/60"
+              }`}
+            >
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+              </svg>
+              Deposit
+            </button>
+            <button
+              onClick={() => setActiveTab("withdraw")}
+              className={`flex-1 h-10 rounded-full text-sm font-semibold transition-all duration-300 flex items-center justify-center gap-2 ${
+                activeTab === "withdraw"
+                  ? "bg-white/[0.1] text-white shadow-sm"
+                  : "text-white/40 hover:text-white/60"
+              }`}
+            >
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M7 11l5-5m0 0l5 5m-5-5v12" />
+              </svg>
+              Withdraw
+            </button>
+            <button
+              onClick={() => setActiveTab("activity")}
+              className={`flex-1 h-10 rounded-full text-sm font-semibold transition-all duration-300 flex items-center justify-center gap-2 ${
+                activeTab === "activity"
+                  ? "bg-white/[0.1] text-white shadow-sm"
+                  : "text-white/40 hover:text-white/60"
+              }`}
+            >
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+              </svg>
+              Activity
+            </button>
+          </div>
+
+          {/* Tab content */}
+          <div className="min-h-[280px]">
+            {activeTab === "deposit" && (
+              <div className="animate-fade-in-up" style={{ animationDuration: "0.3s" }}>
+                <DepositForm />
+              </div>
+            )}
+            {activeTab === "withdraw" && (
+              <div className="animate-fade-in-up" style={{ animationDuration: "0.3s" }}>
+                <WithdrawForm />
+              </div>
+            )}
+            {activeTab === "activity" && (
+              <div className="animate-fade-in-up" style={{ animationDuration: "0.3s" }}>
+                {/* Inline transaction list */}
+                <div className="flex items-center justify-between mb-5">
+                  <h2 className="text-lg font-semibold tracking-tight text-white">Recent Transactions</h2>
+                  <button className="text-xs text-white/40 hover:text-white transition-colors font-medium">See All</button>
+                </div>
+                <div className="divide-y divide-white/[0.06]">
+                  {recentTransactions.map((tx, i) => (
+                    <div key={i} className="flex items-center justify-between py-4 first:pt-0 last:pb-0">
+                      <div className="flex items-center gap-3.5">
+                        <div className={`h-10 w-10 rounded-full flex items-center justify-center ${
+                          tx.icon === "deposit" ? "bg-[#4ADE80]/10 text-[#4ADE80]" :
+                          tx.icon === "shield" ? "bg-[#F97C00]/10 text-[#F97C00]" :
+                          "bg-white/[0.06] text-white/50"
+                        }`}>
+                          {tx.icon === "shield" && (
+                            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                            </svg>
+                          )}
+                          {tx.icon === "deposit" && (
+                            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                            </svg>
+                          )}
+                          {tx.icon === "withdraw" && (
+                            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M7 11l5-5m0 0l5 5m-5-5v12" />
+                            </svg>
+                          )}
+                        </div>
+                        <div>
+                          <span className="text-sm font-semibold text-white">{tx.title}</span>
+                          <p className="text-[10px] text-white/25 mt-0.5">{tx.subtitle}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <div className="text-right">
+                          <span className={`text-sm font-semibold tabular-nums ${tx.amount.startsWith("+") ? "text-[#4ADE80]" : "text-white/70"}`}>
+                            {tx.amount}
+                          </span>
+                          <p className="text-[10px] text-white/25 mt-0.5">{tx.time}</p>
+                        </div>
+                        <button className="text-white/25 hover:text-white/60 transition-colors p-1 rounded-lg hover:bg-white/[0.06]">
+                          <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
-        <div>
-          <PrivacyMeter anonymitySetSize={892} />
+
+        {/* RIGHT: Sidebar stack */}
+        <div className="flex flex-col gap-5">
+
+          {/* Compact Privacy Meter */}
+          <div className="glass-card p-5">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="h-8 w-8 rounded-full bg-[#F97C00]/10 flex items-center justify-center">
+                <svg className="h-4 w-4 text-[#F97C00]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                </svg>
+              </div>
+              <p className="text-sm font-semibold text-white">Privacy Score</p>
+            </div>
+            {/* Compact gauge */}
+            <div className="flex flex-col items-center">
+              <div className="relative w-32 h-[72px] overflow-hidden">
+                <svg className="w-32 h-32" viewBox="0 0 200 200" style={{ marginTop: "-4px" }}>
+                  <path d="M 30 100 A 70 70 0 0 1 170 100" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="12" strokeLinecap="round" />
+                  <defs>
+                    <linearGradient id="sidebarGauge" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stopColor="#F97C00" />
+                      <stop offset="60%" stopColor="#FACC15" />
+                      <stop offset="100%" stopColor="#4ADE80" />
+                    </linearGradient>
+                  </defs>
+                  <path d="M 30 100 A 70 70 0 0 1 170 100" fill="none" stroke="url(#sidebarGauge)" strokeWidth="12" strokeLinecap="round"
+                    strokeDasharray={`${0.89 * 220} 220`}
+                    style={{ transition: "stroke-dasharray 1s ease-out" }}
+                  />
+                </svg>
+              </div>
+              <p className="text-3xl font-bold text-white tracking-tight tabular-nums -mt-1">
+                89<span className="text-sm font-semibold text-white/35 ml-0.5">/100</span>
+              </p>
+              <p className="text-xs text-[#4ADE80] font-semibold mt-1">Strong</p>
+            </div>
+          </div>
+
+          {/* Notes Summary */}
+          <div className="glass-card p-5">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <div className="h-8 w-8 rounded-full bg-[#FACC15]/10 flex items-center justify-center">
+                  <svg className="h-4 w-4 text-[#FACC15]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                  </svg>
+                </div>
+                <p className="text-sm font-semibold text-white">Deposit Notes</p>
+              </div>
+            </div>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-white/40">Active Notes</span>
+                <span className="text-sm font-bold text-white tabular-nums">{activeNotes.length}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-white/40">Total Value</span>
+                <span className="text-sm font-bold text-[#4ADE80] tabular-nums">{totalNoteValue.toFixed(2)} sBTC</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-white/40">Total Notes</span>
+                <span className="text-sm font-bold text-white tabular-nums">{notes.length}</span>
+              </div>
+            </div>
+            {/* Backup status */}
+            <div className={`mt-4 pt-4 border-t border-white/[0.06] flex items-center justify-between ${!hasBackedUp && notes.length > 0 ? "" : ""}`}>
+              <div className="flex items-center gap-2">
+                {hasBackedUp ? (
+                  <>
+                    <div className="h-2 w-2 rounded-full bg-[#4ADE80]" />
+                    <span className="text-xs text-white/40">Backed up</span>
+                  </>
+                ) : (
+                  <>
+                    <div className="h-2 w-2 rounded-full bg-[#F97C00]" />
+                    <span className="text-xs text-[#F97C00]/70">Not backed up</span>
+                  </>
+                )}
+              </div>
+              <button
+                onClick={() => setActiveTab("activity")}
+                className="text-[10px] font-semibold text-white/40 hover:text-white px-3 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.08] hover:border-white/[0.15] transition-all duration-300"
+              >
+                View All
+              </button>
+            </div>
+          </div>
+
+          {/* Pool Info */}
+          <div className="glass-card p-5">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="h-8 w-8 rounded-full bg-[#4ADE80]/10 flex items-center justify-center">
+                <svg className="h-4 w-4 text-[#4ADE80]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
+                </svg>
+              </div>
+              <p className="text-sm font-semibold text-white">Pool Status</p>
+            </div>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-white/40">Pool TVL</span>
+                <span className="text-sm font-bold text-white tabular-nums">{poolBalance} sBTC</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-white/40">Relayer</span>
+                <span className={`text-xs font-semibold flex items-center gap-1.5 ${relayerStatus.isOnline ? "text-[#4ADE80]" : "text-[#EF4444]"}`}>
+                  <span className={`h-1.5 w-1.5 rounded-full ${relayerStatus.isOnline ? "bg-[#4ADE80]" : "bg-[#EF4444]"}`} />
+                  {relayerStatus.isOnline ? "Online" : "Offline"}
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-white/40">Deposits</span>
+                <span className="text-sm font-bold text-white tabular-nums">1,247</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

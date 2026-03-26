@@ -50,9 +50,9 @@ export function DepositForm() {
   };
 
   return (
-    <div className="glass-card p-6 sm:p-8">
+    <div>
       {/* Header */}
-      <div className="flex items-center gap-3 mb-6">
+      <div className="flex items-center gap-3 mb-5">
         <div className="h-10 w-10 rounded-full bg-[#4ADE80]/10 flex items-center justify-center">
           <svg
             className="h-5 w-5 text-[#4ADE80]"
@@ -69,14 +69,14 @@ export function DepositForm() {
           </svg>
         </div>
         <div>
-          <h2 className="text-xl font-semibold tracking-tight text-white">
+          <h2 className="text-lg font-semibold tracking-tight text-white">
             Deposit sBTC
           </h2>
           <p className="text-xs text-white/35">Into the shielded pool</p>
         </div>
       </div>
 
-      <p className="text-sm text-white/50 mb-6 leading-relaxed">
+      <p className="text-sm text-white/50 mb-5 leading-relaxed">
         Select a fixed denomination to deposit. Your funds become part of the
         anonymity set, indistinguishable from all other deposits.
       </p>

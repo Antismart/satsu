@@ -69,9 +69,9 @@ export function WithdrawForm() {
   };
 
   return (
-    <div className="glass-card p-6 sm:p-8">
+    <div>
       {/* Header */}
-      <div className="flex items-center gap-3 mb-6">
+      <div className="flex items-center gap-3 mb-5">
         <div className="h-10 w-10 rounded-full bg-[#F97C00]/10 flex items-center justify-center">
           <svg
             className="h-5 w-5 text-[#F97C00]"
@@ -88,14 +88,14 @@ export function WithdrawForm() {
           </svg>
         </div>
         <div>
-          <h2 className="text-xl font-semibold tracking-tight text-white">
+          <h2 className="text-lg font-semibold tracking-tight text-white">
             Withdraw sBTC
           </h2>
           <p className="text-xs text-white/35">Privately via relayer</p>
         </div>
       </div>
 
-      <p className="text-sm text-white/50 mb-6 leading-relaxed">
+      <p className="text-sm text-white/50 mb-5 leading-relaxed">
         Withdraw funds to any address. A zero-knowledge proof is generated
         locally in your browser to preserve your privacy.
       </p>
