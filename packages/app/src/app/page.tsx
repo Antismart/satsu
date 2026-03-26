@@ -529,31 +529,58 @@ export default function Home() {
                 {/* Two-column dashboard layout */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
-                  {/* Left: Mini credit card - dark style for readability */}
-                  <div className="rounded-xl p-5 flex flex-col justify-between relative overflow-hidden" style={{
-                    background: "linear-gradient(145deg, #1e1e1e 0%, #161616 40%, #111 100%)",
-                    border: "1px solid rgba(255,255,255,0.08)",
+                  {/* Left: Mini credit card - matching dashboard style */}
+                  <div className="rounded-xl relative overflow-hidden flex flex-col justify-between p-4" style={{
+                    background: "linear-gradient(145deg, #2a2a2a 0%, #1c1c1c 30%, #111 60%, #0a0a0a 100%)",
+                    boxShadow: "0 8px 30px rgba(0,0,0,0.6), inset 1px 1px 4px rgba(255,255,255,0.06), inset -1px -1px 4px rgba(0,0,0,0.4)",
+                    border: "1px solid rgba(255,255,255,0.06)",
                     minHeight: "180px"
                   }}>
-                    {/* Subtle noise */}
+                    {/* Brushed sheen */}
+                    <div className="absolute inset-0 rounded-xl pointer-events-none" style={{
+                      background: "linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.03) 20%, transparent 45%, rgba(255,255,255,0.02) 70%, transparent 100%)"
+                    }} />
+                    {/* Noise */}
                     <div className="absolute inset-0 rounded-xl opacity-[0.04] mix-blend-overlay pointer-events-none" style={{ backgroundImage: "url('https://grainy-gradients.vercel.app/noise.svg')" }} />
-                    {/* Top highlight line */}
-                    <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
+                    {/* Top: balance + contactless */}
                     <div className="relative z-10 flex justify-between items-start">
-                      <span className="text-xs font-black tracking-[0.2em] text-white/50">SATSU</span>
-                      {/* Mini chip */}
-                      <div className="w-7 h-5 rounded-sm" style={{
-                        background: "linear-gradient(150deg, #E8D5A3, #A08040)",
-                        boxShadow: "inset 0 1px 2px rgba(255,255,255,0.4)"
-                      }} />
+                      <div>
+                        <p className="text-[8px] text-white/40 uppercase tracking-[0.2em] font-semibold mb-0.5">Available Balance</p>
+                        <p className="text-xl font-bold text-white tracking-tight tabular-nums">749.87 <span className="text-[10px] text-white/40">sBTC</span></p>
+                        <p className="text-[8px] mt-1"><span className="text-white/30">Deposited </span><span className="text-[#4ADE80] font-semibold">875.98</span></p>
+                      </div>
+                      <svg className="w-5 h-5 text-white/20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                        <path d="M8.5 16.5S6 14 6 12s2.5-4.5 2.5-4.5M12 18s-4-3-4-6 4-6 4-6M15.5 19.5S10 16 10 12s5.5-7.5 5.5-7.5" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
                     </div>
-                    <div className="relative z-10">
-                      <p className="text-[9px] text-white/40 uppercase tracking-widest mb-1">Available Balance</p>
-                      <p className="text-2xl font-bold text-white tabular-nums">749.87 <span className="text-xs text-white/40">sBTC</span></p>
-                      <div className="progress-track mt-3 h-1.5">
+
+                    {/* Progress bar with triangle */}
+                    <div className="relative z-10 my-3">
+                      <div className="progress-track h-1.5">
                         <div className="progress-fill" style={{ width: "46%" }} />
                       </div>
+                      <div className="absolute -top-1.5 w-0 h-0" style={{
+                        left: "46%", transform: "translateX(-50%)",
+                        borderLeft: "3px solid transparent", borderRight: "3px solid transparent", borderTop: "4px solid #FACC15"
+                      }} />
+                    </div>
+
+                    {/* Bottom: chip + address + SATSU */}
+                    <div className="relative z-10 flex justify-between items-end">
+                      <div className="flex items-center gap-2">
+                        {/* Mini chip */}
+                        <div className="w-7 h-5 rounded-sm border border-white/10 bg-gradient-to-br from-white/10 to-transparent flex flex-col justify-center items-center gap-[1px]">
+                          <div className="w-5 h-[0.5px] bg-white/20" />
+                          <div className="w-[22px] h-[0.5px] bg-white/20" />
+                          <div className="w-5 h-[0.5px] bg-white/20" />
+                        </div>
+                        <div>
+                          <p className="text-[7px] text-white/25 uppercase tracking-[0.12em]">Stealth Address</p>
+                          <p className="text-[9px] text-white/60 font-mono tracking-wider">SP1A2B...X7Y8</p>
+                        </div>
+                      </div>
+                      <span className="text-[10px] font-black tracking-[0.15em] text-white/[0.06]">SATSU</span>
                     </div>
                   </div>
 
