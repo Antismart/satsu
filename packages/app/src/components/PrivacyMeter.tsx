@@ -62,8 +62,8 @@ export function PrivacyMeter({
 
       {/* Semi-circular gauge - thicker arc, larger center text */}
       <div className="flex flex-col items-center my-6">
-        <div className="relative w-48 h-28 overflow-hidden">
-          <svg className="w-48 h-48" viewBox="0 0 200 200" style={{ marginTop: "-4px" }}>
+        <div className="relative w-40 sm:w-48 h-24 sm:h-28 overflow-hidden">
+          <svg className="w-40 sm:w-48 h-40 sm:h-48" viewBox="0 0 200 200" style={{ marginTop: "-4px" }}>
             {/* Background track - thicker */}
             <path
               d="M 20 100 A 80 80 0 0 1 180 100"
@@ -103,7 +103,7 @@ export function PrivacyMeter({
         {/* Center text - larger */}
         <div className="text-center -mt-2">
           <p className="text-xs text-white/35 mb-1">Privacy score</p>
-          <p className="text-4xl font-bold text-white tracking-tight tabular-nums">
+          <p className="text-3xl sm:text-4xl font-bold text-white tracking-tight tabular-nums">
             {score}<span className="text-base font-semibold text-white/35 ml-0.5">/100</span>
           </p>
         </div>

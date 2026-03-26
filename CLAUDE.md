@@ -849,54 +849,10 @@ Clarinet's devnet provides a local Stacks blockchain with pre-funded accounts. T
 
 ---
 
-## Testing strategy
+ 
+  
 
-### Clarity contract tests
-
-Use Clarinet's built-in testing framework (Vitest + Clarinet SDK):
-
-```typescript
-// tests/pool-v1.test.ts
-import { describe, it, expect } from "vitest";
-import { Cl } from "@stacks/transactions";
-
-describe("satsu.pool-v1", () => {
-  it("should accept a valid deposit", () => {
-    // 1. Setup: mint mock sBTC to a test account
-    // 2. Approve pool contract for transfer
-    // 3. Call deposit() with a valid commitment
-    // 4. Assert: Merkle root changed, sBTC transferred, event emitted
-  });
-
-  it("should reject a duplicate commitment", () => { /* ... */ });
-  it("should reject deposit with wrong denomination", () => { /* ... */ });
-  it("should accept a valid withdrawal with proof", () => { /* ... */ });
-  it("should reject withdrawal with used nullifier", () => { /* ... */ });
-  it("should reject withdrawal with invalid proof", () => { /* ... */ });
-  it("should reject withdrawal with unknown root", () => { /* ... */ });
-  it("should correctly update Merkle tree frontier", () => { /* ... */ });
-  it("should pay relayer fee on withdrawal", () => { /* ... */ });
-});
-```
-
-### SDK unit tests
-
-Standard Vitest/Jest tests for all crypto operations:
-
-```typescript
-// packages/sdk/tests/stealth-address.test.ts
-describe("stealth addresses", () => {
-  it("should derive matching addresses for sender and receiver", () => {
-    // 1. Generate a meta-address (spend + view keys)
-    // 2. Sender derives stealth address + ephemeral key R
-    // 3. Receiver checks with view key — should match
-    // 4. Receiver derives spending key — should produce valid signature
-  });
-
-  it("should produce unique addresses for each derivation", () => { /* ... */ });
-  it("should not match with wrong view key", () => { /* ... */ });
-});
-```
+ 
 
 ### Integration tests
 
@@ -1017,45 +973,4 @@ plan:
 
 ---
 
-## Build order (suggested implementation sequence)
-
-### Phase 1: Foundation
-1. Initialize Clarinet project with directory structure
-2. Implement `merkle-tree.clar` (incremental Merkle tree) — this is the hardest Clarity component
-3. Write comprehensive Merkle tree tests
-4. Implement `nullifier-registry.clar` (simple map, straightforward)
-5. Implement `stealth-v1.clar` (registry, no crypto — just storage)
-
-### Phase 2: Core pool
-6. Implement `pool-v1.clar` deposit function (integrates Merkle tree + SIP-010 transfers)
-7. Implement mock proof verifier (always returns true) for testing
-8. Implement `pool-v1.clar` withdrawal function (integrates verifier + nullifiers)
-9. Write full deposit/withdrawal integration tests on devnet
-
-### Phase 3: Client SDK
-10. Implement `stealth-address.ts` (ECDH + key derivation)
-11. Implement `commitment.ts` (sha256 computation matching Clarity)
-12. Implement `merkle.ts` (client-side tree, must produce same roots as Clarity)
-13. Implement `notes/` module (encryption + storage)
-14. Implement `deposit.ts` and `withdraw.ts` transaction builders
-15. Cross-test: SDK-generated commitments must match Clarity sha256 output exactly
-
-### Phase 4: ZK proofs
-16. Define the STARK circuit for Merkle membership
-17. Compile prover to WASM
-18. Implement `prover.ts` and `witness.ts`
-19. Replace mock verifier with real `proof-verifier.clar`
-20. End-to-end test: SDK generates proof → Clarity verifies it
-
-### Phase 5: Relayer + Scanner
-21. Implement `@satsu/relay` REST API
-22. Implement `@satsu/scanner` with Chainhook integration
-23. Full E2E test: Alice deposits via relayer → Bob's scanner detects withdrawal
-
-### Phase 6: Hardening
-24. Security review + Stacy static analysis
-25. Gas benchmarking on testnet
-26. Anonymity set analysis and timing delay tuning
-27. Note backup UX implementation
-28. Testnet deployment and public testing
-
+ 

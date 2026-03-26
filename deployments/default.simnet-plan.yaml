@@ -88,9 +88,19 @@ plan:
       path: contracts/proof-verifier.clar
       clarity-version: 3
     - transaction-type: emulated-contract-publish
+      contract-name: sip010-trait
+      emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+      path: contracts/traits/sip010-trait.clar
+      clarity-version: 3
+    - transaction-type: emulated-contract-publish
       contract-name: sbtc-token
       emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
       path: contracts/sbtc-token.clar
+      clarity-version: 3
+    - transaction-type: emulated-contract-publish
+      contract-name: withdrawal-escrow
+      emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+      path: contracts/withdrawal-escrow.clar
       clarity-version: 3
     - transaction-type: emulated-contract-publish
       contract-name: pool-v1

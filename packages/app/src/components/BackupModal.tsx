@@ -56,7 +56,7 @@ export function BackupModal({ onClose }: BackupModalProps) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/60 backdrop-blur-sm"
@@ -64,7 +64,7 @@ export function BackupModal({ onClose }: BackupModalProps) {
       />
 
       {/* Modal - dark glass */}
-      <div className="relative w-full max-w-md glass-card p-8 !rounded-2xl">
+      <div className="relative w-full sm:max-w-md glass-card p-5 sm:p-8 !rounded-t-2xl sm:!rounded-2xl max-h-[90vh] overflow-y-auto">
         {/* Close button */}
         <button
           onClick={onClose}

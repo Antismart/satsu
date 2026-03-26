@@ -6,7 +6,7 @@ import { Shield, Lock, ArrowUpRight, Wallet } from "lucide-react";
 
 export default function Home() {
   return (
-    <div className="flex flex-col min-h-screen bg-[#050505] text-white selection:bg-[#F97C00] selection:text-white pb-32 relative overflow-hidden">
+    <div className="flex flex-col min-h-screen bg-[#050505] text-white selection:bg-[#F97C00] selection:text-white pb-16 sm:pb-32 relative overflow-x-hidden overflow-y-auto">
 
       {/* ================= GLOBAL BACKGROUNDS & TEXTURES ================= */}
       <div className="fixed inset-0 pointer-events-none z-0" style={{
@@ -22,7 +22,7 @@ export default function Home() {
 
 
       {/* ================= HERO SECTION ================= */}
-      <section className="relative w-full pt-32 sm:pt-44 pb-32 px-6 max-w-[1400px] mx-auto z-10">
+      <section className="relative w-full pt-20 sm:pt-32 md:pt-44 pb-16 sm:pb-32 px-4 sm:px-6 max-w-[1400px] mx-auto z-10">
 
         {/* Pill tags - top right */}
         <div className="hidden lg:flex absolute top-36 right-6 gap-3 z-20">
@@ -42,7 +42,7 @@ export default function Home() {
           className="max-w-[900px] mb-10"
         >
           <h1
-            className="font-heading text-5xl sm:text-7xl md:text-8xl lg:text-[7rem] font-bold text-white"
+            className="font-heading text-3xl sm:text-5xl md:text-6xl lg:text-[7rem] font-bold text-white"
             style={{ lineHeight: "1.05", letterSpacing: "-0.03em" }}
           >
             Private payments on Bitcoin,{" "}
@@ -64,28 +64,28 @@ export default function Home() {
             Deposit sBTC into a shielded pool. Withdraw to stealth addresses.
             No one sees who sent what to whom.
           </p>
-          <div className="flex gap-4 flex-shrink-0">
-            <Link href="/dashboard" className="btn-accent h-12 px-8 text-sm flex items-center gap-2">
+          <div className="flex gap-3 sm:gap-4 flex-shrink-0">
+            <Link href="/dashboard" className="btn-accent h-11 sm:h-12 px-5 sm:px-8 text-sm flex items-center gap-2">
               Launch App
               <ArrowUpRight className="w-4 h-4" />
             </Link>
-            <Link href="/register" className="btn-glass h-12 px-8 text-sm flex items-center">
+            <Link href="/register" className="btn-glass h-11 sm:h-12 px-5 sm:px-8 text-sm flex items-center">
               Get Started
             </Link>
           </div>
         </motion.div>
 
         {/* Stats row below CTAs */}
-        <div className="mb-32" />
+        <div className="mb-16 sm:mb-32" />
 
         {/* ====== CARD SHOWCASE ====== */}
-        <div className="relative flex flex-col items-center min-h-[500px] sm:min-h-[600px]">
+        <div className="relative flex flex-col items-center min-h-[400px] sm:min-h-[500px] md:min-h-[600px]">
 
           {/* Subtle ambient light from above */}
-          <div className="absolute top-[-100px] left-1/2 -translate-x-1/2 w-[400px] h-[300px] bg-white/[0.04] blur-[100px] rounded-full pointer-events-none" />
+          <div className="absolute top-[-100px] left-1/2 -translate-x-1/2 w-[80%] max-w-[400px] h-[300px] bg-white/[0.04] blur-[100px] rounded-full pointer-events-none" />
 
           {/* Card + ledge container */}
-          <div className="relative flex items-end justify-center w-full h-[500px] sm:h-[580px]" style={{ perspective: "1400px" }}>
+          <div className="relative flex items-end justify-center w-full h-[400px] sm:h-[500px] md:h-[580px]" style={{ perspective: "1400px" }}>
 
             {/* The Card - PORTRAIT orientation, standing upright, tilted back */}
             <motion.div
@@ -93,10 +93,8 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1.4, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
               whileHover={{ rotateY: -8, rotateX: 3, scale: 1.02 }}
-              className="absolute bottom-[90px] sm:bottom-[100px] z-10 cursor-pointer"
+              className="absolute bottom-[70px] sm:bottom-[90px] md:bottom-[100px] z-10 cursor-pointer w-[200px] h-[300px] sm:w-[240px] sm:h-[360px] md:w-[280px] md:h-[420px]"
               style={{
-                width: "280px",
-                height: "420px",
                 transformStyle: "preserve-3d",
                 transform: "rotateY(-18deg) rotateX(8deg)",
               }}
@@ -128,7 +126,7 @@ export default function Home() {
 
               {/* Strong specular hotspot - top left area */}
               <div className="absolute rounded-[1.25rem] pointer-events-none overflow-hidden inset-0">
-                <div className="absolute w-[250px] h-[300px] top-[-50px] left-[-30px]" style={{
+                <div className="absolute w-full h-full top-[-50px] left-[-30px]" style={{
                   background: "radial-gradient(ellipse at 40% 30%, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0.1) 30%, transparent 65%)",
                 }} />
               </div>
@@ -142,7 +140,7 @@ export default function Home() {
               <div className="absolute inset-0 opacity-[0.08] mix-blend-overlay pointer-events-none rounded-[1.25rem]" style={{ backgroundImage: "url('https://grainy-gradients.vercel.app/noise.svg')" }} />
 
               {/* Card content */}
-              <div className="absolute inset-0 rounded-[1.25rem] p-7 sm:p-8 flex flex-col justify-between z-10">
+              <div className="absolute inset-0 rounded-[1.25rem] p-4 sm:p-7 md:p-8 flex flex-col justify-between z-10">
                 {/* Top: chip + contactless */}
                 <div className="flex justify-between items-start">
                   {/* EMV Chip */}
@@ -169,7 +167,7 @@ export default function Home() {
 
                 {/* Center: SATSU embossed - white with dark shadow for visibility on any bg */}
                 <div className="flex-1 flex items-center">
-                  <span className="text-[2.4rem] font-black tracking-[0.3em] uppercase select-none text-white/20 drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)]"
+                  <span className="text-xl sm:text-3xl md:text-[2.4rem] font-black tracking-[0.3em] uppercase select-none text-white/20 drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)]"
                     style={{ textShadow: "0 1px 0 rgba(255,255,255,0.1), 0 -1px 0 rgba(0,0,0,0.3)" }}
                   >SATSU</span>
                 </div>
@@ -192,7 +190,7 @@ export default function Home() {
             </motion.div>
 
             {/* Dark stone ledge / surface */}
-            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[700px] sm:w-[800px] h-[100px] z-0">
+            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[700px] sm:max-w-[800px] h-[80px] sm:h-[100px] z-0">
               {/* Ledge top surface */}
               <div className="absolute top-0 left-0 right-0 h-[50px] rounded-t-lg" style={{
                 background: "linear-gradient(180deg, #1a1a1a 0%, #111 60%, #0d0d0d 100%)",
@@ -209,7 +207,7 @@ export default function Home() {
             </div>
 
             {/* Soft shadow on the floor beneath ledge */}
-            <div className="absolute bottom-[-20px] left-1/2 -translate-x-1/2 w-[500px] h-[40px] bg-black/50 blur-[30px] rounded-full z-0" />
+            <div className="absolute bottom-[-20px] left-1/2 -translate-x-1/2 w-[80%] max-w-[500px] h-[40px] bg-black/50 blur-[30px] rounded-full z-0" />
           </div>
         </div>
 
@@ -217,14 +215,14 @@ export default function Home() {
 
 
       {/* ================= BANNER SECTION ================= */}
-      <section className="relative w-full py-20 px-6 z-10">
+      <section className="relative w-full py-12 sm:py-20 px-4 sm:px-6 z-10">
         <div className="max-w-[1200px] mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.8 }}
-            className="relative rounded-[2.5rem] overflow-hidden min-h-[520px] diamond-grid"
+            className="relative rounded-2xl sm:rounded-[2.5rem] overflow-hidden min-h-[auto] sm:min-h-[520px] diamond-grid"
             style={{
               background: "linear-gradient(145deg, #111 0%, #0d0d0d 100%)",
               border: "1px solid rgba(255, 255, 255, 0.06)"
@@ -243,13 +241,13 @@ export default function Home() {
             <div className="absolute inset-0 opacity-[0.03] mix-blend-overlay pointer-events-none rounded-[2.5rem]" style={{ backgroundImage: "url('https://grainy-gradients.vercel.app/noise.svg')" }} />
 
             {/* Content grid */}
-            <div className="relative z-10 p-10 sm:p-14 flex flex-col min-h-[520px]">
+            <div className="relative z-10 p-5 sm:p-10 md:p-14 flex flex-col min-h-[auto] sm:min-h-[520px]">
 
               {/* Top row: heading + floating card */}
               <div className="flex justify-between items-start mb-auto">
-                <div className="max-w-[550px]">
+                <div className="max-w-full sm:max-w-[550px]">
                   <span className="text-[10px] text-white/30 uppercase tracking-[0.25em] font-semibold block mb-5">Privacy Infrastructure</span>
-                  <h2 className="font-heading text-4xl sm:text-5xl md:text-6xl font-bold text-white tracking-tight mb-6" style={{ lineHeight: "1.08" }}>
+                  <h2 className="font-heading text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white tracking-tight mb-6" style={{ lineHeight: "1.08" }}>
                     Stealth Payments,{" "}
                     <span className="text-gradient-warm">Zero Trace</span>
                   </h2>
@@ -264,15 +262,15 @@ export default function Home() {
               <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-8 mt-auto pt-10">
 
                 {/* Three feature highlights */}
-                <div className="flex flex-wrap gap-3">
+                <div className="flex flex-wrap gap-2 sm:gap-3">
                   {[
                     { label: "Stealth Addresses", desc: "Unlinkable recipients" },
                     { label: "ZK-STARK Proofs", desc: "Hidden transaction graph" },
                     { label: "Relayer Network", desc: "Anonymous submission" },
                   ].map((f) => (
-                    <div key={f.label} className="bg-white/[0.04] border border-white/[0.06] rounded-2xl px-5 py-4 backdrop-blur-sm hover:border-white/[0.12] transition-colors duration-300">
-                      <p className="text-white text-sm font-medium mb-0.5">{f.label}</p>
-                      <p className="text-white/30 text-[11px]">{f.desc}</p>
+                    <div key={f.label} className="bg-white/[0.04] border border-white/[0.06] rounded-xl sm:rounded-2xl px-3 sm:px-5 py-3 sm:py-4 backdrop-blur-sm hover:border-white/[0.12] transition-colors duration-300">
+                      <p className="text-white text-xs sm:text-sm font-medium mb-0.5">{f.label}</p>
+                      <p className="text-white/30 text-[10px] sm:text-[11px]">{f.desc}</p>
                     </div>
                   ))}
                 </div>
@@ -303,7 +301,7 @@ export default function Home() {
 
 
       {/* ================= HOW IT WORKS SECTION ================= */}
-      <section className="relative w-full py-32 px-6 z-10">
+      <section className="relative w-full py-16 sm:py-24 lg:py-32 px-4 sm:px-6 z-10">
         {/* Top gradient line */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
@@ -314,11 +312,11 @@ export default function Home() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.6 }}
-            className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-20"
+            className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 sm:mb-20"
           >
             <div>
               <span className="text-[#F97C00] text-[11px] tracking-[0.25em] font-semibold uppercase block mb-4">The Process</span>
-              <h2 className="font-heading text-4xl sm:text-5xl md:text-6xl font-bold text-white tracking-tight" style={{ lineHeight: "1.08" }}>
+              <h2 className="font-heading text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white tracking-tight" style={{ lineHeight: "1.08" }}>
                 Three steps to<br /><span className="text-gradient-warm">full privacy</span>
               </h2>
             </div>
@@ -343,10 +341,10 @@ export default function Home() {
               transition={{ duration: 0.7, delay: 0 }}
               className="relative z-10 group"
             >
-              <div className="p-8 sm:p-10 rounded-[2rem] transition-all duration-500 hover:bg-white/[0.03] border border-transparent hover:border-white/[0.06]" style={{ minHeight: "320px" }}>
+              <div className="p-6 sm:p-8 md:p-10 rounded-2xl sm:rounded-[2rem] transition-all duration-500 hover:bg-white/[0.03] border border-transparent hover:border-white/[0.06] md:min-h-[320px]">
                 {/* Step number - large */}
-                <div className="flex items-center gap-5 mb-8">
-                  <div className="w-[72px] h-[72px] rounded-2xl flex items-center justify-center relative overflow-hidden" style={{
+                <div className="flex items-center gap-4 sm:gap-5 mb-6 sm:mb-8">
+                  <div className="w-14 h-14 sm:w-[72px] sm:h-[72px] rounded-xl sm:rounded-2xl flex items-center justify-center relative overflow-hidden flex-shrink-0" style={{
                     background: "linear-gradient(135deg, rgba(249,124,0,0.15), rgba(249,124,0,0.05))",
                     border: "1px solid rgba(249,124,0,0.2)"
                   }}>
@@ -385,9 +383,9 @@ export default function Home() {
               transition={{ duration: 0.7, delay: 0.15 }}
               className="relative z-10 group"
             >
-              <div className="p-8 sm:p-10 rounded-[2rem] transition-all duration-500 hover:bg-white/[0.03] border border-transparent hover:border-white/[0.06] md:border-l md:border-l-white/[0.04] md:border-r md:border-r-white/[0.04]" style={{ minHeight: "320px" }}>
-                <div className="flex items-center gap-5 mb-8">
-                  <div className="w-[72px] h-[72px] rounded-2xl flex items-center justify-center relative overflow-hidden" style={{
+              <div className="p-6 sm:p-8 md:p-10 rounded-2xl sm:rounded-[2rem] transition-all duration-500 hover:bg-white/[0.03] border border-transparent hover:border-white/[0.06] md:border-l md:border-l-white/[0.04] md:border-r md:border-r-white/[0.04] md:min-h-[320px]">
+                <div className="flex items-center gap-4 sm:gap-5 mb-6 sm:mb-8">
+                  <div className="w-14 h-14 sm:w-[72px] sm:h-[72px] rounded-xl sm:rounded-2xl flex items-center justify-center relative overflow-hidden flex-shrink-0" style={{
                     background: "linear-gradient(135deg, rgba(249,124,0,0.15), rgba(249,124,0,0.05))",
                     border: "1px solid rgba(249,124,0,0.2)"
                   }}>
@@ -423,9 +421,9 @@ export default function Home() {
               transition={{ duration: 0.7, delay: 0.3 }}
               className="relative z-10 group"
             >
-              <div className="p-8 sm:p-10 rounded-[2rem] transition-all duration-500 hover:bg-white/[0.03] border border-transparent hover:border-white/[0.06]" style={{ minHeight: "320px" }}>
-                <div className="flex items-center gap-5 mb-8">
-                  <div className="w-[72px] h-[72px] rounded-2xl flex items-center justify-center relative overflow-hidden" style={{
+              <div className="p-6 sm:p-8 md:p-10 rounded-2xl sm:rounded-[2rem] transition-all duration-500 hover:bg-white/[0.03] border border-transparent hover:border-white/[0.06] md:min-h-[320px]">
+                <div className="flex items-center gap-4 sm:gap-5 mb-6 sm:mb-8">
+                  <div className="w-14 h-14 sm:w-[72px] sm:h-[72px] rounded-xl sm:rounded-2xl flex items-center justify-center relative overflow-hidden flex-shrink-0" style={{
                     background: "linear-gradient(135deg, rgba(249,124,0,0.15), rgba(249,124,0,0.05))",
                     border: "1px solid rgba(249,124,0,0.2)"
                   }}>
@@ -457,7 +455,7 @@ export default function Home() {
 
 
       {/* ================= BROWSER MOCKUP SECTION ================= */}
-      <section className="relative w-full py-32 px-6 overflow-hidden z-10">
+      <section className="relative w-full py-16 sm:py-24 lg:py-32 px-4 sm:px-6 overflow-hidden z-10">
         <div className="max-w-[1100px] mx-auto relative flex flex-col items-center">
 
           <motion.div
@@ -468,35 +466,35 @@ export default function Home() {
             className="text-center mb-16"
           >
             <span className="text-[#F97C00] text-[11px] tracking-[0.25em] font-semibold uppercase block mb-4">Dashboard Preview</span>
-            <h2 className="font-heading text-4xl sm:text-5xl font-bold text-white tracking-tight mb-4">Your <span className="text-gradient-warm">Privacy Dashboard</span></h2>
+            <h2 className="font-heading text-2xl sm:text-4xl md:text-5xl font-bold text-white tracking-tight mb-4">Your <span className="text-gradient-warm">Privacy Dashboard</span></h2>
             <p className="text-white/35 text-base max-w-lg mx-auto leading-relaxed">Full control over your shielded assets, deposits, and withdrawal history — all in one place.</p>
           </motion.div>
 
           {/* Warm glow behind the monitor */}
-          <div className="absolute top-[45%] left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-[#F97C00]/[0.04] blur-[120px] rounded-full pointer-events-none" />
+          <div className="absolute top-[45%] left-1/2 -translate-x-1/2 w-full max-w-[1000px] h-[400px] sm:h-[600px] bg-[#F97C00]/[0.04] blur-[120px] rounded-full pointer-events-none" />
 
           <motion.div
             initial={{ opacity: 0, scale: 0.95, y: 30 }}
             whileInView={{ opacity: 1, scale: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 1, ease: "easeOut" }}
-            className="w-full rounded-[2rem] p-2.5 relative" style={{
+            className="w-full rounded-xl sm:rounded-[2rem] p-1.5 sm:p-2.5 relative" style={{
               background: "linear-gradient(180deg, #2a2a2a 0%, #1e1e1e 50%, #181818 100%)",
               boxShadow: "0 40px 120px rgba(0,0,0,0.9), 0 0 0 1px rgba(255,255,255,0.1), inset 0 1px 0 rgba(255,255,255,0.08)",
             }}
           >
             {/* Monitor stand - lighter */}
-            <div className="absolute -bottom-14 left-1/2 -translate-x-1/2 w-36 h-14 rounded-t-lg z-[-1]" style={{
+            <div className="absolute -bottom-14 left-1/2 -translate-x-1/2 w-24 sm:w-36 h-14 rounded-t-lg z-[-1]" style={{
               background: "linear-gradient(180deg, #222 0%, #181818 100%)",
               boxShadow: "inset 1px 0 0 rgba(255,255,255,0.05), inset -1px 0 0 rgba(255,255,255,0.05)"
             }} />
-            <div className="absolute -bottom-[68px] left-1/2 -translate-x-1/2 w-52 h-3 rounded-full z-[-1]" style={{
+            <div className="absolute -bottom-[68px] left-1/2 -translate-x-1/2 w-36 sm:w-52 h-3 rounded-full z-[-1]" style={{
               background: "linear-gradient(180deg, #222 0%, #1a1a1a 100%)",
               boxShadow: "0 4px 20px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06)"
             }} />
 
             {/* Screen */}
-            <div className="bg-[#0A0A0A] rounded-[1.5rem] overflow-hidden relative flex flex-col" style={{ minHeight: "520px" }}>
+            <div className="bg-[#0A0A0A] rounded-lg sm:rounded-[1.5rem] overflow-hidden relative flex flex-col" style={{ minHeight: "360px" }}>
 
               {/* Browser chrome */}
               <div className="h-11 border-b border-white/[0.04] flex items-center px-5 gap-2 bg-[#0e0e0e] flex-shrink-0">
@@ -505,14 +503,14 @@ export default function Home() {
                   <div className="w-2.5 h-2.5 rounded-full bg-[#FFBD2E]" />
                   <div className="w-2.5 h-2.5 rounded-full bg-[#27C93F]" />
                 </div>
-                <div className="mx-auto bg-black/40 border border-white/[0.04] px-16 sm:px-32 py-1 rounded-md text-[10px] text-white/25 font-mono tracking-wider flex items-center gap-3">
+                <div className="mx-auto bg-black/40 border border-white/[0.04] px-3 sm:px-16 md:px-32 py-1 rounded-md text-[10px] text-white/25 font-mono tracking-wider flex items-center gap-1.5 sm:gap-3 truncate max-w-[60%] sm:max-w-none">
                   <Lock className="w-2.5 h-2.5" />
                   satsu.network/dashboard
                 </div>
               </div>
 
               {/* Dashboard content inside browser */}
-              <div className="flex-1 p-5 sm:p-8 overflow-hidden relative">
+              <div className="flex-1 p-3 sm:p-5 md:p-8 overflow-hidden relative">
 
                 {/* Top nav inside dashboard */}
                 <div className="flex justify-between items-center mb-6">
@@ -633,12 +631,12 @@ export default function Home() {
 
 
       {/* ================= POWERED BY STRIP ================= */}
-      <section className="relative w-full py-16 px-6 z-10">
+      <section className="relative w-full py-12 sm:py-16 px-4 sm:px-6 z-10">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
         <div className="max-w-[1000px] mx-auto">
           <p className="text-center text-white/20 text-[11px] tracking-[0.25em] uppercase font-medium mb-10">Built on</p>
-          <div className="flex items-center justify-center gap-10 sm:gap-16 flex-wrap">
+          <div className="flex items-center justify-center gap-6 sm:gap-10 md:gap-16 flex-wrap">
             {[
               { name: "Bitcoin", sub: "Settlement" },
               { name: "Stacks", sub: "Smart Contracts" },
@@ -659,13 +657,13 @@ export default function Home() {
 
 
       {/* ================= TYPOGRAPHY & AVATARS SECTION ================= */}
-      <section className="py-28 px-6 relative z-10 mt-16">
+      <section className="py-16 sm:py-28 px-4 sm:px-6 relative z-10 mt-8 sm:mt-16">
         {/* Top rule */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
-        <div className="max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-12 gap-12 items-center text-white">
+        <div className="max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-12 gap-8 sm:gap-12 items-center text-white">
 
-          <div className="md:col-span-3 text-white/30 text-[13px] font-medium tracking-wide uppercase space-y-2 border-l border-white/10 pl-6 h-full flex flex-col justify-center">
+          <div className="hidden md:flex md:col-span-3 text-white/30 text-[13px] font-medium tracking-wide uppercase space-y-2 border-l border-white/10 pl-6 h-full flex-col justify-center">
             <p>Stealth</p>
             <p className="text-white/60">Deposits</p>
             <p>Shielded</p>
@@ -675,10 +673,10 @@ export default function Home() {
           <div className="md:col-span-6 flex flex-col items-center text-center">
             <span className="text-white/40 text-[11px] tracking-[0.2em] font-medium uppercase mb-5">Privacy By Default</span>
             <h2
-              className="font-heading text-5xl sm:text-6xl md:text-7xl font-bold tracking-tighter mb-12"
+              className="font-heading text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter mb-8 sm:mb-12"
               style={{ lineHeight: "1.05" }}
             >
-              <span className="text-gradient-warm">Untraceable</span> Payments <br/>For Everyone
+              <span className="text-gradient-warm">Untraceable</span> Payments <br className="hidden sm:block" />For Everyone
             </h2>
 
             <div className="flex items-center justify-center pr-4">
@@ -708,7 +706,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="md:col-span-3 flex justify-end">
+          <div className="hidden md:flex md:col-span-3 justify-end">
             <div className="flex w-full md:w-auto mt-8 md:mt-0 justify-between md:justify-start items-center md:items-end md:flex-col border-b border-white/10 pb-6 md:border-none md:pb-0 h-full">
               <div className="w-10 h-10 rounded-full bg-[#111] border border-white/10 flex items-center justify-center mb-4 md:order-1 order-2 cursor-pointer hover:bg-white/10 transition-colors duration-300">
                 <Wallet className="w-4 h-4 text-white/80" />

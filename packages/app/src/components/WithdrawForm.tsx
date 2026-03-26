@@ -115,11 +115,11 @@ export function WithdrawForm() {
             value={recipient}
             onChange={(e) => setRecipient(e.target.value)}
             placeholder="SP... or ST..."
-            className="w-full h-12 px-4 pr-20 rounded-xl bg-white/[0.04] border border-white/[0.1] text-white text-sm placeholder:text-white/25 focus:border-[#F97C00]/50 focus:ring-1 focus:ring-[#F97C00]/30 focus:outline-none transition-all duration-300"
+            className="w-full h-12 px-4 pr-[4.5rem] rounded-xl bg-white/[0.04] border border-white/[0.1] text-white text-sm placeholder:text-white/25 focus:border-[#F97C00]/50 focus:ring-1 focus:ring-[#F97C00]/30 focus:outline-none transition-all duration-300"
           />
           <button
             onClick={handlePaste}
-            className="absolute right-2 top-1/2 -translate-y-1/2 h-8 px-4 rounded-full bg-white/[0.06] border border-white/[0.1] text-xs font-semibold text-white/60 hover:text-white hover:border-white/[0.2] transition-all duration-300"
+            className="absolute right-2 top-1/2 -translate-y-1/2 h-8 px-3 sm:px-4 rounded-full bg-white/[0.06] border border-white/[0.1] text-xs font-semibold text-white/60 hover:text-white hover:border-white/[0.2] transition-all duration-300"
           >
             Paste
           </button>

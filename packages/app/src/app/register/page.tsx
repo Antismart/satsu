@@ -80,7 +80,7 @@ export default function RegisterPage() {
 
   if (!isConnected) {
     return (
-      <div className="mx-auto max-w-[1200px] px-6 py-28">
+      <div className="mx-auto max-w-[1200px] px-4 sm:px-6 py-16 sm:py-28">
         <div className="max-w-md mx-auto text-center">
           <div className="h-16 w-16 rounded-2xl bg-[#F97C00]/10 flex items-center justify-center mx-auto mb-6">
             <svg
@@ -124,7 +124,7 @@ export default function RegisterPage() {
   const currentIdx = steps.indexOf(step);
 
   return (
-    <div className="mx-auto max-w-2xl px-6 py-10 sm:py-16">
+    <div className="mx-auto max-w-2xl px-4 sm:px-6 py-8 sm:py-16">
       {/* Header */}
       <div className="mb-10">
         <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2 text-white">
@@ -139,7 +139,7 @@ export default function RegisterPage() {
       {/* ================================================================
           STEP PROGRESS INDICATOR
           ================================================================ */}
-      <div className="flex items-center gap-0 mb-12">
+      <div className="flex items-center gap-0 mb-8 sm:mb-12 overflow-x-auto">
         {steps.map((s, i) => {
           const isCompleted = i < currentIdx;
           const isCurrent = i === currentIdx;
@@ -151,7 +151,7 @@ export default function RegisterPage() {
             >
               <div className="flex flex-col items-center">
                 <div
-                  className={`h-12 w-12 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300 ${
+                  className={`h-9 w-9 sm:h-12 sm:w-12 rounded-full flex items-center justify-center text-xs sm:text-sm font-semibold transition-all duration-300 ${
                     isCompleted
                       ? "bg-[#4ADE80] text-white"
                       : isCurrent
@@ -162,7 +162,7 @@ export default function RegisterPage() {
                 >
                   {isCompleted ? (
                     <svg
-                      className="h-4 w-4"
+                      className="h-3.5 w-3.5 sm:h-4 sm:w-4"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -179,7 +179,7 @@ export default function RegisterPage() {
                   )}
                 </div>
                 <span
-                  className={`text-[10px] font-semibold mt-2 whitespace-nowrap uppercase tracking-wider ${
+                  className={`text-[8px] sm:text-[10px] font-semibold mt-1.5 sm:mt-2 whitespace-nowrap uppercase tracking-wider ${
                     isCurrent
                       ? "text-[#F97C00]"
                       : isCompleted
@@ -187,12 +187,13 @@ export default function RegisterPage() {
                         : "text-white/25"
                   }`}
                 >
-                  {STEP_LABELS[i]}
+                  <span className="hidden sm:inline">{STEP_LABELS[i]}</span>
+                  <span className="sm:hidden">{STEP_LABELS[i].split(" ")[0]}</span>
                 </span>
               </div>
               {i < 3 && (
                 <div
-                  className={`h-[1px] flex-1 mx-3 mt-[-18px] transition-colors duration-300 ${
+                  className={`h-[1px] flex-1 mx-1.5 sm:mx-3 mt-[-14px] sm:mt-[-18px] transition-colors duration-300 ${
                     isCompleted ? "bg-[#4ADE80]" : "bg-white/[0.08]"
                   }`}
                 />
@@ -224,7 +225,7 @@ export default function RegisterPage() {
 
       {/* Step: Generate stealth keys */}
       {step === "generate" && (
-        <div className="glass-card p-8">
+        <div className="glass-card p-5 sm:p-8">
           <h2 className="text-xl font-semibold tracking-tight mb-3 text-white">
             Generate Stealth Keys
           </h2>
@@ -270,7 +271,7 @@ export default function RegisterPage() {
 
       {/* Step: Register on-chain */}
       {step === "register" && (
-        <div className="glass-card p-8">
+        <div className="glass-card p-5 sm:p-8">
           <h2 className="text-xl font-semibold tracking-tight mb-3 text-white">
             Register On-Chain
           </h2>
@@ -336,7 +337,7 @@ export default function RegisterPage() {
 
       {/* Step: Link BNS */}
       {step === "link-bns" && (
-        <div className="glass-card p-8">
+        <div className="glass-card p-5 sm:p-8">
           <h2 className="text-xl font-semibold tracking-tight mb-3 text-white">
             Link BNS Name
           </h2>
@@ -406,7 +407,7 @@ export default function RegisterPage() {
 
       {/* Step: Done */}
       {step === "done" && (
-        <div className="glass-card p-8">
+        <div className="glass-card p-5 sm:p-8">
           <div className="text-center mb-8">
             <div className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-[#4ADE80] mb-5">
               <svg

@@ -104,12 +104,12 @@ export function DepositForm() {
           </span>
         </div>
         {/* Quick amount buttons */}
-        <div className="flex gap-2 mt-3">
+        <div className="flex flex-wrap gap-2 mt-3">
           {[0.01, 0.05, 0.1, 0.5, 1.0].map((preset) => (
             <button
               key={preset}
               onClick={() => setAmount(String(preset))}
-              className={`flex-1 h-8 rounded-full text-xs font-semibold border transition-all duration-300 ${
+              className={`flex-1 min-w-[50px] h-8 rounded-full text-xs font-semibold border transition-all duration-300 ${
                 amount === String(preset)
                   ? "border-[#F97C00]/50 bg-[#F97C00]/10 text-[#F97C00]"
                   : "border-white/[0.08] bg-white/[0.02] text-white/40 hover:border-white/15 hover:text-white/60"

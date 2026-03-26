@@ -5,7 +5,29 @@ network: testnet
 stacks-node: "https://api.testnet.hiro.so"
 plan:
   batches:
+    # -----------------------------------------------------------------------
+    # Batch 0: Traits (must be deployed first - other contracts depend on them)
+    # -----------------------------------------------------------------------
     - id: 0
+      transactions:
+        - contract-publish:
+            contract-name: sip010-trait
+            expected-sender: $DEPLOYER
+            path: contracts/traits/sip010-trait.clar
+        - contract-publish:
+            contract-name: pool-trait
+            expected-sender: $DEPLOYER
+            path: contracts/traits/pool-trait.clar
+        - contract-publish:
+            contract-name: verifier-trait
+            expected-sender: $DEPLOYER
+            path: contracts/traits/verifier-trait.clar
+
+    # -----------------------------------------------------------------------
+    # Batch 1: Core infrastructure contracts
+    # Dependencies: none (standalone libraries)
+    # -----------------------------------------------------------------------
+    - id: 1
       transactions:
         - contract-publish:
             contract-name: merkle-tree
@@ -19,21 +41,49 @@ plan:
             contract-name: stealth-v1
             expected-sender: $DEPLOYER
             path: contracts/stealth-v1.clar
-    - id: 1
-      transactions:
-        - contract-publish:
-            contract-name: pool-trait
-            expected-sender: $DEPLOYER
-            path: contracts/traits/pool-trait.clar
-        - contract-publish:
-            contract-name: verifier-trait
-            expected-sender: $DEPLOYER
-            path: contracts/traits/verifier-trait.clar
         - contract-publish:
             contract-name: proof-verifier
             expected-sender: $DEPLOYER
             path: contracts/proof-verifier.clar
+
+    # -----------------------------------------------------------------------
+    # Batch 2: Application contracts
+    # Dependencies: merkle-tree, nullifier-registry, proof-verifier, pool-trait
+    #
+    # NOTE: pool-v1 is deployed from pool-v1-testnet.clar which references
+    # the real sBTC testnet contract instead of the mock .sbtc-token.
+    # The on-chain contract name remains "pool-v1" for SDK compatibility.
+    #
+    # NOTE: sbtc-token is NOT deployed on testnet. We use the real sBTC at:
+    #   SN3R84XZYA63QS28932XQF3G1J8R9PC3W8AKR0EP.sbtc-token
+    # -----------------------------------------------------------------------
+    - id: 2
+      transactions:
         - contract-publish:
             contract-name: pool-v1
             expected-sender: $DEPLOYER
-            path: contracts/pool-v1.clar
+            path: contracts/pool-v1-testnet.clar
+
+    # -----------------------------------------------------------------------
+    # Batch 3: Post-deployment configuration
+    #
+    # These are contract-call transactions that configure authorization
+    # after all contracts are deployed.
+    # -----------------------------------------------------------------------
+    # POST-DEPLOYMENT STEPS (manual - run after all contracts confirm):
+    #
+    # 1. Authorize pool-v1 on the nullifier-registry:
+    #    (contract-call? <DEPLOYER>.nullifier-registry set-authorized-contract
+    #      '<DEPLOYER>.pool-v1)
+    #
+    # 2. Authorize pool-v1 on the merkle-tree (if set-authorized-caller exists):
+    #    (contract-call? <DEPLOYER>.merkle-tree set-authorized-caller
+    #      '<DEPLOYER>.pool-v1)
+    #
+    # 3. Register deployer's stealth meta-address to bootstrap anonymity set:
+    #    (contract-call? <DEPLOYER>.stealth-v1 register-meta-address
+    #      <spend-pubkey> <view-pubkey>)
+    #
+    # 4. Make a test deposit to verify end-to-end flow:
+    #    a. Get testnet sBTC via bridge.sbtc.tech
+    #    b. Call pool-v1.deposit with a test commitment

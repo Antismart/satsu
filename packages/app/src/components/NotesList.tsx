@@ -48,9 +48,9 @@ export function NotesList() {
   return (
     <div className="glass-card p-6 sm:p-8">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-full bg-[#F97C00]/10 flex items-center justify-center">
+          <div className="h-10 w-10 rounded-full bg-[#F97C00]/10 flex items-center justify-center flex-shrink-0">
             <svg
               className="h-5 w-5 text-[#F97C00]"
               fill="none"
@@ -66,7 +66,7 @@ export function NotesList() {
             </svg>
           </div>
           <div>
-            <h2 className="text-xl font-semibold tracking-tight text-white">
+            <h2 className="text-lg sm:text-xl font-semibold tracking-tight text-white">
               Deposit Notes
             </h2>
             <p className="text-xs text-white/35">
@@ -77,13 +77,13 @@ export function NotesList() {
         <div className="flex gap-2">
           <button
             onClick={() => setShowBackup(true)}
-            className="btn-glass h-8 px-5 text-xs font-semibold"
+            className="btn-glass h-8 px-4 sm:px-5 text-xs font-semibold"
           >
             Backup
           </button>
           <button
             onClick={() => setShowBackup(true)}
-            className="btn-glass h-8 px-5 text-xs font-semibold"
+            className="btn-glass h-8 px-4 sm:px-5 text-xs font-semibold"
           >
             Restore
           </button>
@@ -150,12 +150,12 @@ export function NotesList() {
             return (
               <div
                 key={note.id}
-                className="flex items-center justify-between py-4 first:pt-0 last:pb-0 group"
+                className="flex items-center justify-between py-4 first:pt-0 last:pb-0 group gap-2"
               >
-                <div className="flex items-center gap-3.5">
+                <div className="flex items-center gap-2.5 sm:gap-3.5 min-w-0">
                   {/* Transaction icon circle */}
                   <div
-                    className={`h-10 w-10 rounded-full flex items-center justify-center ${iconColor}`}
+                    className={`h-9 w-9 sm:h-10 sm:w-10 rounded-full flex items-center justify-center flex-shrink-0 ${iconColor}`}
                   >
                     <svg
                       className="h-5 w-5"
@@ -186,7 +186,7 @@ export function NotesList() {
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
                   <span className="text-xs text-white/35 tabular-nums hidden sm:block">
                     {note.createdAt}
                   </span>

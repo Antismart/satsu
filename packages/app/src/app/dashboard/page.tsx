@@ -23,7 +23,7 @@ export default function DashboardPage() {
 
   if (!isConnected) {
     return (
-      <div className="mx-auto max-w-[1200px] px-6 py-28">
+      <div className="mx-auto max-w-[1200px] px-4 sm:px-6 py-16 sm:py-28">
         <div className="max-w-md mx-auto text-center">
           <div className="h-16 w-16 rounded-2xl bg-[#F97C00]/10 flex items-center justify-center mx-auto mb-6">
             <svg
@@ -124,15 +124,15 @@ export default function DashboardPage() {
   ];
 
   return (
-    <div className="mx-auto max-w-[1200px] px-6 py-8 sm:py-10">
+    <div className="mx-auto max-w-[1200px] px-4 sm:px-6 py-6 sm:py-8 md:py-10">
       {/* ================================================================
           ROW 1: TOP HEADER
           ================================================================ */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
         <div className="flex items-center gap-3">
-          <h1 className="text-2xl font-bold tracking-tight text-white">Privacy Dashboard</h1>
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white">Privacy Dashboard</h1>
         </div>
-        <div className="flex items-center gap-2.5 px-4 py-2 rounded-full glass-card">
+        <div className="flex items-center gap-2.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full glass-card self-start sm:self-auto">
           <span
             className={`relative h-2 w-2 rounded-full ${
               relayerStatus.isOnline ? "bg-[#4ADE80] pulse-dot" : "bg-[#EF4444]"
@@ -149,9 +149,9 @@ export default function DashboardPage() {
       {/* ================================================================
           ROW 2: CARD DUO (credit card front + back) - KEPT AS-IS
           ================================================================ */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5 mb-5">
         {/* Credit Card Style Balance */}
-        <div className="relative rounded-[1.5rem] overflow-hidden p-8 min-h-[320px] flex flex-col justify-between"
+        <div className="relative rounded-2xl sm:rounded-[1.5rem] overflow-hidden p-5 sm:p-8 min-h-[240px] sm:min-h-[280px] md:min-h-[320px] flex flex-col justify-between"
           style={{
             background: "linear-gradient(145deg, #2a2a2a 0%, #1c1c1c 30%, #111 60%, #0a0a0a 100%)",
             boxShadow: "0 20px 60px rgba(0,0,0,0.8), inset 1px 1px 6px rgba(255,255,255,0.08), inset -1px -1px 6px rgba(0,0,0,0.6)",
@@ -169,8 +169,8 @@ export default function DashboardPage() {
           <div className="relative z-10 flex justify-between items-start">
             <div>
               <p className="text-[10px] text-white/40 uppercase tracking-[0.2em] font-semibold mb-1">Available Balance</p>
-              <p className="text-4xl sm:text-5xl font-bold text-white tracking-tight">
-                {leftBalance.toFixed(2)} <span className="text-lg font-semibold text-white/40">sBTC</span>
+              <p className="text-3xl sm:text-4xl md:text-5xl font-bold text-white tracking-tight">
+                {leftBalance.toFixed(2)} <span className="text-base sm:text-lg font-semibold text-white/40">sBTC</span>
               </p>
               <p className="text-xs mt-2">
                 <span className="text-white/35">Deposited </span>
@@ -196,20 +196,20 @@ export default function DashboardPage() {
 
           {/* Bottom row: chip + branding + address */}
           <div className="relative z-10 flex justify-between items-end">
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3 sm:gap-4 min-w-0">
               {/* Chip */}
-              <div className="w-12 h-9 rounded-md border border-white/15 bg-gradient-to-br from-white/10 to-transparent flex flex-col justify-center items-center gap-1">
-                <div className="w-8 h-[1px] bg-white/25" />
-                <div className="w-9 h-[1px] bg-white/25" />
-                <div className="w-8 h-[1px] bg-white/25" />
+              <div className="w-10 sm:w-12 h-7 sm:h-9 rounded-md border border-white/15 bg-gradient-to-br from-white/10 to-transparent flex flex-col justify-center items-center gap-1 flex-shrink-0">
+                <div className="w-6 sm:w-8 h-[1px] bg-white/25" />
+                <div className="w-7 sm:w-9 h-[1px] bg-white/25" />
+                <div className="w-6 sm:w-8 h-[1px] bg-white/25" />
               </div>
-              <div>
-                <p className="text-white/30 text-[10px] uppercase tracking-[0.15em]">Stealth Address</p>
-                <p className="text-white/70 text-sm font-mono tracking-wider">{truncatedAddr}</p>
+              <div className="min-w-0">
+                <p className="text-white/30 text-[9px] sm:text-[10px] uppercase tracking-[0.15em]">Stealth Address</p>
+                <p className="text-white/70 text-xs sm:text-sm font-mono tracking-wider truncate">{truncatedAddr}</p>
               </div>
             </div>
-            <div className="flex flex-col items-end gap-2">
-              <span className="text-2xl font-black tracking-[0.2em] text-white/[0.06]">SATSU</span>
+            <div className="flex flex-col items-end gap-2 flex-shrink-0">
+              <span className="text-xl sm:text-2xl font-black tracking-[0.2em] text-white/[0.06]">SATSU</span>
               <div className="flex items-center gap-1.5 text-[#4ADE80] text-xs font-semibold">
                 <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
@@ -221,7 +221,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Privacy Shield - Credit Card BACK design */}
-        <div className="relative rounded-[1.5rem] overflow-hidden min-h-[320px] flex flex-col"
+        <div className="relative rounded-2xl sm:rounded-[1.5rem] overflow-hidden min-h-[240px] sm:min-h-[280px] md:min-h-[320px] flex flex-col"
           style={{
             background: "linear-gradient(145deg, #2a2a2a 0%, #1c1c1c 30%, #111 60%, #0a0a0a 100%)",
             boxShadow: "0 20px 60px rgba(0,0,0,0.8), inset 1px 1px 6px rgba(255,255,255,0.08), inset -1px -1px 6px rgba(0,0,0,0.6)",
@@ -248,10 +248,10 @@ export default function DashboardPage() {
           </div>
 
           {/* Content area */}
-          <div className="flex-1 px-8 pt-5 pb-8 flex flex-col justify-between relative z-10">
+          <div className="flex-1 px-4 sm:px-8 pt-4 sm:pt-5 pb-5 sm:pb-8 flex flex-col justify-between relative z-10">
 
             {/* Signature strip + CVV area */}
-            <div className="flex gap-4 items-stretch">
+            <div className="flex gap-3 sm:gap-4 items-stretch">
               {/* Signature strip - contains the gauge */}
               <div className="flex-1 rounded-lg p-4 relative overflow-hidden" style={{
                 background: "linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%)"
@@ -334,9 +334,9 @@ export default function DashboardPage() {
       {/* ================================================================
           ROW 3: QUICK ACTIONS + POOL ACTIVITY + STATS (3 columns)
           ================================================================ */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-5 mb-5">
         {/* Left: Quick Action Buttons */}
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-row sm:flex-col gap-3">
           <button
             onClick={() => setActiveTab("deposit")}
             className={`flex-1 h-14 rounded-2xl flex items-center justify-center gap-3 text-sm font-semibold transition-all duration-300 ${
@@ -470,11 +470,11 @@ export default function DashboardPage() {
       {/* ================================================================
           ROW 3b: STATS STRIP (4-column enhanced cards)
           ================================================================ */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-5">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-5">
         {dashboardStats.map((stat) => (
           <div
             key={stat.label}
-            className="glass-card p-5 hover-lift"
+            className="glass-card p-3 sm:p-5 hover-lift"
           >
             {/* Icon circle */}
             <div
@@ -483,7 +483,7 @@ export default function DashboardPage() {
             >
               {stat.icon}
             </div>
-            <p className="text-2xl font-bold text-white tracking-tight tabular-nums">
+            <p className="text-xl sm:text-2xl font-bold text-white tracking-tight tabular-nums">
               {stat.value}
             </p>
             <div className="flex items-center justify-between mt-2">
@@ -516,47 +516,47 @@ export default function DashboardPage() {
       {/* ================================================================
           ROW 4: MAIN CONTENT (2 columns) - Tabbed card + Sidebar
           ================================================================ */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
 
         {/* LEFT: Tabbed content card (wider) */}
-        <div className="lg:col-span-2 glass-card p-6 sm:p-8">
+        <div className="md:col-span-2 glass-card p-4 sm:p-6 md:p-8">
           {/* Tab navigation */}
           <div className="flex gap-1 p-1 rounded-full bg-white/[0.04] border border-white/[0.06] mb-6">
             <button
               onClick={() => setActiveTab("deposit")}
-              className={`flex-1 h-10 rounded-full text-sm font-semibold transition-all duration-300 flex items-center justify-center gap-2 ${
+              className={`flex-1 h-9 sm:h-10 rounded-full text-xs sm:text-sm font-semibold transition-all duration-300 flex items-center justify-center gap-1.5 sm:gap-2 ${
                 activeTab === "deposit"
                   ? "bg-white/[0.1] text-white shadow-sm"
                   : "text-white/40 hover:text-white/60"
               }`}
             >
-              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <svg className="h-4 w-4 hidden sm:block" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
               </svg>
               Deposit
             </button>
             <button
               onClick={() => setActiveTab("withdraw")}
-              className={`flex-1 h-10 rounded-full text-sm font-semibold transition-all duration-300 flex items-center justify-center gap-2 ${
+              className={`flex-1 h-9 sm:h-10 rounded-full text-xs sm:text-sm font-semibold transition-all duration-300 flex items-center justify-center gap-1.5 sm:gap-2 ${
                 activeTab === "withdraw"
                   ? "bg-white/[0.1] text-white shadow-sm"
                   : "text-white/40 hover:text-white/60"
               }`}
             >
-              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <svg className="h-4 w-4 hidden sm:block" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M7 11l5-5m0 0l5 5m-5-5v12" />
               </svg>
               Withdraw
             </button>
             <button
               onClick={() => setActiveTab("activity")}
-              className={`flex-1 h-10 rounded-full text-sm font-semibold transition-all duration-300 flex items-center justify-center gap-2 ${
+              className={`flex-1 h-9 sm:h-10 rounded-full text-xs sm:text-sm font-semibold transition-all duration-300 flex items-center justify-center gap-1.5 sm:gap-2 ${
                 activeTab === "activity"
                   ? "bg-white/[0.1] text-white shadow-sm"
                   : "text-white/40 hover:text-white/60"
               }`}
             >
-              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <svg className="h-4 w-4 hidden sm:block" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
               </svg>
               Activity
@@ -584,8 +584,8 @@ export default function DashboardPage() {
                 </div>
                 <div className="divide-y divide-white/[0.06]">
                   {recentTransactions.map((tx, i) => (
-                    <div key={i} className="flex items-center justify-between py-4 first:pt-0 last:pb-0">
-                      <div className="flex items-center gap-3.5">
+                    <div key={i} className="flex items-center justify-between py-4 first:pt-0 last:pb-0 gap-2">
+                      <div className="flex items-center gap-2.5 sm:gap-3.5 min-w-0">
                         <div className={`h-10 w-10 rounded-full flex items-center justify-center ${
                           tx.icon === "deposit" ? "bg-[#4ADE80]/10 text-[#4ADE80]" :
                           tx.icon === "shield" ? "bg-[#F97C00]/10 text-[#F97C00]" :
@@ -612,14 +612,14 @@ export default function DashboardPage() {
                           <p className="text-[10px] text-white/25 mt-0.5">{tx.subtitle}</p>
                         </div>
                       </div>
-                      <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
                         <div className="text-right">
-                          <span className={`text-sm font-semibold tabular-nums ${tx.amount.startsWith("+") ? "text-[#4ADE80]" : "text-white/70"}`}>
+                          <span className={`text-xs sm:text-sm font-semibold tabular-nums ${tx.amount.startsWith("+") ? "text-[#4ADE80]" : "text-white/70"}`}>
                             {tx.amount}
                           </span>
                           <p className="text-[10px] text-white/25 mt-0.5">{tx.time}</p>
                         </div>
-                        <button className="text-white/25 hover:text-white/60 transition-colors p-1 rounded-lg hover:bg-white/[0.06]">
+                        <button className="text-white/25 hover:text-white/60 transition-colors p-1 rounded-lg hover:bg-white/[0.06] hidden sm:block">
                           <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
                           </svg>
@@ -648,8 +648,8 @@ export default function DashboardPage() {
             </div>
             {/* Compact gauge */}
             <div className="flex flex-col items-center">
-              <div className="relative w-32 h-[72px] overflow-hidden">
-                <svg className="w-32 h-32" viewBox="0 0 200 200" style={{ marginTop: "-4px" }}>
+              <div className="relative w-28 sm:w-32 h-16 sm:h-[72px] overflow-hidden">
+                <svg className="w-28 sm:w-32 h-28 sm:h-32" viewBox="0 0 200 200" style={{ marginTop: "-4px" }}>
                   <path d="M 30 100 A 70 70 0 0 1 170 100" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="12" strokeLinecap="round" />
                   <defs>
                     <linearGradient id="sidebarGauge" x1="0%" y1="0%" x2="100%" y2="0%">
