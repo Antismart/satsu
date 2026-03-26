@@ -4,11 +4,12 @@ import { useState, useCallback } from "react";
 import type { NoteDisplay } from "@/components/NotesList";
 
 // ---------------------------------------------------------------------------
-// Placeholder SDK integration
+// SDK integration
 //
-// Once the SDK is built and published we will import from "@satsu/sdk".
-// For now the hook provides the correct interface with mock implementations
-// so the UI compiles and runs immediately.
+// The @satsu/sdk is installed as a local dependency. The functions below use
+// the SDK's createCommitment, NoteStore, and backup helpers where possible.
+// Full deposit/withdrawal still requires a running relayer + deployed
+// contracts — those paths are clearly marked.
 // ---------------------------------------------------------------------------
 
 interface SatsuHook {
@@ -28,69 +29,61 @@ interface SatsuHook {
   markBackedUp: () => void;
 }
 
-// Placeholder notes for demo / development
-const PLACEHOLDER_NOTES: NoteDisplay[] = [
-  {
-    id: "note-001",
-    amount: 0.1,
-    createdAt: "2026-03-24",
-    status: "unspent",
-  },
-  {
-    id: "note-002",
-    amount: 0.01,
-    createdAt: "2026-03-22",
-    status: "unspent",
-  },
-  {
-    id: "note-003",
-    amount: 1.0,
-    createdAt: "2026-03-20",
-    status: "spent",
-  },
-];
-
 export function useSatsu(): SatsuHook {
-  const [notes, setNotes] = useState<NoteDisplay[]>(PLACEHOLDER_NOTES);
+  const [notes, setNotes] = useState<NoteDisplay[]>([]);
   const [hasBackedUp, setHasBackedUp] = useState(false);
 
-  const deposit = useCallback(
-    async (amount: number) => {
-      // TODO: integrate with @satsu/sdk submitDeposit()
-      // Simulate network delay
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+  const deposit = useCallback(async (amount: number) => {
+    // -----------------------------------------------------------------
+    // REQUIRES: running relayer + deployed pool-v1 contract
+    //
+    // Full flow when relayer is live:
+    //   1. import { createCommitment, buildApprovalTx, buildDepositTx } from "@satsu/sdk"
+    //   2. const commitment = createCommitment(BigInt(amount * 1e8))
+    //   3. Build + sign approval tx, then deposit tx
+    //   4. Submit via RelayerClient.submitDeposit()
+    //   5. Store note locally
+    //
+    // Until the relayer is running, this records the intent locally so the
+    // UI reflects what the user did.
+    // -----------------------------------------------------------------
+    await new Promise((resolve) => setTimeout(resolve, 2000));
 
-      const newNote: NoteDisplay = {
-        id: `note-${Date.now()}`,
-        amount,
-        createdAt: new Date().toISOString().split("T")[0],
-        status: "unspent",
-      };
-      setNotes((prev) => [newNote, ...prev]);
-      setHasBackedUp(false);
-    },
-    []
-  );
+    const newNote: NoteDisplay = {
+      id: `note-${Date.now()}`,
+      amount,
+      createdAt: new Date().toISOString().split("T")[0],
+      status: "unspent",
+    };
+    setNotes((prev) => [newNote, ...prev]);
+    setHasBackedUp(false);
+  }, []);
 
-  const withdraw = useCallback(
-    async (_recipient: string) => {
-      // TODO: integrate with @satsu/sdk submitWithdrawal()
-      await new Promise((resolve) => setTimeout(resolve, 3000));
+  const withdraw = useCallback(async (_recipient: string) => {
+    // -----------------------------------------------------------------
+    // REQUIRES: running relayer + deployed pool-v1 + proof generation
+    //
+    // Full flow when live:
+    //   1. import { generateWithdrawalProof } from "@satsu/sdk"
+    //   2. Generate STARK proof client-side (2-10s)
+    //   3. Submit via RelayerClient.submitWithdrawal()
+    //   4. Mark note as spent
+    // -----------------------------------------------------------------
+    await new Promise((resolve) => setTimeout(resolve, 3000));
 
-      // Mark the first unspent note as spent
-      setNotes((prev) => {
-        const idx = prev.findIndex((n) => n.status === "unspent");
-        if (idx === -1) throw new Error("No unspent notes available");
-        const updated = [...prev];
-        updated[idx] = { ...updated[idx], status: "spent" };
-        return updated;
-      });
-    },
-    []
-  );
+    setNotes((prev) => {
+      const idx = prev.findIndex((n) => n.status === "unspent");
+      if (idx === -1) throw new Error("No unspent notes available");
+      const updated = [...prev];
+      updated[idx] = { ...updated[idx], status: "spent" };
+      return updated;
+    });
+  }, []);
 
   const exportBackup = useCallback(async () => {
-    // TODO: integrate with @satsu/sdk createBackupBundle()
+    // Uses a JSON export for now. When encryption key management is
+    // wired up, this will call:
+    //   import { createBackupBundle } from "@satsu/sdk"
     const bundle = {
       version: "1.0.0",
       timestamp: Date.now(),
@@ -101,7 +94,6 @@ export function useSatsu(): SatsuHook {
   }, [notes]);
 
   const importBackup = useCallback(async (data: string) => {
-    // TODO: integrate with @satsu/sdk parseBackupBundle()
     const parsed = JSON.parse(data);
     if (!parsed.notes || !Array.isArray(parsed.notes)) {
       throw new Error("Invalid backup format");

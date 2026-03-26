@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Shield, Lock, ArrowUpRight, Wallet } from "lucide-react";
+import { Lock, ArrowUpRight, Wallet } from "lucide-react";
 
 export default function Home() {
   return (

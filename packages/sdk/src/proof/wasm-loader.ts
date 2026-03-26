@@ -86,16 +86,6 @@ export interface WasmProverModule {
 const DEFAULT_WASM_PATH = '../../circuits/build/wasm/satsu_prover_bg.wasm';
 
 // ---------------------------------------------------------------------------
-// Constants
-// ---------------------------------------------------------------------------
-
-/**
- * Default path to the WASM binary, relative to the SDK package root.
- * This points to the wasm-pack output in the circuits/build directory.
- */
-const DEFAULT_WASM_PATH = '../../circuits/build/wasm/satsu_prover_bg.wasm';
-
-// ---------------------------------------------------------------------------
 // Module state
 // ---------------------------------------------------------------------------
 

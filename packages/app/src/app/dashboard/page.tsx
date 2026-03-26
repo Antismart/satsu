@@ -3,17 +3,9 @@
 import { useState } from "react";
 import { DepositForm } from "@/components/DepositForm";
 import { WithdrawForm } from "@/components/WithdrawForm";
-import { NotesList } from "@/components/NotesList";
-import { PrivacyMeter } from "@/components/PrivacyMeter";
 import { useWallet } from "@/hooks/useWallet";
 import { useRelayer } from "@/hooks/useRelayer";
 import { useSatsu } from "@/hooks/useSatsu";
-
-const recentTransactions = [
-  { icon: "shield", title: "Stealth Deposit", subtitle: "via relayer", amount: "-0.05 sBTC", time: "2m ago" },
-  { icon: "deposit", title: "Shielded Withdrawal", subtitle: "to stealth address", amount: "+0.10 sBTC", time: "1h ago" },
-  { icon: "withdraw", title: "Pool Contribution", subtitle: "0.1 sBTC denomination", amount: "-0.01 sBTC", time: "3h ago" },
-];
 
 export default function DashboardPage() {
   const { isConnected, address, connect } = useWallet();
@@ -62,23 +54,24 @@ export default function DashboardPage() {
     ? `${address.slice(0, 8)}...${address.slice(-6)}`
     : "";
 
-  const poolBalance = 42.8;
-  const spentAmount = 875.98;
-  const leftBalance = 749.87;
-  const spendRatio = leftBalance / (leftBalance + spentAmount);
-
-  // Computed values for sidebar
+  // Derive all values from actual note state
   const activeNotes = notes.filter((n) => n.status === "unspent");
+  const spentNotes = notes.filter((n) => n.status === "spent");
   const totalNoteValue = activeNotes.reduce((sum, n) => sum + n.amount, 0);
+  const spentAmount = spentNotes.reduce((sum, n) => sum + n.amount, 0);
+  const leftBalance = totalNoteValue;
+  const spendRatio = leftBalance + spentAmount > 0 ? leftBalance / (leftBalance + spentAmount) : 0;
 
-  // Stats data with icons and accents
+  const privacyScore = notes.length > 0 ? Math.min(Math.round((activeNotes.length / Math.max(notes.length, 1)) * 100), 100) : 0;
+
+  // Stats data derived from actual state
   const dashboardStats = [
     {
       label: "Anonymity Set",
-      value: "892",
-      trend: "+12%",
+      value: String(notes.length),
+      trend: null,
       accent: "#F97C00",
-      progress: 89,
+      progress: Math.min(notes.length, 100),
       icon: (
         <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
@@ -87,10 +80,10 @@ export default function DashboardPage() {
     },
     {
       label: "Total Deposits",
-      value: "1,247",
-      trend: "+8%",
+      value: String(notes.length),
+      trend: null,
       accent: "#4ADE80",
-      progress: 72,
+      progress: Math.min(notes.length * 10, 100),
       icon: (
         <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941" />
@@ -111,10 +104,10 @@ export default function DashboardPage() {
     },
     {
       label: "Privacy Score",
-      value: "89%",
-      trend: "+3%",
+      value: `${privacyScore}%`,
+      trend: null,
       accent: "#F97C00",
-      progress: 89,
+      progress: privacyScore,
       icon: (
         <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
@@ -403,7 +396,7 @@ export default function DashboardPage() {
             </svg>
           </div>
           <div className="flex items-center justify-between mt-3 pt-3 border-t border-white/[0.06]">
-            <span className="text-white font-bold text-lg tabular-nums">{poolBalance} sBTC</span>
+            <span className="text-white font-bold text-lg tabular-nums">{totalNoteValue.toFixed(2)} sBTC</span>
             <span className="text-[10px] text-white/30 uppercase tracking-wider">Pool TVL</span>
           </div>
         </div>
@@ -416,25 +409,17 @@ export default function DashboardPage() {
               <svg className="w-12 h-12 -rotate-90" viewBox="0 0 48 48">
                 <circle cx="24" cy="24" r="18" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="4" />
                 <circle cx="24" cy="24" r="18" fill="none" stroke="#F97C00" strokeWidth="4" strokeLinecap="round"
-                  strokeDasharray={`${89 * 1.131} ${113.1}`}
+                  strokeDasharray={`${Math.min(notes.length, 100) * 1.131} ${113.1}`}
                   style={{ transition: "stroke-dasharray 1s ease-out" }}
                 />
               </svg>
               <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-[10px] font-bold text-white tabular-nums">89%</span>
+                <span className="text-[10px] font-bold text-white tabular-nums">{notes.length}</span>
               </div>
             </div>
             <div>
-              <p className="text-white font-bold text-lg tracking-tight tabular-nums">892</p>
+              <p className="text-white font-bold text-lg tracking-tight tabular-nums">{notes.length}</p>
               <p className="text-[10px] text-white/35 uppercase tracking-wider font-semibold">Anonymity Set</p>
-            </div>
-            <div className="ml-auto">
-              <span className="inline-flex items-center gap-0.5 text-xs font-semibold text-[#4ADE80]">
-                <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
-                </svg>
-                +12%
-              </span>
             </div>
           </div>
           {/* Privacy Score ring */}
@@ -443,25 +428,17 @@ export default function DashboardPage() {
               <svg className="w-12 h-12 -rotate-90" viewBox="0 0 48 48">
                 <circle cx="24" cy="24" r="18" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="4" />
                 <circle cx="24" cy="24" r="18" fill="none" stroke="#4ADE80" strokeWidth="4" strokeLinecap="round"
-                  strokeDasharray={`${89 * 1.131} ${113.1}`}
+                  strokeDasharray={`${privacyScore * 1.131} ${113.1}`}
                   style={{ transition: "stroke-dasharray 1s ease-out" }}
                 />
               </svg>
               <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-[10px] font-bold text-[#4ADE80] tabular-nums">89</span>
+                <span className="text-[10px] font-bold text-[#4ADE80] tabular-nums">{privacyScore}</span>
               </div>
             </div>
             <div>
-              <p className="text-white font-bold text-lg tracking-tight">Strong</p>
+              <p className="text-white font-bold text-lg tracking-tight">{privacyScore >= 80 ? "Strong" : privacyScore >= 50 ? "Moderate" : notes.length > 0 ? "Building" : "—"}</p>
               <p className="text-[10px] text-white/35 uppercase tracking-wider font-semibold">Privacy Score</p>
-            </div>
-            <div className="ml-auto">
-              <span className="inline-flex items-center gap-0.5 text-xs font-semibold text-[#4ADE80]">
-                <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
-                </svg>
-                +3%
-              </span>
             </div>
           </div>
         </div>
@@ -577,57 +554,45 @@ export default function DashboardPage() {
             )}
             {activeTab === "activity" && (
               <div className="animate-fade-in-up" style={{ animationDuration: "0.3s" }}>
-                {/* Inline transaction list */}
                 <div className="flex items-center justify-between mb-5">
-                  <h2 className="text-lg font-semibold tracking-tight text-white">Recent Transactions</h2>
-                  <button className="text-xs text-white/40 hover:text-white transition-colors font-medium">See All</button>
+                  <h2 className="text-lg font-semibold tracking-tight text-white">Note Activity</h2>
                 </div>
-                <div className="divide-y divide-white/[0.06]">
-                  {recentTransactions.map((tx, i) => (
-                    <div key={i} className="flex items-center justify-between py-4 first:pt-0 last:pb-0 gap-2">
-                      <div className="flex items-center gap-2.5 sm:gap-3.5 min-w-0">
-                        <div className={`h-10 w-10 rounded-full flex items-center justify-center ${
-                          tx.icon === "deposit" ? "bg-[#4ADE80]/10 text-[#4ADE80]" :
-                          tx.icon === "shield" ? "bg-[#F97C00]/10 text-[#F97C00]" :
-                          "bg-white/[0.06] text-white/50"
-                        }`}>
-                          {tx.icon === "shield" && (
+                {notes.length === 0 ? (
+                  <div className="text-center py-12">
+                    <div className="h-12 w-12 rounded-full bg-white/[0.04] flex items-center justify-center mx-auto mb-4">
+                      <svg className="h-6 w-6 text-white/20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                      </svg>
+                    </div>
+                    <p className="text-sm text-white/35">No activity yet. Make a deposit to get started.</p>
+                  </div>
+                ) : (
+                  <div className="divide-y divide-white/[0.06]">
+                    {notes.map((note) => (
+                      <div key={note.id} className="flex items-center justify-between py-4 first:pt-0 last:pb-0 gap-2">
+                        <div className="flex items-center gap-2.5 sm:gap-3.5 min-w-0">
+                          <div className={`h-10 w-10 rounded-full flex items-center justify-center ${
+                            note.status === "unspent" ? "bg-[#F97C00]/10 text-[#F97C00]" : "bg-white/[0.06] text-white/50"
+                          }`}>
                             <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                               <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
                             </svg>
-                          )}
-                          {tx.icon === "deposit" && (
-                            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                            </svg>
-                          )}
-                          {tx.icon === "withdraw" && (
-                            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M7 11l5-5m0 0l5 5m-5-5v12" />
-                            </svg>
-                          )}
+                          </div>
+                          <div>
+                            <span className="text-sm font-semibold text-white">{note.status === "unspent" ? "Deposit" : "Spent"}</span>
+                            <p className="text-[10px] text-white/25 mt-0.5">{note.createdAt}</p>
+                          </div>
                         </div>
-                        <div>
-                          <span className="text-sm font-semibold text-white">{tx.title}</span>
-                          <p className="text-[10px] text-white/25 mt-0.5">{tx.subtitle}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
-                        <div className="text-right">
-                          <span className={`text-xs sm:text-sm font-semibold tabular-nums ${tx.amount.startsWith("+") ? "text-[#4ADE80]" : "text-white/70"}`}>
-                            {tx.amount}
+                        <div className="text-right flex-shrink-0">
+                          <span className={`text-xs sm:text-sm font-semibold tabular-nums ${note.status === "unspent" ? "text-[#4ADE80]" : "text-white/40"}`}>
+                            {note.amount} sBTC
                           </span>
-                          <p className="text-[10px] text-white/25 mt-0.5">{tx.time}</p>
+                          <p className={`text-[10px] mt-0.5 ${note.status === "unspent" ? "text-[#4ADE80]/60" : "text-white/20"}`}>{note.status}</p>
                         </div>
-                        <button className="text-white/25 hover:text-white/60 transition-colors p-1 rounded-lg hover:bg-white/[0.06] hidden sm:block">
-                          <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
-                          </svg>
-                        </button>
                       </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -659,15 +624,15 @@ export default function DashboardPage() {
                     </linearGradient>
                   </defs>
                   <path d="M 30 100 A 70 70 0 0 1 170 100" fill="none" stroke="url(#sidebarGauge)" strokeWidth="12" strokeLinecap="round"
-                    strokeDasharray={`${0.89 * 220} 220`}
+                    strokeDasharray={`${(privacyScore / 100) * 220} 220`}
                     style={{ transition: "stroke-dasharray 1s ease-out" }}
                   />
                 </svg>
               </div>
               <p className="text-3xl font-bold text-white tracking-tight tabular-nums -mt-1">
-                89<span className="text-sm font-semibold text-white/35 ml-0.5">/100</span>
+                {privacyScore}<span className="text-sm font-semibold text-white/35 ml-0.5">/100</span>
               </p>
-              <p className="text-xs text-[#4ADE80] font-semibold mt-1">Strong</p>
+              <p className={`text-xs font-semibold mt-1 ${privacyScore >= 80 ? "text-[#4ADE80]" : privacyScore >= 50 ? "text-[#FACC15]" : "text-white/35"}`}>{privacyScore >= 80 ? "Strong" : privacyScore >= 50 ? "Moderate" : notes.length > 0 ? "Building" : "No data"}</p>
             </div>
           </div>
 
@@ -734,7 +699,7 @@ export default function DashboardPage() {
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <span className="text-xs text-white/40">Pool TVL</span>
-                <span className="text-sm font-bold text-white tabular-nums">{poolBalance} sBTC</span>
+                <span className="text-sm font-bold text-white tabular-nums">{totalNoteValue.toFixed(2)} sBTC</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-xs text-white/40">Relayer</span>
@@ -745,7 +710,7 @@ export default function DashboardPage() {
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-xs text-white/40">Deposits</span>
-                <span className="text-sm font-bold text-white tabular-nums">1,247</span>
+                <span className="text-sm font-bold text-white tabular-nums">{notes.length}</span>
               </div>
             </div>
           </div>
