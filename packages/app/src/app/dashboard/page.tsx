@@ -70,12 +70,6 @@ export default function DashboardPage() {
   const leftBalance = 749.87;
   const spendRatio = leftBalance / (leftBalance + spentAmount);
 
-  // Calculate indicator position for the gauge triangle
-  const gaugeAngle = Math.PI - spendRatio * Math.PI;
-  const indicatorX = 100 + 80 * Math.cos(gaugeAngle);
-  const indicatorY = 100 - 80 * Math.sin(gaugeAngle);
-  const indicatorRotation = -(spendRatio * 180);
-
   return (
     <div className="mx-auto max-w-[1200px] px-6 py-8 sm:py-10">
       {/* ================================================================
@@ -173,58 +167,108 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Total Expenses - Semi-circular gauge (Behance style) */}
-        <div className="glass-card p-6 sm:p-8">
-          <h2 className="text-lg font-semibold tracking-tight text-white mb-1">
-            Privacy Shield
-          </h2>
-          <p className="text-xs text-white/35 mb-6">
-            Your anonymity strength over time
-          </p>
+        {/* Privacy Shield - Credit Card BACK design */}
+        <div className="relative rounded-[1.5rem] overflow-hidden min-h-[320px] flex flex-col"
+          style={{
+            background: "linear-gradient(160deg, #1a1a1a 0%, #141414 40%, #0f0f0f 70%, #0a0a0a 100%)",
+            boxShadow: "0 20px 60px rgba(0,0,0,0.8), inset 1px 1px 6px rgba(255,255,255,0.06), inset -1px -1px 6px rgba(0,0,0,0.6)",
+            border: "1px solid rgba(255,255,255,0.06)"
+          }}
+        >
+          {/* Noise texture */}
+          <div className="absolute inset-0 opacity-[0.04] mix-blend-overlay pointer-events-none rounded-[1.5rem]" style={{ backgroundImage: "url('https://grainy-gradients.vercel.app/noise.svg')" }} />
 
-          {/* Semi-circular gauge - thicker arc, vibrant gradient, triangle indicator */}
-          <div className="flex flex-col items-center">
-            <div className="relative w-52 h-30 overflow-hidden">
-              <svg className="w-52 h-52" viewBox="0 0 200 200" style={{ marginTop: "-4px" }}>
-                {/* Background track - thicker */}
-                <path
-                  d="M 20 100 A 80 80 0 0 1 180 100"
-                  fill="none"
-                  stroke="rgba(255,255,255,0.06)"
-                  strokeWidth="16"
-                  strokeLinecap="round"
-                />
-                {/* Gradient arc - thicker, more vibrant */}
-                <defs>
-                  <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stopColor="#F97C00" />
-                    <stop offset="50%" stopColor="#FACC15" />
-                    <stop offset="100%" stopColor="#4ADE80" />
-                  </linearGradient>
-                </defs>
-                <path
-                  d="M 20 100 A 80 80 0 0 1 180 100"
-                  fill="none"
-                  stroke="url(#gaugeGrad)"
-                  strokeWidth="16"
-                  strokeLinecap="round"
-                  strokeDasharray={`${spendRatio * 251.2} 251.2`}
-                  style={{ transition: "stroke-dasharray 1s ease-out" }}
-                />
-                {/* Triangle indicator at current position */}
-                <g transform={`translate(${indicatorX}, ${indicatorY}) rotate(${indicatorRotation})`}>
-                  <polygon
-                    points="0,-7 6,5 -6,5"
-                    fill="#FACC15"
-                    stroke="none"
-                  />
-                </g>
-              </svg>
+          {/* Magnetic stripe */}
+          <div className="w-full h-12 mt-6 relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-[#1a1a1a] via-[#252525] to-[#1a1a1a]" />
+            <div className="absolute inset-0 opacity-30" style={{
+              backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.03) 2px, rgba(255,255,255,0.03) 3px)"
+            }} />
+            {/* Subtle shimmer on stripe */}
+            <div className="absolute inset-0" style={{
+              background: "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.04) 30%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 70%, transparent 100%)"
+            }} />
+          </div>
+
+          {/* Content area */}
+          <div className="flex-1 px-8 pt-5 pb-8 flex flex-col justify-between relative z-10">
+
+            {/* Signature strip + CVV area */}
+            <div className="flex gap-4 items-stretch">
+              {/* Signature strip - contains the gauge */}
+              <div className="flex-1 rounded-lg p-4 relative overflow-hidden" style={{
+                background: "linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%)"
+              }}>
+                <p className="text-[9px] text-white/30 uppercase tracking-[0.2em] font-semibold mb-3">Privacy Shield</p>
+
+                {/* Mini gauge inside signature strip */}
+                <div className="flex items-center gap-4">
+                  <div className="relative w-20 h-12 overflow-hidden flex-shrink-0">
+                    <svg className="w-20 h-20" viewBox="0 0 200 200" style={{ marginTop: "-2px" }}>
+                      <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="14" strokeLinecap="round" />
+                      <defs>
+                        <linearGradient id="gaugeGradBack" x1="0%" y1="0%" x2="100%" y2="0%">
+                          <stop offset="0%" stopColor="#F97C00" />
+                          <stop offset="50%" stopColor="#FACC15" />
+                          <stop offset="100%" stopColor="#4ADE80" />
+                        </linearGradient>
+                      </defs>
+                      <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="url(#gaugeGradBack)" strokeWidth="14" strokeLinecap="round"
+                        strokeDasharray={`${spendRatio * 251.2} 251.2`}
+                        style={{ transition: "stroke-dasharray 1s ease-out" }}
+                      />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-white/40 text-[10px] mb-0.5">Shielded Balance</p>
+                    <p className="text-white font-bold text-xl tracking-tight tabular-nums">${leftBalance.toFixed(2)}</p>
+                  </div>
+                </div>
+
+                {/* Faint signature scribble lines */}
+                <div className="mt-3 space-y-1.5 opacity-20">
+                  <div className="h-[1px] w-[70%] bg-white/30 rounded" />
+                  <div className="h-[1px] w-[50%] bg-white/20 rounded" />
+                </div>
+              </div>
+
+              {/* CVV box */}
+              <div className="w-20 rounded-lg flex flex-col items-center justify-center" style={{
+                background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)"
+              }}>
+                <p className="text-[8px] text-white/25 uppercase tracking-[0.2em] mb-1">Score</p>
+                <p className="text-2xl font-bold text-white tabular-nums tracking-tight">{Math.round(spendRatio * 100)}</p>
+                <p className="text-[8px] text-white/25 uppercase tracking-wider mt-0.5">/ 100</p>
+              </div>
             </div>
-            {/* Center text below gauge - larger */}
-            <div className="text-center -mt-4">
-              <p className="text-xs text-white/35 mb-1">Shielded Balance</p>
-              <p className="text-3xl font-bold text-white tracking-tight">${leftBalance.toFixed(2)}</p>
+
+            {/* Bottom row: hologram + info text */}
+            <div className="flex items-end justify-between mt-5">
+              <div className="flex items-center gap-3">
+                {/* Hologram sticker */}
+                <div className="w-10 h-10 rounded-lg relative overflow-hidden" style={{
+                  background: "conic-gradient(from 0deg, rgba(249,124,0,0.3), rgba(250,204,21,0.3), rgba(74,222,128,0.3), rgba(249,124,0,0.3))"
+                }}>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <svg className="w-5 h-5 text-white/60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                    </svg>
+                  </div>
+                  {/* Holographic shimmer */}
+                  <div className="absolute inset-0 animate-shimmer" style={{
+                    background: "linear-gradient(135deg, transparent 30%, rgba(255,255,255,0.15) 50%, transparent 70%)"
+                  }} />
+                </div>
+                <div>
+                  <p className="text-white/35 text-[10px] uppercase tracking-[0.15em]">Anonymity strength</p>
+                  <p className={`text-sm font-semibold ${spendRatio >= 0.8 ? "text-[#4ADE80]" : spendRatio >= 0.5 ? "text-[#FACC15]" : "text-[#F97C00]"}`}>
+                    {spendRatio >= 0.8 ? "Strong" : spendRatio >= 0.5 ? "Moderate" : "Building"}
+                  </p>
+                </div>
+              </div>
+
+              {/* Branding */}
+              <span className="text-xl font-black tracking-[0.2em] text-white/[0.04]">SATSU</span>
             </div>
           </div>
         </div>
