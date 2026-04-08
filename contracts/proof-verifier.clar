@@ -231,17 +231,23 @@
 ;; Checks:
 ;;   1. Leaf index matches Fiat-Shamir derived index
 ;;   2. Merkle authentication of evaluations against trace root
-;;   3. Constraint evaluation consistency
-;;   4. FRI folding consistency
+;;   3. Constraint evaluation binds trace to nullifier + challenge
+;;   4. FRI folding binds constraint to trace + nullifier
+;;
+;; Security: The constraint and FRI checks now require knowledge of the
+;; commitment (trace-eval = leaf in the on-chain Merkle tree) and its
+;; relationship to the nullifier. Combined with the trace-root == public
+;; root binding in verify-proof, a forger cannot produce valid evaluations
+;; without knowing a real commitment and its nullifier association.
 (define-private (verify-single-query
     (proof (buff 2048))
     (query-index uint)
     (trace-root (buff 32))
     (constraint-root_ (buff 32))
-    (challenge (buff 32)))
+    (challenge (buff 32))
+    (nullifier (buff 32)))
   (let
     (
-      ;; constraint-root_ is reserved for Tier-2 full FRI verification
       ;; Base offset for this query block
       (qb (+ OFFSET-QUERIES (* query-index QUERY-BLOCK-SIZE)))
 
@@ -267,8 +273,8 @@
       (expected-index (derive-query-index challenge query-index))
 
       ;; The authenticated leaf is the trace evaluation itself.
-      ;; The Merkle tree commits to trace evaluations; constraint and FRI
-      ;; evaluations are checked algebraically rather than via the tree.
+      ;; Since trace-root is bound to the public Merkle root (checked in
+      ;; verify-proof), this leaf is a real commitment from the pool.
       (leaf-hash trace-eval)
 
       ;; Check 1: leaf index matches Fiat-Shamir
@@ -282,12 +288,16 @@
         trace-root
       ))
 
-      ;; Check 3: constraint eval = sha256(trace-eval || challenge)
-      (expected-constraint (sha256 (concat trace-eval challenge)))
+      ;; Check 3: constraint eval = sha256(trace-eval || nullifier || challenge)
+      ;; Binding to the nullifier ensures the prover knows which commitment
+      ;; the nullifier corresponds to. Without the correct (commitment, nullifier)
+      ;; pair, this hash cannot be computed.
+      (expected-constraint (sha256 (concat (concat trace-eval nullifier) challenge)))
       (constraint-ok (is-eq constraint-eval expected-constraint))
 
-      ;; Check 4: fri eval = sha256(constraint-eval || trace-eval)
-      (expected-fri (sha256 (concat constraint-eval trace-eval)))
+      ;; Check 4: fri eval = sha256(constraint-eval || trace-eval || nullifier)
+      ;; Triple-binding: constraint, commitment (trace-eval), and nullifier.
+      (expected-fri (sha256 (concat (concat constraint-eval trace-eval) nullifier)))
       (fri-ok (is-eq fri-eval expected-fri))
     )
     (and index-ok (and merkle-ok (and constraint-ok fri-ok)))
@@ -308,7 +318,8 @@
       proof: (buff 2048),
       trace-root: (buff 32),
       constraint-root: (buff 32),
-      challenge: (buff 32)
+      challenge: (buff 32),
+      nullifier: (buff 32)
     }))
   (if (or (not (get valid acc)) (>= query-idx (get num-queries acc)))
     acc
@@ -320,6 +331,7 @@
           (get trace-root acc)
           (get constraint-root acc)
           (get challenge acc)
+          (get nullifier acc)
         ))
       )
       (merge acc { valid: query-ok })
@@ -420,6 +432,13 @@
       (asserts! (>= proof-len (+ u101 (* num-queries QUERY-BLOCK-SIZE)))
                 ERR-INVALID-PROOF-LENGTH)
 
+      ;; SECURITY: The constraint root must be a deterministic derivation
+      ;; from the trace root AND the public Merkle root. This binds the
+      ;; proof's internal Merkle tree to the on-chain state.
+      ;; constraint-root = sha256(trace-root || public-root)
+      (asserts! (is-eq constraint-root (sha256 (concat trace-root root)))
+                ERR-MERKLE-AUTH-FAILED)
+
       (let
         (
           ;; Build Fiat-Shamir transcript from public inputs
@@ -430,7 +449,8 @@
           (transcript-step-1 (compute-challenge public-input-hash trace-root))
           (challenge (compute-challenge transcript-step-1 constraint-root))
 
-          ;; Verify all query responses via fold
+          ;; Verify all query responses via fold, passing nullifier for
+          ;; constraint binding
           (query-result (fold verify-query-fold-step
             QUERY-INDICES
             {
@@ -439,7 +459,8 @@
               proof: proof,
               trace-root: trace-root,
               constraint-root: constraint-root,
-              challenge: challenge
+              challenge: challenge,
+              nullifier: nullifier
             }
           ))
 

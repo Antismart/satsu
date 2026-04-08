@@ -47,6 +47,9 @@ function splitContract(fqn) {
 }
 function hexToBytes(hex) {
     const clean = hex.startsWith('0x') ? hex.slice(2) : hex;
+    if (clean.length === 0 || clean.length % 2 !== 0) {
+        throw new Error(`Invalid hex string: must have even length, got ${clean.length}`);
+    }
     const bytes = new Uint8Array(clean.length / 2);
     for (let i = 0; i < bytes.length; i++) {
         bytes[i] = parseInt(clean.substring(i * 2, i * 2 + 2), 16);

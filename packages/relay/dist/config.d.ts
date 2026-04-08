@@ -32,5 +32,7 @@ export interface RelayerConfig {
     batchDelayMs: number;
     /** File path used to persist the in-memory queue for crash recovery. */
     queuePersistPath: string;
+    /** Human-readable relayer name for discovery (optional). */
+    relayerName?: string;
 }
 export declare function loadConfig(env?: Record<string, string | undefined>): RelayerConfig;

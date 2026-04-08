@@ -10,7 +10,13 @@ import { getHealthStatus } from './health.js';
 // ---------------------------------------------------------------------------
 // Zod schemas
 // ---------------------------------------------------------------------------
-const hexString = z.string().regex(/^(0x)?[0-9a-fA-F]+$/, 'Invalid hex string');
+const hexString = z
+    .string()
+    .regex(/^(0x)?[0-9a-fA-F]+$/, 'Invalid hex string')
+    .refine((val) => {
+    const hex = val.startsWith('0x') ? val.slice(2) : val;
+    return hex.length > 0 && hex.length % 2 === 0;
+}, 'Hex string must have even length');
 const depositSchema = z.object({
     signedTx: hexString,
     commitment: hexString,
@@ -113,6 +119,19 @@ export function createRouter(deps) {
             return;
         }
         res.json(item);
+    });
+    // -----------------------------------------------------------------------
+    // GET /api/v1/info
+    // -----------------------------------------------------------------------
+    router.get('/api/v1/info', (_req, res) => {
+        const currentFee = feeManager.getCurrentFee();
+        res.json({
+            name: config.relayerName ?? `satsu-relayer-${config.network}`,
+            version: '0.1.0',
+            fee: currentFee.toString(),
+            network: config.network,
+            supportedPools: [config.poolContract],
+        });
     });
     // -----------------------------------------------------------------------
     // GET /api/v1/health

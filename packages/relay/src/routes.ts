@@ -17,7 +17,13 @@ import { getHealthStatus } from './health.js';
 // Zod schemas
 // ---------------------------------------------------------------------------
 
-const hexString = z.string().regex(/^(0x)?[0-9a-fA-F]+$/, 'Invalid hex string');
+const hexString = z
+  .string()
+  .regex(/^(0x)?[0-9a-fA-F]+$/, 'Invalid hex string')
+  .refine((val) => {
+    const hex = val.startsWith('0x') ? val.slice(2) : val;
+    return hex.length > 0 && hex.length % 2 === 0;
+  }, 'Hex string must have even length');
 
 const depositSchema = z.object({
   signedTx: hexString,

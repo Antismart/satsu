@@ -8,6 +8,7 @@
  */
 
 import express from 'express';
+import rateLimit from 'express-rate-limit';
 import pino from 'pino';
 
 import { loadConfig } from './config.js';
@@ -58,6 +59,17 @@ const feeManager = new FeeManager(config.feeConfig, () => {
 
 const app = express();
 app.use(express.json());
+
+// Rate limiting — prevent DoS and queue flooding
+const apiLimiter = rateLimit({
+  windowMs: 60 * 1000,   // 1 minute window
+  limit: 100,             // max 100 requests per window per IP
+  standardHeaders: 'draft-8',
+  legacyHeaders: false,
+  message: { error: 'too_many_requests', retryAfterMs: 60_000 },
+  skip: (req) => req.path === '/api/v1/health',
+});
+app.use('/api/v1/', apiLimiter);
 
 // Mount API routes
 const router = createRouter({ queue, feeManager, config, logger });

@@ -26,6 +26,10 @@
 (define-constant ERR-NO-META-ADDRESS (err u2003))
 (define-constant ERR-NAME-ALREADY-LINKED (err u2004))
 (define-constant ERR-PUBKEY-REQUIRED (err u2005))
+(define-constant ERR-BNS-VERIFICATION-FAILED (err u2006))
+
+;; Contract deployer
+(define-constant CONTRACT-OWNER tx-sender)
 
 ;; --------------------
 ;; Compressed pubkey prefix bytes
@@ -49,12 +53,30 @@
   }
 )
 
-;; Optional: link .btc BNS names to principals for UX.
-;; In production this would verify BNS ownership on-chain.
-;; For v1 we trust the caller (registration is a public action anyway).
+;; Link .btc BNS names to principals for UX.
+;; Names must be verified by an authorized verifier before they can be linked.
+;; The verifier checks BNS ownership off-chain and attests on-chain.
 (define-map btc-name-to-owner
   { name: (buff 48) }
   { owner: principal }
+)
+
+;; BNS ownership verification state.
+;; An authorized verifier attests that a principal owns a given BNS name.
+;; This is the oracle pattern -- the verifier service reads BNS state and
+;; writes attestations that this contract can trust.
+(define-data-var bns-verification-enabled bool false)
+
+(define-map authorized-verifiers
+  { verifier: principal }
+  { authorized: bool }
+)
+
+;; Maps a BNS name to its verified owner (attested by a verifier).
+;; Only verified names can be linked via link-btc-name.
+(define-map verified-bns-names
+  { name: (buff 48) }
+  { owner: principal, verified-at: uint }
 )
 
 ;; --------------------
@@ -184,24 +206,108 @@
   )
 )
 
+;; enable-bns-verification: toggle BNS verification on or off (owner only).
+;; When enabled, link-btc-name requires a prior attestation from a verifier.
+;; When disabled (default), names can be linked without verification (devnet).
+;;
+;; Returns: (ok true)
+;; Errors: ERR-NOT-AUTHORIZED (u2001)
+(define-public (enable-bns-verification (enabled bool))
+  (begin
+    (asserts! (is-eq tx-sender CONTRACT-OWNER) ERR-NOT-AUTHORIZED)
+    (var-set bns-verification-enabled enabled)
+    (print { event: "bns-verification-toggled", enabled: enabled })
+    (ok true)
+  )
+)
+
+;; set-authorized-verifier: grant or revoke verifier privileges (owner only).
+;; Verifiers can attest BNS name ownership on behalf of the protocol.
+;;
+;; Parameters:
+;;   verifier   - principal to authorize/deauthorize
+;;   authorized - true to grant, false to revoke
+;;
+;; Returns: (ok true)
+;; Errors: ERR-NOT-AUTHORIZED (u2001)
+(define-public (set-authorized-verifier (verifier principal) (authorized bool))
+  (begin
+    (asserts! (is-eq tx-sender CONTRACT-OWNER) ERR-NOT-AUTHORIZED)
+    (map-set authorized-verifiers
+      { verifier: verifier }
+      { authorized: authorized }
+    )
+    (print {
+      event: "verifier-updated",
+      verifier: verifier,
+      authorized: authorized
+    })
+    (ok true)
+  )
+)
+
+;; verify-bns-name: attest that a principal owns a given BNS name.
+;; Only callable by authorized verifiers. The verifier service reads BNS
+;; state off-chain and writes attestations here.
+;;
+;; Parameters:
+;;   name  - BNS name buffer (up to 48 bytes)
+;;   owner - the principal who owns this name according to BNS
+;;
+;; Returns: (ok true)
+;; Errors: ERR-NOT-AUTHORIZED (u2001)
+(define-public (verify-bns-name (name (buff 48)) (owner principal))
+  (begin
+    (asserts!
+      (default-to false
+        (get authorized (map-get? authorized-verifiers { verifier: tx-sender })))
+      ERR-NOT-AUTHORIZED
+    )
+    (map-set verified-bns-names
+      { name: name }
+      { owner: owner, verified-at: stacks-block-height }
+    )
+    (print {
+      event: "bns-name-verified",
+      name: name,
+      owner: owner,
+      verifier: tx-sender
+    })
+    (ok true)
+  )
+)
+
 ;; link-btc-name: associate a .btc BNS name with the caller's principal.
 ;; Enables human-readable lookups: "alice.btc" -> meta-address.
 ;; The caller must have a registered meta-address first.
 ;;
-;; Note: In production this would verify BNS ownership on-chain.
-;; For v1 we trust the caller - registration is a public action anyway.
+;; When BNS verification is enabled (production), the name must have been
+;; verified by an authorized verifier attesting that tx-sender owns it.
+;; When disabled (devnet), names can be linked without verification.
 ;;
 ;; Parameters:
 ;;   name - BNS name as a buffer (up to 48 bytes, e.g., 0x616c6963652e627463)
 ;;
 ;; Returns: (ok true)
-;; Errors: ERR-NO-META-ADDRESS (u2003), ERR-NAME-ALREADY-LINKED (u2004)
+;; Errors: ERR-NO-META-ADDRESS (u2003), ERR-NAME-ALREADY-LINKED (u2004),
+;;         ERR-BNS-VERIFICATION-FAILED (u2006)
 (define-public (link-btc-name (name (buff 48)))
   (begin
     ;; Caller must have a registered meta-address
     (asserts!
       (is-some (map-get? stealth-meta-addresses { owner: tx-sender }))
       ERR-NO-META-ADDRESS
+    )
+    ;; When BNS verification is enabled, require a verifier attestation
+    (if (var-get bns-verification-enabled)
+      (asserts!
+        (match (map-get? verified-bns-names { name: name })
+          verification (is-eq (get owner verification) tx-sender)
+          false
+        )
+        ERR-BNS-VERIFICATION-FAILED
+      )
+      true
     )
     ;; Name must not already be linked to a different principal
     (match (map-get? btc-name-to-owner { name: name })
@@ -298,4 +404,22 @@
 ;; Returns: bool
 (define-read-only (has-meta-address (owner principal))
   (is-some (map-get? stealth-meta-addresses { owner: owner }))
+)
+
+;; is-bns-verification-enabled: check if BNS verification is required.
+(define-read-only (is-bns-verification-enabled)
+  (var-get bns-verification-enabled)
+)
+
+;; is-authorized-verifier: check if a principal is an authorized BNS verifier.
+(define-read-only (is-authorized-verifier (verifier principal))
+  (default-to false
+    (get authorized (map-get? authorized-verifiers { verifier: verifier })))
+)
+
+;; get-verified-bns-name: look up the verified owner of a BNS name.
+;;
+;; Returns: (optional { owner: principal, verified-at: uint })
+(define-read-only (get-verified-bns-name (name (buff 48)))
+  (map-get? verified-bns-names { name: name })
 )

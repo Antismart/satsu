@@ -4,6 +4,12 @@
   "description": "Private payments on Bitcoin. Stealth deposits. Shielded transfers. Zero knowledge.",
   "type": "module",
   "private": true,
+  "workspaces": [
+    "packages/sdk",
+    "packages/relay",
+    "packages/scanner",
+    "packages/app"
+  ],
   "scripts": {
     "test": "vitest run",
     "test:report": "vitest run -- --coverage --costs",

@@ -46,15 +46,6 @@
 (define-constant ZERO-COMMITMENT 0x0000000000000000000000000000000000000000000000000000000000000000)
 
 ;; ============================================================================
-;; sBTC testnet contract reference
-;; ============================================================================
-;; The real sBTC on Stacks testnet, deployed by the sBTC signer set.
-;; Update this if the canonical address changes.
-;;
-;; IMPORTANT: Verify the address before deploying:
-;;   curl https://api.testnet.hiro.so/v2/contracts/interface/SN3R84XZYA63QS28932XQF3G1J8R9PC3W8AKR0EP/sbtc-token
-
-;; ============================================================================
 ;; State
 ;; ============================================================================
 
@@ -81,9 +72,12 @@
       (pool-address (as-contract tx-sender))
     )
 
-    ;; 0. Source validation
-    (asserts! (or (is-eq source tx-sender) (is-eq source contract-caller))
-              ERR-TRANSFER-FAILED)
+    ;; 0. Source validation: the source must be the tx-sender. This prevents
+    ;;    an attacker from exploiting a victim's sBTC allowance to force
+    ;;    deposits with attacker-controlled commitments, effectively stealing
+    ;;    funds. Relayers should use Stacks sponsor transactions instead of
+    ;;    a delegated source parameter.
+    (asserts! (is-eq source tx-sender) ERR-TRANSFER-FAILED)
 
     ;; 1. Reject the zero commitment
     (asserts! (not (is-eq commitment ZERO-COMMITMENT)) ERR-INVALID-COMMITMENT)
@@ -155,7 +149,7 @@
       (relayer tx-sender)
     )
 
-    ;; 0. Validate relayer fee
+    ;; 0. Validate relayer fee before arithmetic to prevent underflow.
     (asserts! (< relayer-fee POOL-DENOMINATION) ERR-INVALID-AMOUNT)
 
     (let
@@ -170,13 +164,13 @@
       (asserts! (not (contract-call? .nullifier-registry is-nullifier-used nullifier))
                 ERR-NULLIFIER-USED)
 
-      ;; 3. Verify the ZK proof
+      ;; 3. Verify the ZK proof against public inputs.
       (asserts! (unwrap! (contract-call? .proof-verifier verify-proof
                            proof nullifier root recipient relayer-fee)
                          ERR-INVALID-PROOF)
                 ERR-INVALID-PROOF)
 
-      ;; 4. Mark nullifier as used
+      ;; 4. Mark nullifier as used (prevents double-spend)
       (unwrap! (contract-call? .nullifier-registry mark-used nullifier)
                ERR-NULLIFIER-USED)
 
@@ -216,6 +210,74 @@
   )
 )
 
+;; withdraw-optimistic - Submit a withdrawal through the optimistic escrow
+;;
+;; Instead of verifying the ZK-STARK proof synchronously on-chain, this path
+;; routes through the withdrawal-escrow contract. A bond is posted and the
+;; withdrawal enters a challenge period. Off-chain watchers verify the full
+;; STARK proof and can challenge invalid submissions.
+;;
+;; Parameters:
+;;   proof-hash       - sha256 of the full off-chain proof
+;;   nullifier        - 32-byte nullifier hash (prevents double-spend)
+;;   root             - 32-byte Merkle root the proof was generated against
+;;   recipient        - principal to receive the sBTC after finalization
+;;   ephemeral-pubkey - 33-byte compressed public key R for stealth detection
+;;   relayer-fee      - fee amount deducted for the relayer
+;;   bond             - bond amount in sBTC (must be >= escrow MIN-BOND)
+;;
+;; Returns: { withdrawal-id: uint }
+(define-public (withdraw-optimistic
+    (proof-hash (buff 32))
+    (nullifier (buff 32))
+    (root (buff 32))
+    (recipient principal)
+    (ephemeral-pubkey (buff 33))
+    (relayer-fee uint)
+    (bond uint))
+  (begin
+    ;; 1. Validate relayer fee
+    (asserts! (< relayer-fee POOL-DENOMINATION) ERR-INVALID-AMOUNT)
+
+    ;; 2. Transfer POOL-DENOMINATION from pool to escrow.
+    (unwrap! (as-contract (contract-call? 'SN3R84XZYA63QS28932XQF3G1J8R9PC3W8AKR0EP.sbtc-token transfer
+               POOL-DENOMINATION
+               tx-sender
+               .withdrawal-escrow
+               none))
+             ERR-TRANSFER-FAILED)
+
+    ;; 3. Submit to the escrow contract.
+    (let
+      (
+        (escrow-result
+          (unwrap! (contract-call? .withdrawal-escrow submit-withdrawal
+                     proof-hash
+                     nullifier
+                     root
+                     recipient
+                     ephemeral-pubkey
+                     relayer-fee
+                     bond)
+                   ERR-TRANSFER-FAILED))
+      )
+
+      ;; 4. Emit event
+      (print {
+        event: "optimistic-withdrawal-submitted",
+        withdrawal-id: (get withdrawal-id escrow-result),
+        nullifier: nullifier,
+        recipient: recipient,
+        relayer: tx-sender,
+        relayer-fee: relayer-fee,
+        bond: bond
+      })
+
+      (ok { withdrawal-id: (get withdrawal-id escrow-result) })
+    )
+  )
+)
+
 ;; ============================================================================
 ;; Read-only functions
 ;; ============================================================================
@@ -236,6 +298,12 @@
   POOL-DENOMINATION
 )
 
+;; get-deposit-info - Look up metadata for a deposit commitment
+;;
+;; Parameters:
+;;   commitment - 32-byte commitment to look up
+;;
+;; Returns: (optional { amount: uint, block-height: uint })
 (define-read-only (get-deposit-info (commitment (buff 32)))
   (map-get? deposit-commitments { commitment: commitment })
 )

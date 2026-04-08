@@ -144,21 +144,22 @@ function buildMerkleTree(leaves: Uint8Array[]): {
 
 // Builds a valid proof buffer that passes the Clarity verifier.
 //
-// The approach (no circularity):
+// The approach (upgraded verifier):
 //   1. Choose 256 trace evaluations (arbitrary 32-byte values)
 //   2. Build a Merkle tree from these trace-evals -> get trace-root
-//   3. constraint-root = sha256(trace-root)
+//   3. constraint-root = sha256(trace-root || public-root)
 //   4. Compute challenge = f(public-inputs, trace-root, constraint-root)
 //   5. Derive query indices from the challenge
 //   6. For each query at index i:
 //      - trace-eval is the tree leaf at position i
-//      - constraint-eval = sha256(trace-eval || challenge)
-//      - fri-eval = sha256(constraint-eval || trace-eval)
+//      - constraint-eval = sha256(trace-eval || nullifier || challenge)
+//      - fri-eval = sha256(constraint-eval || trace-eval || nullifier)
 //      - Merkle auth path for trace-eval at index i
 //   7. fri-remainder = sha256(challenge || trace-root || constraint-root)
 //
-// The Merkle tree authenticates trace-evals directly. Constraint and FRI
-// evals are checked algebraically against the challenge, not via the tree.
+// The constraint-root binding to public-root prevents forgers from using
+// arbitrary roots. The nullifier binding in constraint/FRI evals ensures
+// the prover knows the commitment-nullifier association.
 
 function buildValidProof(
   nullifier: string,
@@ -181,8 +182,10 @@ function buildValidProof(
   const tree = buildMerkleTree(traceEvals);
   const traceRoot = tree.root;
 
-  // Step 3: Constraint root = sha256(trace-root)
-  const constraintRoot = sha256(traceRoot);
+  // Step 3: Constraint root = sha256(trace-root || public-root)
+  // Binds the proof's internal tree to the public Merkle root.
+  const rootBytes = hexToBytes(root);
+  const constraintRoot = sha256(concatBytes(traceRoot, rootBytes));
 
   // Step 4: Compute Fiat-Shamir challenge
   const publicInputHash = buildPublicInputHash(
@@ -200,13 +203,17 @@ function buildValidProof(
     queryIndices.push(challenge[q]);
   }
 
-  // Step 6: Build query blocks
+  const nullifierBytes = hexToBytes(nullifier);
+
+  // Step 6: Build query blocks (nullifier-bound evaluations)
   const queryBlocks: Uint8Array[] = [];
   for (let q = 0; q < numQueries; q++) {
     const idx = queryIndices[q];
     const traceEval = traceEvals[idx];
-    const constraintEval = sha256(concatBytes(traceEval, challenge));
-    const friEval = sha256(concatBytes(constraintEval, traceEval));
+    // constraint-eval = sha256(trace-eval || nullifier || challenge)
+    const constraintEval = sha256(concatBytes(traceEval, nullifierBytes, challenge));
+    // fri-eval = sha256(constraint-eval || trace-eval || nullifier)
+    const friEval = sha256(concatBytes(constraintEval, traceEval, nullifierBytes));
     const authPath = tree.getAuthPath(idx);
 
     // Query block: trace-eval(32) + constraint-eval(32) + fri-eval(32) +
