@@ -1,14 +1,13 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
-import {
-  connect as stacksConnect,
-  disconnect as stacksDisconnect,
-  isConnected as stacksIsConnected,
-  getLocalStorage,
-  request as stacksRequest,
-  type StacksProvider,
-} from "@stacks/connect";
+import { useState, useCallback, useEffect, useRef } from "react";
+
+type ConnectModule = typeof import("@stacks/connect");
+type StacksProvider = NonNullable<
+  Parameters<ConnectModule["request"]>[0] extends { provider?: infer P }
+    ? P
+    : never
+>;
 
 interface WalletState {
   address: string | null;
@@ -52,10 +51,6 @@ function logRegisteredProviders() {
   console.log("[useWallet] direct providers:", direct);
 }
 
-function readStxAddress(): string | null {
-  return getLocalStorage()?.addresses?.stx?.[0]?.address ?? null;
-}
-
 function withTimeout<T>(p: Promise<T>, ms: number, label: string): Promise<T> {
   return Promise.race([
     p,
@@ -77,17 +72,50 @@ export function useWallet(): WalletState & WalletActions {
     error: null,
   });
 
+  // Cache the @stacks/connect module. Dynamic import keeps the lib out of the
+  // SSR/_not-found prerender (it touches `document` at load). Pre-warming on
+  // mount means the click handler's `await` resolves from cache as a microtask,
+  // which doesn't drain the user-activation window.
+  const modRef = useRef<ConnectModule | null>(null);
+
   useEffect(() => {
-    if (stacksIsConnected()) {
-      const addr = readStxAddress();
-      if (addr) {
-        setState((s) => ({ ...s, address: addr, isConnected: true }));
+    let cancelled = false;
+    (async () => {
+      try {
+        const mod = await import("@stacks/connect");
+        if (cancelled) return;
+        modRef.current = mod;
+        if (mod.isConnected()) {
+          const addr = mod.getLocalStorage()?.addresses?.stx?.[0]?.address;
+          if (addr) {
+            setState((s) => ({ ...s, address: addr, isConnected: true }));
+          }
+        }
+      } catch (err) {
+        console.warn("[useWallet] failed to pre-load @stacks/connect:", err);
       }
-    }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const readStxAddress = useCallback((): string | null => {
+    return modRef.current?.getLocalStorage()?.addresses?.stx?.[0]?.address ?? null;
   }, []);
 
   const connect = useCallback(async () => {
-    if (stacksIsConnected()) {
+    const mod = modRef.current;
+    if (!mod) {
+      setState((s) => ({
+        ...s,
+        isConnecting: false,
+        error: "Wallet library still loading. Try again in a moment.",
+      }));
+      return;
+    }
+
+    if (mod.isConnected()) {
       const addr = readStxAddress();
       if (addr) {
         setState({
@@ -104,11 +132,10 @@ export function useWallet(): WalletState & WalletActions {
     setState((s) => ({ ...s, isConnecting: true, error: null }));
     logRegisteredProviders();
 
-    // Try the canonical @stacks/connect flow first (shows the multi-wallet
-    // picker UI), bounded by a timeout.
+    // Primary path: @stacks/connect picker UI.
     try {
       const response = await withTimeout(
-        stacksConnect(),
+        mod.connect(),
         PRIMARY_TIMEOUT_MS,
         "connect()"
       );
@@ -136,9 +163,9 @@ export function useWallet(): WalletState & WalletActions {
       );
     }
 
-    // Fallback: call a directly-injected provider, bypassing the picker.
-    // This works around conflicts where the picker selects a provider that
-    // hangs (e.g., a deprecated extension intercepting StacksProvider).
+    // Fallback: bypass the picker and hit an injected provider directly.
+    // Useful when a deprecated extension is hijacking the StacksProvider
+    // selection and deadlocking the picker.
     const w =
       typeof window !== "undefined" ? (window as WindowProviders) : undefined;
     const directProvider =
@@ -159,7 +186,7 @@ export function useWallet(): WalletState & WalletActions {
     try {
       console.log("[useWallet] trying direct provider request");
       const response = await withTimeout(
-        stacksRequest({ provider: directProvider }, "getAddresses"),
+        mod.request({ provider: directProvider }, "getAddresses"),
         FALLBACK_TIMEOUT_MS,
         "direct getAddresses"
       );
@@ -195,11 +222,11 @@ export function useWallet(): WalletState & WalletActions {
         error: `${msg} If you have multiple wallet extensions installed, try disabling all but one and reload.`,
       }));
     }
-  }, []);
+  }, [readStxAddress]);
 
   const disconnect = useCallback(() => {
     try {
-      stacksDisconnect();
+      modRef.current?.disconnect();
     } catch (err) {
       console.warn("[useWallet] disconnect cleanup failed:", err);
     }

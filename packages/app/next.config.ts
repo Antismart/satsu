@@ -1,11 +1,10 @@
 import type { NextConfig } from "next";
 import path from "node:path";
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const webpack = require("webpack");
 
 // The SDK's wasm-loader uses `await import("node:fs/promises")` behind a Node
 // env check. Browser bundlers still parse the expression, so it must be aliased
-// away. Turbopack and webpack each need their own opt-in.
+// away. Turbopack is the default in Next 16; the webpack block only fires under
+// `next build --webpack`.
 const nextConfig: NextConfig = {
   transpilePackages: ["@satsu/sdk"],
   turbopack: {
@@ -28,10 +27,6 @@ const nextConfig: NextConfig = {
         fs: false,
         "fs/promises": false,
       };
-      config.plugins = [
-        ...(config.plugins || []),
-        new webpack.IgnorePlugin({ resourceRegExp: /^node:fs(\/promises)?$/ }),
-      ];
     }
     return config;
   },
