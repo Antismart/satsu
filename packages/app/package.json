@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@satsu/sdk": "*",
-    "@stacks/connect": "^7.10.2",
+    "@stacks/connect": "^8.2.6",
     "@stacks/network": "^7.3.1",
     "@stacks/transactions": "^7.4.0",
     "framer-motion": "^12.38.0",

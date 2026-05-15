@@ -1,9 +1,20 @@
 import type { NextConfig } from "next";
+import path from "node:path";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const webpack = require("webpack");
 
+// The SDK's wasm-loader uses `await import("node:fs/promises")` behind a Node
+// env check. Browser bundlers still parse the expression, so it must be aliased
+// away. Turbopack and webpack each need their own opt-in.
 const nextConfig: NextConfig = {
   transpilePackages: ["@satsu/sdk"],
+  turbopack: {
+    root: path.join(__dirname, "../.."),
+    resolveAlias: {
+      "node:fs": { browser: "./src/lib/empty-module.ts" },
+      "node:fs/promises": { browser: "./src/lib/empty-module.ts" },
+    },
+  },
   webpack: (config) => {
     config.resolve = config.resolve || {};
     config.resolve.alias = {

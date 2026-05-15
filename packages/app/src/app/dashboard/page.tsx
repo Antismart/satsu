@@ -8,7 +8,7 @@ import { useRelayer } from "@/hooks/useRelayer";
 import { useSatsu } from "@/hooks/useSatsu";
 
 export default function DashboardPage() {
-  const { isConnected, address, connect } = useWallet();
+  const { isConnected, address, isConnecting, error, connect } = useWallet();
   const { status: relayerStatus } = useRelayer();
   const { notes } = useSatsu();
   const [activeTab, setActiveTab] = useState<"deposit" | "withdraw" | "activity">("deposit");
@@ -41,10 +41,43 @@ export default function DashboardPage() {
           </p>
           <button
             onClick={connect}
-            className="btn-accent h-12 px-8 text-sm"
+            disabled={isConnecting}
+            className="btn-accent h-12 px-8 text-sm disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            Connect Wallet
+            {isConnecting ? "Connecting..." : "Connect Wallet"}
           </button>
+          {error && (
+            <div
+              role="alert"
+              className="mt-6 rounded-xl border border-[#EF4444]/30 bg-[#EF4444]/10 px-4 py-3 text-left"
+            >
+              <p className="text-xs font-semibold uppercase tracking-wider text-[#EF4444]">
+                Connection failed
+              </p>
+              <p className="mt-1 text-sm text-white/80">{error}</p>
+              <p className="mt-2 text-xs text-white/50">
+                Install{" "}
+                <a
+                  href="https://leather.io/install-extension"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-[#F97C00] hover:underline"
+                >
+                  Leather
+                </a>{" "}
+                or{" "}
+                <a
+                  href="https://www.xverse.app/download"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-[#F97C00] hover:underline"
+                >
+                  Xverse
+                </a>{" "}
+                and try again.
+              </p>
+            </div>
+          )}
         </div>
       </div>
     );
