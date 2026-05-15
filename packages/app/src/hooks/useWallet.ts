@@ -24,8 +24,8 @@ interface WalletActions {
   clearError: () => void;
 }
 
-const PRIMARY_TIMEOUT_MS = 30_000;
-const FALLBACK_TIMEOUT_MS = 30_000;
+const PRIMARY_TIMEOUT_MS = 20_000;
+const FALLBACK_TIMEOUT_MS = 12_000;
 
 type WindowProviders = Window & {
   wbip_providers?: Array<{ id: string; name?: string }>;
@@ -135,15 +135,18 @@ export function useWallet(): WalletState & WalletActions {
       );
     }
 
-    // Fallback: bypass the picker and hit an injected provider directly.
+    // Fallback: bypass the picker and try every injected provider in turn.
+    // With multiple wallet extensions installed, the first one's message
+    // bridge often hangs (especially deprecated Hiro Wallet); the second
+    // may still respond.
     const w =
       typeof window !== "undefined" ? (window as WindowProviders) : undefined;
-    const directProvider =
-      w?.LeatherProvider ??
-      w?.XverseProviders?.StacksProvider ??
-      w?.StacksProvider;
+    const candidates: Array<{ name: string; provider: StacksProvider }> = [];
+    if (w?.LeatherProvider) candidates.push({ name: "Leather", provider: w.LeatherProvider });
+    if (w?.XverseProviders?.StacksProvider) candidates.push({ name: "Xverse", provider: w.XverseProviders.StacksProvider });
+    if (w?.StacksProvider) candidates.push({ name: "StacksProvider", provider: w.StacksProvider });
 
-    if (!directProvider) {
+    if (candidates.length === 0) {
       setState((s) => ({
         ...s,
         isConnecting: false,
@@ -153,45 +156,45 @@ export function useWallet(): WalletState & WalletActions {
       return;
     }
 
-    try {
-      console.log("[useWallet] trying direct provider request");
-      const response = await withTimeout(
-        stacksRequest({ provider: directProvider }, "getAddresses"),
-        FALLBACK_TIMEOUT_MS,
-        "direct getAddresses"
-      );
-      console.log("[useWallet] direct response:", response);
+    const failures: string[] = [];
+    for (const { name, provider } of candidates) {
+      try {
+        console.log(`[useWallet] trying ${name} directly`);
+        const response = await withTimeout(
+          stacksRequest({ provider }, "getAddresses"),
+          FALLBACK_TIMEOUT_MS,
+          `${name}.getAddresses`
+        );
+        console.log(`[useWallet] ${name} response:`, response);
 
-      const address =
-        response.addresses.find((a) => a.symbol === "STX")?.address ??
-        readStxAddress();
+        const address =
+          response.addresses.find((a) => a.symbol === "STX")?.address ??
+          readStxAddress();
+        if (!address) {
+          failures.push(`${name}: no STX address returned`);
+          continue;
+        }
 
-      if (!address) {
-        setState((s) => ({
-          ...s,
+        setState({
+          address,
+          isConnected: true,
           isConnecting: false,
-          error: "Wallet did not return a Stacks address.",
-        }));
+          network: "testnet",
+          error: null,
+        });
         return;
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err);
+        console.warn(`[useWallet] ${name} failed:`, err);
+        failures.push(`${name}: ${msg}`);
       }
-
-      setState({
-        address,
-        isConnected: true,
-        isConnecting: false,
-        network: "testnet",
-        error: null,
-      });
-    } catch (err) {
-      const msg =
-        err instanceof Error && err.message ? err.message : "Failed to connect.";
-      console.error("[useWallet] direct provider failed:", err);
-      setState((s) => ({
-        ...s,
-        isConnecting: false,
-        error: `${msg} If you have multiple wallet extensions installed, try disabling all but one and reload.`,
-      }));
     }
+
+    setState((s) => ({
+      ...s,
+      isConnecting: false,
+      error: `All wallets failed (${failures.join("; ")}). Disable other Stacks wallet extensions (especially the deprecated Hiro Wallet) and reload.`,
+    }));
   }, []);
 
   const disconnect = useCallback(() => {
