@@ -105,14 +105,22 @@ export function useWallet(): WalletState & WalletActions {
   }, []);
 
   const connect = useCallback(async () => {
-    const mod = modRef.current;
+    setState((s) => ({ ...s, isConnecting: true, error: null }));
+
+    let mod = modRef.current;
     if (!mod) {
-      setState((s) => ({
-        ...s,
-        isConnecting: false,
-        error: "Wallet library still loading. Try again in a moment.",
-      }));
-      return;
+      try {
+        mod = await import("@stacks/connect");
+        modRef.current = mod;
+      } catch (err) {
+        console.error("[useWallet] failed to load @stacks/connect:", err);
+        setState((s) => ({
+          ...s,
+          isConnecting: false,
+          error: "Failed to load wallet library. Check your connection and retry.",
+        }));
+        return;
+      }
     }
 
     if (mod.isConnected()) {
@@ -129,7 +137,6 @@ export function useWallet(): WalletState & WalletActions {
       }
     }
 
-    setState((s) => ({ ...s, isConnecting: true, error: null }));
     logRegisteredProviders();
 
     // Primary path: @stacks/connect picker UI.
