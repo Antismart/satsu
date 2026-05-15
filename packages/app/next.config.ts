@@ -3,8 +3,9 @@ import path from "node:path";
 
 // The SDK's wasm-loader uses `await import("node:fs/promises")` behind a Node
 // env check. Browser bundlers still parse the expression, so it must be aliased
-// away. Turbopack is the default in Next 16; the webpack block only fires under
-// `next build --webpack`.
+// away. Production builds use webpack (`next build --webpack`) because
+// Turbopack's chunk runtime has an open bug that breaks @stacks/connect at
+// runtime.
 const nextConfig: NextConfig = {
   transpilePackages: ["@satsu/sdk"],
   turbopack: {
@@ -14,19 +15,23 @@ const nextConfig: NextConfig = {
       "node:fs/promises": { browser: "./src/lib/empty-module.ts" },
     },
   },
-  webpack: (config) => {
+  webpack: (config, { isServer, webpack }) => {
     config.resolve = config.resolve || {};
     config.resolve.alias = {
       ...(config.resolve.alias || {}),
       "node:fs": "fs",
       "node:fs/promises": "fs/promises",
     };
-    if (!config.isServer) {
+    if (!isServer) {
       config.resolve.fallback = {
         ...(config.resolve.fallback || {}),
         fs: false,
         "fs/promises": false,
       };
+      config.plugins = [
+        ...(config.plugins || []),
+        new webpack.IgnorePlugin({ resourceRegExp: /^node:fs(\/promises)?$/ }),
+      ];
     }
     return config;
   },
