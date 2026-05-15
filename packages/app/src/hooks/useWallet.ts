@@ -19,8 +19,8 @@ const STORAGE_KEY = "satsu_wallet";
 /**
  * Wallet state management hook.
  *
- * Uses @stacks/connect for authentication. Falls back to a mock flow when the
- * wallet extension is not installed (useful during development).
+ * Uses LeatherProvider.request for authentication. Falls back to a mock flow
+ * when the wallet extension is not installed (useful during development).
  */
 export function useWallet(): WalletState & WalletActions {
   const [state, setState] = useState<WalletState>({
@@ -54,42 +54,41 @@ export function useWallet(): WalletState & WalletActions {
     setState((s) => ({ ...s, isConnecting: true }));
 
     try {
-      // Dynamic import to avoid SSR issues with @stacks/connect
-      const { showConnect } = await import("@stacks/connect");
+      const provider = (window as typeof window & { LeatherProvider?: { request: (method: string, params?: unknown) => Promise<unknown> } })
+        .LeatherProvider;
 
-      await new Promise<void>((resolve, reject) => {
-        showConnect({
-          appDetails: {
-            name: "Satsu",
-            icon: "/favicon.ico",
-          },
-          onFinish: (data) => {
-            const addr =
-              data.userSession.loadUserData().profile.stxAddress.testnet;
-            setState({
-              address: addr,
-              isConnected: true,
-              isConnecting: false,
-              network: "testnet",
-            });
-            try {
-              localStorage.setItem(
-                STORAGE_KEY,
-                JSON.stringify({ address: addr, network: "testnet" })
-              );
-            } catch {
-              // ignore
-            }
-            resolve();
-          },
-          onCancel: () => {
-            setState((s) => ({ ...s, isConnecting: false }));
-            reject(new Error("User cancelled wallet connection"));
-          },
-        });
+      if (!provider?.request) {
+        throw new Error("Leather wallet not available");
+      }
+
+      const response = (await provider.request("getAddresses")) as {
+        addresses?: { address?: string; network?: string }[];
+      };
+      const addresses = Array.isArray(response?.addresses) ? response.addresses : [];
+      const testnetAddress = addresses.find((entry) => entry.network === "testnet")
+        ?.address;
+      const address = testnetAddress ?? addresses[0]?.address;
+
+      if (!address) {
+        throw new Error("No address returned by Leather");
+      }
+
+      setState({
+        address,
+        isConnected: true,
+        isConnecting: false,
+        network: "testnet",
       });
+      try {
+        localStorage.setItem(
+          STORAGE_KEY,
+          JSON.stringify({ address, network: "testnet" })
+        );
+      } catch {
+        // ignore
+      }
     } catch {
-      // If @stacks/connect is not available or wallet is not installed,
+      // If Leather is not available or not installed,
       // fall back to a dev-mode mock address
       const mockAddr = "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM";
       setState({
